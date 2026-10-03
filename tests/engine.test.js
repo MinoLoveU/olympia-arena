@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {points,validateBank,durations} from '../engine.js';import {defaultBank} from '../questions.js';
+test('Warm-up: private mistakes are free, common mistakes cost five',()=>{assert.equal(points('warm'),10);assert.equal(points('warm',{correct:false}),0);assert.equal(points('warm',{correct:false,common:true}),-5);});
+test('Obstacle reward decreases with revealed clue count',()=>{assert.deepEqual([0,1,2,3,4].map(clue=>points('obstacle',{guess:true,clue})),[60,50,40,30,20]);assert.equal(points('obstacle'),10);});
+test('Acceleration ranks only correct answers',()=>assert.deepEqual([0,1,2,3].map(rank=>points('speed',{rank})),[40,30,20,10]));
+test('Finish: hope star and steal penalties',()=>{for(const value of [20,30]){assert.equal(points('finish',{value,star:true}),value*2);assert.equal(points('finish',{value,star:true,correct:false}),-value);assert.equal(points('finish',{value,steal:true,correct:false}),-value/2);assert.equal(points('finish',{value,star:true,steal:true}),value);}});
+test('Complete bank validates and incomplete/unsafe media is rejected',()=>{assert.equal(validateBank(defaultBank),defaultBank);assert.throws(()=>validateBank({...defaultBank,warm:[]}));const b=structuredClone(defaultBank);b.warm[0].media='javascript:alert(1)';assert.throws(()=>validateBank(b));});
+test('Round durations match specified format',()=>{assert.deepEqual(durations.speed,[20,20,30,30]);assert.deepEqual(durations.finish,{20:15,30:20});assert.equal(durations.warm,3);});

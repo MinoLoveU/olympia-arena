@@ -3,3 +3,48 @@
 #local-backups{margin:30px 0;color:var(--muted);font-size:12px}#backup-list button{margin:12px 8px 0 0}
 
 .preset-preview{background:#0e1a30;border:1px solid #344b6a;border-radius:9px;padding:18px;margin:16px 0}.preset-preview .private-solution{color:#96e0bd}.preset-preview small{color:var(--gold)}
+
+/* Projection uses the available viewport; other roles keep their normal page flow. */
+body[data-role="display"]{height:100vh;height:100dvh;overflow:hidden;display:grid;grid-template-rows:48px minmax(0,1fr)}
+body[data-role="display"] header{height:48px;padding:0 20px;flex-wrap:nowrap;gap:14px}
+body[data-role="display"] .brand b{font-size:18px}
+body[data-role="display"] .brand small{font-size:7px}
+body[data-role="display"] #role-name,body[data-role="display"] #connection{font-size:10px}
+body[data-role="display"] main{width:100%;max-width:none;min-height:0;padding:10px 20px 12px;margin:0}
+body[data-role="display"] #game{height:100%;min-height:0;display:grid;grid-template-rows:28px 52px minmax(0,1fr) clamp(120px,23vh,210px);gap:10px}
+body[data-role="display"] .live-heading{margin:0;font-size:11px}
+body[data-role="display"] #clock-text{font-size:24px}
+body[data-role="display"] #scoreboard{min-height:0;gap:10px}
+body[data-role="display"] .score-card{padding:6px 14px;display:flex;font-size:13px}
+body[data-role="display"] .score-card small{display:none}
+body[data-role="display"] .score-card strong{font-size:26px}
+body[data-role="display"] #stage{margin:0;padding:14px 20px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+body[data-role="display"] #stage:has(#picture:not(:empty)){grid-template-columns:minmax(0,30%) minmax(0,1fr)}
+body[data-role="display"] #picture:empty{display:none}
+body[data-role="display"] #picture{min-height:0;display:grid;place-items:center}
+body[data-role="display"] .obstacle-picture{margin:0;width:min(100%,30vh);max-height:100%;display:flex;flex-direction:column;gap:4px}
+body[data-role="display"] .tiles{min-height:0;max-height:100%;flex:1;aspect-ratio:1}
+body[data-role="display"] .picture-label{margin:0;font-size:11px;line-height:1.2}
+body[data-role="display"] #question-panel{min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
+body[data-role="display"] #phase-label{font-size:10px;line-height:1.3;flex-shrink:0}
+body[data-role="display"] #question-title{font-size:clamp(20px,3.5vh,38px);line-height:1.35;margin:0;overflow-wrap:anywhere;flex-shrink:0}
+body[data-role="display"] #question-media:empty{display:none}
+body[data-role="display"] #question-media{min-height:0;flex:0 1 auto;display:flex;justify-content:center}
+body[data-role="display"] #question-media img,body[data-role="display"] #question-media video{display:block;max-height:min(20vh,190px);max-width:100%;min-height:0;object-fit:contain}
+body[data-role="display"] #question-media audio{height:36px}
+body[data-role="display"] #solution{padding:8px 12px;font-size:clamp(12px,1.8vh,19px);line-height:1.4;overflow-wrap:anywhere;flex-shrink:0}
+body[data-role="display"] #results{margin:0;min-height:0;display:grid;grid-template-rows:20px minmax(0,1fr) auto;gap:6px}
+body[data-role="display"] #results .panel-title{margin:0}
+body[data-role="display"] #results h2{font-size:12px}
+body[data-role="display"] #answer-cards{min-height:0;gap:10px}
+body[data-role="display"] .answer-card{min-width:0;min-height:0;padding:10px 14px;display:flex;flex-direction:column;gap:5px}
+body[data-role="display"] .answer-card b{font-size:11px;line-height:1.2}
+body[data-role="display"] .answer-card p{font-size:clamp(14px,2.5vh,26px);line-height:1.3;margin:0;overflow-wrap:anywhere}
+body[data-role="display"] .answer-card small{display:none}
+body[data-role="display"] #buzz-results{font-size:12px;line-height:1.3;margin:0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+body[data-role="display"] #buzz-results br{display:none}
+body[data-role="display"] #buzz-results:empty{display:none}
+body[data-role="display"] #local-backups{display:none}
+body[data-role="display"] #error{position:fixed;top:50px;right:20px;max-width:70%;margin:0}
+#fullscreen{font-size:11px;padding:6px 10px;white-space:nowrap}
+@media(max-height:650px){body[data-role="display"]{grid-template-rows:40px minmax(0,1fr)}body[data-role="display"] header{height:40px}body[data-role="display"] main{padding:6px 14px}body[data-role="display"] #game{grid-template-rows:24px 42px minmax(0,1fr) 120px;gap:6px}body[data-role="display"] #stage{padding:10px 14px;gap:12px}body[data-role="display"] #question-panel{gap:6px}body[data-role="display"] .answer-card{padding:6px 10px}body[data-role="display"] #question-media img,body[data-role="display"] #question-media video{max-height:17vh}}

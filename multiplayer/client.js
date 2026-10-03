@@ -16,7 +16,7 @@ function connect(){
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
 function media(q){if(!q?.media)return '';const src=esc(safeURL(q.media));return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
 function render(){
- const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;
+ const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';
  $('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round;
  $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card"><span>${esc(t.name)}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
@@ -37,7 +37,7 @@ function render(){
   if(!links){try{links=JSON.parse(sessionStorage.getItem(`olympia-links-${room}`));}catch{}}
   if(links&&!$('#links').children.length){$('#links').innerHTML=Object.entries(links).map(([r,t])=>`<label class="share-link">${roles[r]}<input readonly data-link="${r}" value="${esc(location.origin+'/#'+new URLSearchParams({room,token:t}))}"><button data-copy="${r}">Sao chép liên kết</button></label>`).join('');document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const input=document.querySelector(`[data-link="${b.dataset.copy}"]`);try{await navigator.clipboard.writeText(input.value);b.textContent='Đã sao chép';}catch{input.select();b.textContent='Nhấn Ctrl/Cmd+C để sao chép';}});}
  }
- updateClock();
+ updateClock();scheduleDisplayFit();
 }
 function renderPlayer(){
  const s=state,i=+s.role[1],a=s.answers[i],winner=s.buzzes[0]?.player,canAnswer=s.question?.type!=='buzz'||winner===i;
@@ -84,3 +84,27 @@ try{
 }catch{}
 
 function matchBackup(s){const {catalog,bankInfo,...backup}=s;return backup;}
+
+// Fit live text after fonts, content or the viewport changes, without truncating answers.
+let displayFitFrame;
+function scheduleDisplayFit(){
+ if(state?.role!=='display')return;
+ cancelAnimationFrame(displayFitFrame);
+ displayFitFrame=requestAnimationFrame(()=>{
+  const panel=$('#question-panel'),title=$('#question-title'),solution=$('#solution');
+  title.style.fontSize='';solution.style.fontSize='';
+  if(panel.clientHeight>0){
+   for(let step=0;step<32&&panel.scrollHeight>panel.clientHeight+1;step++){
+    for(const el of [title,solution]){const size=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.max(8,size-1)+'px';}
+   }
+  }
+  document.querySelectorAll('.answer-card').forEach(card=>{
+   const answer=card.querySelector('p');answer.style.fontSize='';
+   if(card.clientHeight>0){for(let step=0;step<40&&card.scrollHeight>card.clientHeight+1;step++){const size=parseFloat(getComputedStyle(answer).fontSize);answer.style.fontSize=Math.max(6,size-1)+'px';}}
+  });
+ });
+}
+window.addEventListener('resize',scheduleDisplayFit);
+document.fonts?.ready.then(scheduleDisplayFit);
+$('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{error('Trình duyệt không hỗ trợ toàn màn hình. Có thể dùng F11 hoặc nút toàn màn hình của trình duyệt.');}};
+document.addEventListener('fullscreenchange',()=>{$('#fullscreen').textContent=document.fullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';scheduleDisplayFit();});

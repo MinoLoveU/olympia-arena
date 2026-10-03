@@ -5,6 +5,24 @@ test('Five rendered clients: MC publishes, players type/choose, projection revea
  try{
  for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
  const [host,display,p0,p1,p2]=doms.map(d=>d.window.document);await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
+ // Projection follows window resizes even without the Fullscreen API.
+ const projection=doms[1].window;
+ for(const height of [900,360,768]){
+  Object.defineProperty(projection,'innerHeight',{configurable:true,value:height});
+  projection.dispatchEvent(new projection.Event('resize'));
+  await wait(()=>display.body.style.getPropertyValue('--screen-height')===height+'px');
+  assert.equal(display.body.style.getPropertyValue('--u'),height/100+'px');
+ }
+ assert.equal(host.body.style.getPropertyValue('--screen-height'),'');
+ let entered=0,exited=0;
+ display.documentElement.webkitRequestFullscreen=()=>{entered++;};
+ display.querySelector('#fullscreen').click();await wait(()=>entered===1);
+ Object.defineProperty(display,'webkitFullscreenElement',{configurable:true,value:display.documentElement});
+ display.webkitExitFullscreen=()=>{exited++;};
+ display.dispatchEvent(new projection.Event('webkitfullscreenchange'));
+ assert.match(display.querySelector('#fullscreen').textContent,/Thoát/);
+ display.querySelector('#fullscreen').click();await wait(()=>exited===1);
+ Object.defineProperty(display,'webkitFullscreenElement',{configurable:true,value:null});
  assert.equal(host.querySelector('#question-input'),null);assert.equal(host.querySelector('#bank-file'),null);host.querySelector('#round').value='Tăng tốc';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='speed-3';host.querySelector('#publish-question').click();await wait(()=>[display,p0,p1,p2].every(d=>d.querySelector('#question-title').textContent.includes('Có 3 hộp')));
  assert.equal(p0.querySelector('#answer-text').disabled,true);host.querySelector('#start').click();await wait(()=>!p0.querySelector('#answer-text').disabled);
  p1.querySelector('#answer-text').value='Đang soạn';p0.querySelector('#answer-text').value='Đáp án đội 1';p0.querySelector('#send-answer').click();await wait(()=>display.querySelector('#answer-cards').textContent.includes('Đã gửi đáp án'));assert.equal(p1.querySelector('#answer-text').value,'Đang soạn');assert.ok(!display.querySelector('#answer-cards').textContent.includes('Đáp án đội 1'));

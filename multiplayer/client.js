@@ -24,6 +24,7 @@ function render(){
  if(lastQuestion!==s.questionId||!s.question){$('#question-media').innerHTML=media(s.question);lastQuestion=s.questionId;}
  $('#solution').hidden=!s.showSolution||!s.question;$('#solution').textContent=`Đáp án: ${s.question?.solution||''}`;
  $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý"><span class="picture-label"></span>${[0,1,2,3,4].map(i=>`<span class="picture-cover cover-${i}" ${s.opened.includes(i)?'hidden':''}>${i===4?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===4?'Ô trung tâm':`Hàng ${s.selectedClue+1}`}</p></div>`:'';
+ $('#stage').classList.toggle('has-picture',s.round==='Vượt chướng ngại vật');
  $('#answer-status').textContent=s.showAnswers?'ĐÃ CÔNG BỐ':'CHỜ MC CÔNG BỐ';
  $('#answer-cards').innerHTML=s.teams.map((t,i)=>{const a=s.answers[i];return `<div class="answer-card"><b>${esc(t.name)}</b><p>${a?(a.text===null?'✓ Đã gửi đáp án':esc(a.text)):'Chưa gửi đáp án'}</p><small>${a?'Đã ghi nhận trên máy chủ':''}</small></div>`;}).join('');
  $('#buzz-results').innerHTML=s.buzzes.length?'<b>THỨ TỰ CHUÔNG</b><br>'+s.buzzes.map(b=>`${b.rank===1?'⚑':'·'} ${b.rank}. ${esc(s.teams[b.player].name)}${b.rank===1?' — Giành quyền trả lời':''}`).join('<br>'):'';
@@ -91,20 +92,41 @@ function scheduleDisplayFit(){
  if(state?.role!=='display')return;
  cancelAnimationFrame(displayFitFrame);
  displayFitFrame=requestAnimationFrame(()=>{
+  const height=window.visualViewport?.height||window.innerHeight;
+  document.body.style.setProperty('--screen-height',height+'px');
+  document.body.style.setProperty('--u',height/100+'px');
   const panel=$('#question-panel'),title=$('#question-title'),solution=$('#solution');
   title.style.fontSize='';solution.style.fontSize='';
   if(panel.clientHeight>0){
-   for(let step=0;step<32&&panel.scrollHeight>panel.clientHeight+1;step++){
-    for(const el of [title,solution]){const size=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.max(8,size-1)+'px';}
+   for(let step=0;step<100&&panel.scrollHeight>panel.clientHeight+1;step++){
+    for(const el of [title,solution]){const size=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.max(1,size-1)+'px';}
    }
   }
   document.querySelectorAll('.answer-card').forEach(card=>{
    const answer=card.querySelector('p');answer.style.fontSize='';
-   if(card.clientHeight>0){for(let step=0;step<40&&card.scrollHeight>card.clientHeight+1;step++){const size=parseFloat(getComputedStyle(answer).fontSize);answer.style.fontSize=Math.max(6,size-1)+'px';}}
+   if(card.clientHeight>0){for(let step=0;step<100&&card.scrollHeight>card.clientHeight+1;step++){const size=parseFloat(getComputedStyle(answer).fontSize);answer.style.fontSize=Math.max(1,size-1)+'px';}}
   });
  });
 }
 window.addEventListener('resize',scheduleDisplayFit);
+window.visualViewport?.addEventListener('resize',scheduleDisplayFit);
+$('#question-media').addEventListener('load',scheduleDisplayFit,true);
+$('#question-media').addEventListener('loadedmetadata',scheduleDisplayFit,true);
 document.fonts?.ready.then(scheduleDisplayFit);
-$('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{error('Trình duyệt không hỗ trợ toàn màn hình. Có thể dùng F11 hoặc nút toàn màn hình của trình duyệt.');}};
-document.addEventListener('fullscreenchange',()=>{$('#fullscreen').textContent=document.fullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';scheduleDisplayFit();});
+$('#fullscreen').onclick=async()=>{
+ try{
+  const root=document.documentElement;
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+   const exit=document.exitFullscreen||document.webkitExitFullscreen;
+   await exit.call(document);
+  }else{
+   const enter=root.requestFullscreen||root.webkitRequestFullscreen;
+   if(!enter)throw new Error('Unsupported fullscreen');
+   await enter.call(root);
+  }
+ }catch{error('Không thể bật toàn màn hình trên trình duyệt này. Bố cục vẫn tự vừa cửa sổ; có thể dùng chế độ toàn màn hình trong menu trình duyệt.');}
+ scheduleDisplayFit();
+};
+for(const event of ['fullscreenchange','webkitfullscreenchange'])document.addEventListener(event,()=>{
+ $('#fullscreen').textContent=document.fullscreenElement||document.webkitFullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';scheduleDisplayFit();
+});

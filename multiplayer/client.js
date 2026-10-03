@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const params=new URLSearchParams(location.hash.slice(1));let room=params.get('room'),secret=params.get('token'),socket,state,clockOffset=0,lastQuestion=null,lastResponseMode=null,bankItems=[],links,stopReconnect=false;
+const params=new URLSearchParams(location.hash.slice(1));let room=params.get('room'),secret=params.get('token'),socket,state,clockOffset=0,lastQuestion=null,lastResponseMode=null,links,stopReconnect=false;
 const roles={host:'BÀN ĐIỀU KHIỂN MC',display:'MÀN TRÌNH CHIẾU',p0:'NGƯỜI CHƠI 1',p1:'NGƯỜI CHƠI 2',p2:'NGƯỜI CHƠI 3'};
 function error(message){$('#error').textContent=message;$('#error').hidden=false;}
 function send(msg){if(socket?.readyState!==WebSocket.OPEN){error('Mất kết nối. Chờ kết nối lại trước khi thao tác.');return false;}$('#error').hidden=true;socket.send(JSON.stringify(msg));return true;}
@@ -29,7 +29,7 @@ function render(){
  $('#buzz-results').innerHTML=s.buzzes.length?'<b>THỨ TỰ CHUÔNG</b><br>'+s.buzzes.map(b=>`${b.rank===1?'⚑':'·'} ${b.rank}. ${esc(s.teams[b.player].name)}${b.rank===1?' — Giành quyền trả lời':''}`).join('<br>'):'';
  if(player)renderPlayer();
  if(host){
-  $('#game-log').textContent=s.log;$('#host-solution').textContent=s.question?`Đáp án riêng MC: ${s.question.solution||'(chưa nhập)'}`:'';try{localStorage.setItem(`olympia-live-backup-${room}`,JSON.stringify(s));}catch{}$('#start').disabled=s.phase!=='ready';$('#stop').disabled=s.phase!=='open';$('#waiting').disabled=s.phase==='open';$('#set-round').disabled=s.phase==='open';$('#publish-question').disabled=s.phase==='open';
+  $('#game-log').textContent=s.log;$('#host-solution').textContent=s.question?`Đáp án riêng MC: ${s.question.solution||'(chưa nhập)'}`:'';try{localStorage.setItem(`olympia-live-backup-${room}`,JSON.stringify(matchBackup(s)));}catch{}$('#start').disabled=s.phase!=='ready';$('#stop').disabled=s.phase!=='open';$('#waiting').disabled=s.phase==='open';$('#set-round').disabled=s.phase==='open';renderCatalog();
   $('#show-answers').disabled=s.phase==='open';$('#show-solution').disabled=s.phase==='open';$('#show-answers').textContent=s.showAnswers?'Ẩn đáp án các đội':'Công bố đáp án các đội';$('#show-solution').textContent=s.showSolution?'Ẩn đáp án chuẩn':'Hiện đáp án chuẩn';
   $('#open-tile').disabled=s.round!=='Vượt chướng ngại vật'||s.selectedClue===null;$('#close-tile').disabled=$('#open-tile').disabled;
   if(!$('#score-editor').children.length){$('#score-editor').innerHTML=s.teams.map((t,i)=>`<div class="score-edit"><input id="name-${i}" value="${esc(t.name)}" aria-label="Tên đội ${i+1}"><input id="score-${i}" type="number" value="${t.score}" aria-label="Điểm đội ${i+1}"><button data-save-score="${i}">Lưu</button></div>`).join('');document.querySelectorAll('[data-save-score]').forEach(b=>b.onclick=()=>{const i=+b.dataset.saveScore;send({type:'name',player:i,name:$(`#name-${i}`).value});send({type:'score',player:i,score:Number($(`#score-${i}`).value)});});}
@@ -47,24 +47,34 @@ function renderPlayer(){
   $('#buzz')?.addEventListener('click',()=>send({type:'buzz',questionId:state.questionId}));
   $('#send-answer')?.addEventListener('click',()=>{const text=$('#answer-text')?.value||document.querySelector('input[name="choice"]:checked')?.value||'';if(!text.trim()){error('Hãy điền hoặc chọn đáp án.');return;}send({type:'answer',questionId:state.questionId,text});});
  }
- const active=s.phase==='open'&&socket?.readyState===WebSocket.OPEN;
+ const eligible=!s.question?.players||s.question.players.includes(i);const active=eligible&&s.phase==='open'&&socket?.readyState===WebSocket.OPEN;
  $('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=!active);
  if($('#buzz')&&s.buzzes.some(b=>b.player===i)){$('#buzz').disabled=true;$('#buzz').textContent=`Đã ghi nhận chuông thứ ${s.buzzes.find(b=>b.player===i).rank}`;}
- $('#receipt').textContent=a?'Đáp án đã được lưu trên máy chủ.':!active?'Chờ MC bắt đầu hoặc câu hỏi đã kết thúc.':s.question?.type==='buzz'&&winner!==undefined?`Đội giành quyền: ${s.teams[winner].name}`:'Đang nhận đáp án. Chỉ đáp án gửi đầu tiên được ghi nhận.';
+ $('#receipt').textContent=!eligible?'Câu hỏi dành cho đội khác. Bạn theo dõi trên màn hình.':a?'Đáp án đã được lưu trên máy chủ.':!active?'Chờ MC bắt đầu hoặc câu hỏi đã kết thúc.':s.question?.type==='buzz'&&winner!==undefined?`Đội giành quyền: ${s.teams[winner].name}`:'Đang nhận đáp án. Chỉ đáp án gửi đầu tiên được ghi nhận.';
 }
 function updateClock(){if(!state)return;const left=state.phase==='open'?Math.max(0,Math.ceil((state.deadline-Date.now()-clockOffset)/1000)):state.phase==='ready'?state.duration:0;$('#clock-text').textContent=state.question?`${String(left).padStart(2,'0')} GIÂY`:'—';if(state.phase==='open'&&left===0)$('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=true);}
 setInterval(updateClock,100);setInterval(()=>{if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'sync'}));},5000);
-$('#start').onclick=()=>send({type:'start'});$('#stop').onclick=()=>send({type:'close'});$('#waiting').onclick=()=>send({type:'waiting'});$('#set-round').onclick=()=>send({type:'round',round:$('#round').value});$('#show-answers').onclick=()=>send({type:'revealAnswers',show:!state.showAnswers});$('#show-solution').onclick=()=>send({type:'revealSolution',show:!state.showSolution});$('#open-tile').onclick=()=>send({type:'tile',open:true});$('#close-tile').onclick=()=>send({type:'tile',open:false});$('#set-image').onclick=()=>send({type:'image',url:$('#obstacle-image').value});
-function draft(){return {text:$('#question-input').value,solution:$('#solution-input').value,type:$('#type').value,choices:$('#choices').value.split('\n').filter(Boolean),media:$('#media-url').value,mediaType:$('#media-type').value};}
-$('#publish-question').onclick=()=>send({type:'question',question:draft(),round:$('#round').value,clue:Number($('#clue').value),duration:Number($('#duration').value)});
-$('#round').onchange=()=>{$('#clue-label').hidden=$('#round').value!=='Vượt chướng ngại vật';};$('#round').onchange();
-$('#bank-file').onchange=async e=>{try{const bank=JSON.parse(await e.target.files[0].text());bankItems=[];for(const [key,round] of [['warm','Khởi động'],['speed','Tăng tốc'],['finish','Về đích'],['tie','Câu hỏi phụ']])for(const q of bank[key]||[])bankItems.push({...q,round});if(bank.obstacle){for(const [i,q]of [...(bank.obstacle.clues||[]),bank.obstacle.center].entries())if(q)bankItems.push({...q,round:'Vượt chướng ngại vật',clue:i});if(bank.obstacle.image)$('#obstacle-image').value=bank.obstacle.image.startsWith('assets/')?'/'+bank.obstacle.image:bank.obstacle.image;}if(!bankItems.length)throw Error('Không tìm thấy câu hỏi trong tệp.');$('#bank-question').innerHTML=bankItems.map((q,i)=>`<option value="${i}">${esc(q.round)} · ${esc(q.text?.slice(0,70))}</option>`).join('');}catch(e){error(e.message);}};
-$('#load-question').onclick=()=>{const q=bankItems[+$('#bank-question').value];if(!q)return;$('#round').value=q.round;$('#round').onchange();$('#clue').value=q.clue??0;$('#question-input').value=q.text||'';$('#solution-input').value=q.answer||q.solution||'';$('#type').value=['text','choice','buzz'].includes(q.type)?q.type:'text';$('#choices').value=(q.choices||[]).join('\n');$('#media-url').value=q.media||'';$('#media-type').value=q.mediaType||'image';};
-$('#download-question').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(draft(),null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='olympia-question.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('#start').onclick=()=>send({type:'start'});$('#stop').onclick=()=>send({type:'close'});$('#waiting').onclick=()=>send({type:'waiting'});$('#set-round').onclick=()=>send({type:'round',round:$('#round').value});$('#show-answers').onclick=()=>send({type:'revealAnswers',show:!state.showAnswers});$('#show-solution').onclick=()=>send({type:'revealSolution',show:!state.showSolution});$('#open-tile').onclick=()=>send({type:'tile',open:true});$('#close-tile').onclick=()=>send({type:'tile',open:false});
+function renderCatalog(){
+ const catalog=state.catalog||[],used=state.usedQuestions||[],round=$('#round').value;
+ $('#bank-title').textContent=state.bankInfo?.title||'Bộ đề có sẵn';$('#bank-description').textContent=state.bankInfo?.description||'';
+ const items=catalog.filter(q=>q.round===round),previous=$('#preset-question').value;
+ $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${used.includes(q.id)?'disabled':''}>${used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
+ $('#preset-question').value=items.some(q=>q.id===previous&&!used.includes(q.id))?previous:(items.find(q=>!used.includes(q.id))?.id||'');
+ previewPreset();
+}
+function previewPreset(){
+ const q=state?.catalog?.find(q=>q.id===$('#preset-question').value);
+ $('#preset-preview').innerHTML=q?`<b>${esc(q.label)}</b><p>${esc(q.text)}</p><p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:'<p>Đã chơi hết các câu trong vòng này.</p>';
+ $('#publish-question').disabled=!q||state.phase==='open';
+}
+$('#preset-question').onchange=previewPreset;
+$('#round').onchange=()=>{if(state)renderCatalog();};
+$('#publish-question').onclick=()=>send({type:'preset',id:$('#preset-question').value});
 if(room&&secret)connect();
 
 function downloadJSON(data,name){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-$('#download-match').onclick=()=>downloadJSON(state,`olympia-${room}-backup.json`);
+$('#download-match').onclick=()=>downloadJSON(matchBackup(state),`olympia-${room}-backup.json`);
 $('#restore-match').onchange=async e=>{try{send({type:'restore',backup:JSON.parse(await e.target.files[0].text())});}catch(e){error(e.message);}};
 
 try{
@@ -72,3 +82,5 @@ try{
  $('#backup-list').innerHTML=backups.length?backups.map((key,i)=>`<button data-backup="${i}">Tải bản sao phòng ${esc(key.slice('olympia-live-backup-'.length))}</button>`).join(''):'<p>Chưa có bản sao trên thiết bị này.</p>';
  document.querySelectorAll('[data-backup]').forEach(b=>b.onclick=()=>{const key=backups[+b.dataset.backup];downloadJSON(JSON.parse(localStorage.getItem(key)),key+'.json');});
 }catch{}
+
+function matchBackup(s){const {catalog,bankInfo,...backup}=s;return backup;}

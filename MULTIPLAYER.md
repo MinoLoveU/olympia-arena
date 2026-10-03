@@ -18,13 +18,14 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Mở URL Render → **Tạo phòng thi mới**. Máy này nhận vai trò MC.
 - Trong **Liên kết cho 5 thiết bị**, sao chép link trình chiếu và ba link người chơi. Mỗi link mang quyền riêng; giữ kín link MC. MC cũng có thể mở link của mình trên máy khác, các link vai trò được máy chủ gửi lại cho MC.
 - Chọn vòng và bấm **Đưa vòng lên màn chiếu**. Với Chướng ngại vật, lúc này chỉ có ảnh che, chưa có câu hỏi.
-- Soạn câu, chọn Điền / Trắc nghiệm / Chuông. Với Chướng ngại vật, chọn hàng đội yêu cầu. **Mở câu hỏi** đưa câu lên cả năm máy; **Bắt đầu nhận đáp án** mở form và đồng hồ chung sau khi đọc xong.
+- **Bộ đề 01 có sẵn 52 mục chơi**, không có form nhập câu hỏi, nhập JSON bộ đề hay URL media. Chọn vòng và câu trong danh sách; xem trước chỉ MC thấy. **Mở câu đã chọn** đưa câu lên năm máy, **Bắt đầu nhận đáp án** chạy đồng hồ. Câu đã mở được đánh dấu và khóa để tránh lặp. Khởi động riêng/Về đích chỉ đội được chỉ định gửi đáp án.
 - Chỉ đáp án đầu tiên của mỗi đội được nhận; hết giờ hoặc MC khóa thì máy chủ từ chối gửi thêm. Form hiện ngay khi mở câu, nhưng chưa được nhập/gửi trước hiệu lệnh.
 - Chuông: máy chủ gán thứ tự xử lý, luôn có duy nhất một đội đầu tiên. Cả ba đội đều thấy thứ tự; chỉ đội đầu được gửi đáp án. Không dùng thời gian do người chơi gửi. Độ trễ mạng vẫn ảnh hưởng khi bấm sát nhau.
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
 - MC nhập điểm ở **Điểm do MC quyết định** và bấm Lưu. Không có tự cộng, trừ, thưởng sao hay chuyển điểm.
 - **Mở ô ảnh tương ứng** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ chọn câu tiếp theo** giữ các mảnh ảnh đã mở và ẩn câu cũ.
-- Bộ câu hỏi JSON từ bản cũ có thể nhập, nạp từng câu vào bản nháp rồi mở. Nội dung bản nháp không gửi cho người chơi. Video/audio do từng thiết bị bấm phát, chưa đồng bộ vị trí phát media.
+- Bộ đề kiến thức phổ thông tự biên soạn: 18 câu Khởi động riêng (6/đội), 12 chung, 4 hàng ngang + 1 ô trung tâm + 1 mục đoán CNV, 4 Tăng tốc, 9 Về đích (3/đội, gói 20–20–30), 3 câu phụ. Đủ câu hỏi, đáp án, lựa chọn, thời gian, hình và video 6 giây tự tạo. Câu chung cho 3 giây giành chuông rồi 3 giây trả lời từ chuông đầu tiên. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
+- Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
 
 ## Mất mạng và sao lưu
 

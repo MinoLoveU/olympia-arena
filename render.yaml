@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: olympia-arena-live
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: 'off'

@@ -14,6 +14,7 @@ Website tĩnh, không cần backend hay cài dependency để sử dụng. `npm 
 ## Tổ chức thi
 
 - Bốn đội dùng chung máy MC, các phím 1–4 là chuông. Space bắt đầu đồng hồ sau khi MC đọc xong.
+- Vượt chướng ngại vật: vào vòng chỉ hiện bảng hình che và các hàng để chọn. Hỏi đội muốn chọn hàng nào rồi bấm hàng đó để hiện câu hỏi; đồng hồ chỉ chạy khi MC bấm Bắt đầu. Sau khi chấm, bấm Cho đội chọn câu khác để quay lại màn chờ, không tự hiện câu kế tiếp. Hàng đã chọn không chơi lại; ô trung tâm mở để chọn sau bốn hàng.
 - MC chấm đúng/sai. Tăng tốc: nhấn phím đội lúc nhận đáp án, sau khi hết giờ bỏ chọn đáp án sai và chấm theo thứ tự nộp đúng.
 - Thiết lập: tên đội, chỉnh điểm, sửa/nhập/xuất JSON bộ câu hỏi, sao lưu/khôi phục trận.
 - Dữ liệu lưu localStorage của trình duyệt; không có đồng bộ giữa các máy.

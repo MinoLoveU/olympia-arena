@@ -1,6 +1,6 @@
 # Olympia trực tuyến — 5 thiết bị
 
-Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Không tự tính điểm.
+Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động tự tính điểm khi MC chấm; các vòng khác vẫn nhập điểm thủ công.
 
 ## Triển khai Render
 
@@ -22,7 +22,9 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Chỉ đáp án đầu tiên của mỗi đội được nhận; hết giờ hoặc MC khóa thì máy chủ từ chối gửi thêm. Form hiện ngay khi mở câu, nhưng chưa được nhập/gửi trước hiệu lệnh.
 - Chuông: máy chủ gán thứ tự xử lý, luôn có duy nhất một đội đầu tiên. Cả ba đội đều thấy thứ tự; ở Khởi động chung đội đầu trả lời miệng, các vòng khác chỉ đội đầu được gửi đáp án. Không dùng thời gian do người chơi gửi. Độ trễ mạng vẫn ảnh hưởng khi bấm sát nhau.
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
-- MC nhập điểm ở **Điểm các đội** và bấm Lưu. Không có tự cộng, trừ, thưởng sao hay chuyển điểm.
+- Trong **Chấm và sửa điểm**, sau khi hết giờ hoặc bấm **Khóa trả lời**, MC chọn **Đúng / Sai / Không trả lời** cho đội có quyền trả lời. Khởi động riêng: đúng +10, sai/không trả lời 0. Khởi động chung: đúng +10, sai/không trả lời −5, chỉ chấm đội giành chuông đầu tiên. MC xác nhận không trả lời miệng bằng nút **Không trả lời**; hết giờ không tự suy đoán kết quả. Không ai bấm chuông thì không trừ đội nào.
+- Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
+- Các vòng còn lại có nút chấm để ghi nhận, chưa tự cộng/trừ điểm hoặc mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
 - Bộ đề kiến thức phổ thông tự biên soạn: 60 câu Khởi động: 45 câu riêng (15/đội) + 15 câu chung, 4 hàng ngang + 1 ô trung tâm + 1 mục đoán CNV, 4 Tăng tốc, 9 Về đích (3/đội, gói 20–20–30), 3 câu phụ. Đủ câu hỏi, đáp án, lựa chọn, thời gian, hình và video 6 giây tự tạo. Câu chung cho 3 giây giành chuông rồi 3 giây trả lời từ chuông đầu tiên. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.

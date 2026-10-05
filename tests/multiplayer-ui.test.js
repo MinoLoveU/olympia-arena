@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import {WebSocket} from 'ws';import {once} from 'node:events';import {createGameServer} from '../server.js';
 const wait=async(fn)=>{const end=Date.now()+3500;while(Date.now()<end){if(fn())return;await new Promise(r=>setTimeout(r,15));}throw Error('UI sync timeout');};
-test('Five rendered clients: MC publishes, players type/choose, projection reveals, score stays manual',async()=>{
+test('Five clients: oral judging adjusts warm-up scores; later rounds keep manual scoring',async()=>{
  const {server,wss}=createGameServer();server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST'})).json();const doms=[],sockets=[];
  try{
  for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
@@ -30,6 +30,11 @@ test('Five rendered clients: MC publishes, players type/choose, projection revea
  for(const d of [p0,p1,p2])assert.equal(d.querySelector('#response input,#response textarea,#response button'),null);
  host.querySelector('#start').click();await wait(()=>!host.querySelector('#stop').disabled);
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#publish-question').disabled);
+ host.querySelector('[data-judge="correct"][data-player="0"]').click();
+ await wait(()=>[host,display,p0,p1,p2].every(d=>d.querySelector('#scoreboard strong').textContent==='10'));
+ assert.match(display.querySelector('#answer-cards').textContent,/✓ Đúng/);
+ host.querySelector('[data-judge="wrong"][data-player="0"]').click();await wait(()=>display.querySelector('#scoreboard strong').textContent==='0');
+ host.querySelector('[data-judge="clear"][data-player="0"]').click();await wait(()=>!display.querySelector('.judgement-badge'));
  host.querySelector('#preset-question').value='common-1';host.querySelector('#publish-question').click();
  await wait(()=>[p0,p1,p2].every(d=>d.querySelector('#buzz')?.disabled));
  host.querySelector('#start').click();await wait(()=>!p1.querySelector('#buzz').disabled);
@@ -41,6 +46,10 @@ test('Five rendered clients: MC publishes, players type/choose, projection revea
  assert.equal(host.querySelector('#show-answers').hidden,true);
  assert.equal(host.querySelector('#scoreboard strong').textContent,'0');
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#publish-question').disabled);
+ assert.equal(host.querySelector('[data-judge="correct"][data-player="0"]').disabled,true);
+ host.querySelector('[data-judge="no-answer"][data-player="1"]').click();await wait(()=>display.querySelectorAll('#scoreboard strong')[1].textContent==='-5');
+ host.querySelector('[data-judge="correct"][data-player="1"]').click();await wait(()=>p2.querySelectorAll('#scoreboard strong')[1].textContent==='10');
+ host.querySelector('[data-judge="clear"][data-player="1"]').click();await wait(()=>display.querySelectorAll('#scoreboard strong')[1].textContent==='0');
  host.querySelector('#preset-question').value='common-2';host.querySelector('#publish-question').click();
  await wait(()=>p1.querySelector('#buzz').textContent==='BẤM CHUÔNG');
  assert.equal(p1.querySelector('#buzz').disabled,true);

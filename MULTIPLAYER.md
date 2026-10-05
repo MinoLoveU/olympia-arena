@@ -1,6 +1,6 @@
 # Olympia trực tuyến — 5 thiết bị
 
-Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện hồng pastel, chữ mận đậm và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Không tự tính điểm.
+Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện Starlight xanh tím sáng hơn bản gốc, điểm nhấn lavender/cyan pastel và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Không tự tính điểm.
 
 ## Triển khai Render
 

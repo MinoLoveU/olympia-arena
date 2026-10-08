@@ -29,12 +29,12 @@ window.OlympiaSounds=class {
  play(kind){
   if(!this.enabled||this.context?.state!=='running')return;
   // Frequency, onset, decay, waveform, peak gain, optional falling pitch.
-  // Bright rising success notes contrast with low, rough, repeated error pulses.
+  // Bright rising success notes contrast with a single soft, low error impact.
   const sequences={
    enable:[[660,0,.1],[880,.12,.16]],
    buzz:[[740,0,.22,'square',.38],[1480,0,.12,'sine',.5],[988,.12,.35,'triangle',.85],[1976,.12,.2,'sine',.4]],
    correct:[[523,0,.15,'triangle',.8],[659,.1,.15,'triangle',.8],[784,.2,.18,'triangle',.8],[1047,.3,.4,'triangle',.7],[1319,.3,.32,'sine',.4],[1568,.3,.3,'sine',.35]],
-   wrong:[[140,0,.13,'sawtooth',.75],[167,0,.13,'square',.25],[140,.23,.26,'sawtooth',.8],[167,.23,.26,'square',.25]],
+   wrong:[[220,0,.28,'sine',.9,90],[330,0,.45,'sine',.35,180],[440,0,.12,'sine',.12]],
    tick:[[650,0,.045,'sine',.25]],urgent:[[1000,0,.07]],end:[[440,0,.18],[330,.2,.35]]
   };
   if(['buzz','correct','wrong','end'].includes(kind))this.quietUntil=Date.now()+750;
@@ -43,7 +43,7 @@ window.OlympiaSounds=class {
    const oscillator=this.context.createOscillator(),gain=this.context.createGain(),start=now+delay;
    oscillator.type=wave;oscillator.frequency.setValueAtTime(frequency,start);
    if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,start+duration);
-   gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(peak,start+.004);gain.gain.exponentialRampToValueAtTime(.001,start+duration);
+   gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(peak,start+(kind==='wrong'?.012:.004));gain.gain.exponentialRampToValueAtTime(.001,start+duration);
    oscillator.connect(gain);gain.connect(this.master);oscillator.start(start);oscillator.stop(start+duration+.02);
    oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
   }

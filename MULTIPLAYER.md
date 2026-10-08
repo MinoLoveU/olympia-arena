@@ -42,7 +42,7 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 
 ## Âm thanh và đội giành quyền
 
-Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ giai điệu khi MC chấm đúng và hai nhịp rè trầm, cùng cao độ khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai dùng dải trầm 140/167 Hz và dạng sóng khác để phân biệt. Mức khuếch đại chung tăng từ 0,22 lên 0,30. Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
+Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ giai điệu khi MC chấm đúng và một tiếng thụp trầm có đuôi ngân ngắn khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai là một tiếng đơn dùng sóng sin mềm, hạ cao độ về 90/180 Hz, không còn tiếng rè hoặc nhịp lặp. Mức khuếch đại chung tăng từ 0,22 lên 0,30. Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
 
 Khởi động chung: thẻ điểm đội bấm đầu tiên đổi nền/viền vàng, hiện nhãn **GIÀNH QUYỀN** ở cả năm vai trò; giữ đến khi đổi câu hoặc về màn chờ.
 

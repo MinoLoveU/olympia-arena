@@ -141,7 +141,7 @@ function matchBackup(s){const {catalog,bankInfo,obstacleSets,...backup}=s;return
 // Fit live text after fonts, content or the viewport changes, without truncating answers.
 let displayFitFrame;
 function scheduleDisplayFit(){
- if(state?.role!=='display')return;
+ if(state?.role!=='display'&&!/^p[0-2]$/.test(state?.role))return;
  cancelAnimationFrame(displayFitFrame);
  displayFitFrame=requestAnimationFrame(()=>{
   const height=window.visualViewport?.height||window.innerHeight;
@@ -153,6 +153,14 @@ function scheduleDisplayFit(){
    for(let step=0;step<100&&panel.scrollHeight>panel.clientHeight+1;step++){
     for(const el of [title,solution]){const size=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.max(1,size-1)+'px';}
    }
+  }
+  if(/^p[0-2]$/.test(state?.role)&&window.innerWidth>=761){
+   document.querySelectorAll('.choices label').forEach(label=>{
+    label.style.fontSize='';
+    for(let step=0;step<100&&label.clientHeight>0&&label.scrollHeight>label.clientHeight+1;step++){
+     const size=parseFloat(getComputedStyle(label).fontSize);label.style.fontSize=Math.max(1,size-1)+'px';
+    }
+   });
   }
   document.querySelectorAll('.answer-card').forEach(card=>{
    const answer=card.querySelector('p');answer.style.fontSize='';

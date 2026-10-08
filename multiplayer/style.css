@@ -166,3 +166,57 @@ body[data-role="host"] .judge-controls button{font-size:11px;padding:5px 7px}
 #access-form{display:grid;gap:12px}
 #access-password{width:100%;font-size:20px}
 #access-message{min-height:2em}
+
+/* Players use the full laptop window: question and response side by side. */
+@media(min-width:761px){
+ body[data-role^="p"]{--screen-height:100vh;--u:1vh;position:fixed;inset:0;height:var(--screen-height);overflow:hidden;display:grid;grid-template-rows:minmax(0,5fr) minmax(0,95fr)}
+ body[data-role^="p"] header{height:auto;min-height:0;padding:0 1.2vw;gap:1vw;flex-wrap:nowrap}
+ body[data-role^="p"] .brand small{display:none}
+ body[data-role^="p"] .brand b{font-size:calc(2.4 * var(--u))}
+ body[data-role^="p"] #role-name,body[data-role^="p"] #connection{font-size:calc(1.7 * var(--u))}
+ body[data-role^="p"] main{width:100%;max-width:none;min-height:0;min-width:0;margin:0;padding:calc(.8 * var(--u)) 1.2vw;display:flex}
+ body[data-role^="p"] #game{width:100%;min-width:0;min-height:0;display:grid;grid-template-columns:minmax(0,62fr) minmax(0,38fr);grid-template-rows:minmax(0,7fr) minmax(0,10fr) minmax(0,63fr) minmax(0,20fr);grid-template-areas:"heading heading" "scores scores" "stage response" "results results";gap:calc(.8 * var(--u))}
+ body[data-role^="p"] .live-heading{grid-area:heading;margin:0;min-width:0;min-height:0;padding:calc(.4 * var(--u)) 1vw;font-size:calc(1.6 * var(--u));gap:1vw}
+ body[data-role^="p"] #round-name{font-size:min(2.8 * var(--u),2.6vw)}
+ body[data-role^="p"] #clock-text{font-size:calc(3 * var(--u));white-space:nowrap}
+ body[data-role^="p"] #scoreboard{grid-area:scores;min-height:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:1vw}
+ body[data-role^="p"] .score-card{min-width:0;min-height:0;padding:calc(.6 * var(--u)) 1vw;font-size:calc(2 * var(--u))}
+ body[data-role^="p"] .score-card strong{font-size:calc(3.4 * var(--u))}
+ body[data-role^="p"] .score-card small{display:none}
+ body[data-role^="p"] #stage{grid-area:stage;margin:0;padding:calc(1.5 * var(--u)) 1.5vw;min-height:0;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:1vw}
+ body[data-role^="p"] #stage.has-picture{grid-template-columns:minmax(0,42%) minmax(0,1fr)}
+ body[data-role^="p"] #picture:empty{display:none}
+ body[data-role^="p"] #picture{min-width:0;min-height:0;display:grid;place-items:center}
+ body[data-role^="p"] .obstacle-picture{margin:0;width:min(100%,43 * var(--u));max-width:none}
+ body[data-role^="p"] .picture-cover{font-size:calc(3.5 * var(--u))}
+ body[data-role^="p"] .picture-label{margin:calc(.5 * var(--u)) 0 0;font-size:calc(1.5 * var(--u));line-height:1.2}
+ body[data-role^="p"] #question-panel{min-height:0;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(1 * var(--u))}
+ body[data-role^="p"] #phase-label{font-size:calc(1.4 * var(--u));line-height:1.3;flex-shrink:0}
+ body[data-role^="p"] #question-title{font-size:min(4.3 * var(--u),3.4vw);line-height:1.3;margin:0;overflow-wrap:anywhere;flex-shrink:0}
+ body[data-role^="p"] #question-media:empty{display:none}
+ body[data-role^="p"] #question-media{min-height:0;flex:0 1 auto;display:flex;justify-content:center}
+ body[data-role^="p"] #question-media img,body[data-role^="p"] #question-media video{max-width:100%;max-height:calc(26 * var(--u));min-height:0;object-fit:contain}
+ body[data-role^="p"] #question-media audio{width:100%;height:calc(5 * var(--u))}
+ body[data-role^="p"] #solution{padding:calc(.8 * var(--u));font-size:calc(2.2 * var(--u));line-height:1.3;overflow-wrap:anywhere;flex-shrink:0}
+ body[data-role^="p"] #player-panel{grid-area:response;min-width:0;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:calc(.8 * var(--u))}
+ body[data-role^="p"] #response{margin:0;padding:calc(1.5 * var(--u)) 1.2vw;min-height:0;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(1.2 * var(--u))}
+ body[data-role^="p"] #response p{margin:0;font-size:calc(2.5 * var(--u));line-height:1.4;overflow-wrap:anywhere}
+ body[data-role^="p"] #response textarea{min-height:0;flex:1;resize:none;font-size:calc(2.5 * var(--u));padding:calc(1 * var(--u));line-height:1.4}
+ body[data-role^="p"] #response button{min-height:0;padding:calc(1.2 * var(--u)) 1vw;font-size:calc(2.1 * var(--u));white-space:normal}
+ body[data-role^="p"] #send-answer{margin:0;flex-shrink:0}
+ body[data-role^="p"] #response .buzz-button{flex:1;font-size:calc(4 * var(--u))}
+ body[data-role^="p"] .choices{min-height:0;flex:1;gap:calc(1 * var(--u));grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr)}
+ body[data-role^="p"] .choices label{min-width:0;min-height:0;padding:calc(1 * var(--u));font-size:calc(2.4 * var(--u));line-height:1.3;overflow-wrap:anywhere;align-content:center}
+ body[data-role^="p"] #receipt{margin:0;padding:calc(.8 * var(--u));font-size:calc(1.7 * var(--u));line-height:1.3;overflow-wrap:anywhere}
+ body[data-role^="p"] #results{grid-area:results;min-width:0;min-height:0;margin:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:calc(.4 * var(--u))}
+ body[data-role^="p"] #results .panel-title{margin:0;min-height:0}
+ body[data-role^="p"] #results h2,body[data-role^="p"] #answer-status{margin:0;font-size:calc(1.5 * var(--u))}
+ body[data-role^="p"] #answer-cards{min-height:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:1vw}
+ body[data-role^="p"] .answer-card{min-width:0;min-height:0;padding:calc(.6 * var(--u)) 1vw;display:flex;flex-direction:column;gap:calc(.3 * var(--u))}
+ body[data-role^="p"] .answer-card b{font-size:calc(1.5 * var(--u));line-height:1.2}
+ body[data-role^="p"] .answer-card p{font-size:calc(2.2 * var(--u));margin:0;line-height:1.25;overflow-wrap:anywhere}
+ body[data-role^="p"] .answer-card small{display:none}
+ body[data-role^="p"] #buzz-results{margin:0;font-size:calc(1.5 * var(--u));line-height:1.2;display:flex;justify-content:space-between;gap:1vw}
+ body[data-role^="p"] #buzz-results br,body[data-role^="p"] #buzz-results:empty{display:none}
+ body[data-role^="p"] #error{position:fixed;top:calc(5 * var(--u));right:1.2vw;max-width:65%;margin:0;z-index:10}
+}

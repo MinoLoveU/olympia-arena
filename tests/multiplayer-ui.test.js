@@ -23,6 +23,12 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
   await wait(()=>display.body.style.getPropertyValue('--screen-height')===height+'px');
   assert.equal(display.body.style.getPropertyValue('--u'),height/100+'px');
  }
+ for(const dom of doms.slice(2))for(const height of [900,500,768]){
+  Object.defineProperty(dom.window,'innerHeight',{configurable:true,value:height});
+  dom.window.dispatchEvent(new dom.window.Event('resize'));
+  await wait(()=>dom.window.document.body.style.getPropertyValue('--screen-height')===height+'px');
+  assert.equal(dom.window.document.body.style.getPropertyValue('--u'),height/100+'px');
+ }
  assert.equal(host.body.style.getPropertyValue('--screen-height'),'');
  let entered=0,exited=0;
  display.documentElement.webkitRequestFullscreen=()=>{entered++;};

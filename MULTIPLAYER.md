@@ -40,6 +40,10 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 - Sau khi máy chủ mất phòng: tạo phòng mới, nhập bản sao để khôi phục tên, điểm, ô hình và hàng đã chọn. Bắt đầu ở trạng thái chờ câu mới; đáp án/chuông cũ chỉ để đối chiếu trong tệp, không tự diễn lại. Gửi lại năm link của phòng mới.
 - Không gửi dữ liệu nhạy cảm vào câu hỏi/đáp án. Các link vai trò là quyền truy cập; không đăng công khai link MC.
 
+## Màn người chơi trên máy tính
+
+Cả ba vai trò người chơi dùng toàn bộ cửa sổ từ 761px ngang: câu hỏi bên trái, nhập/chọn đáp án hoặc chuông bên phải, bảng điểm ở trên và kết quả ở dưới. Chiều cao bám visualViewport/innerHeight, tự cập nhật khi resize; chữ câu hỏi/đáp án dài tự thu để vừa khung. Màn nhỏ hơn vẫn dùng bố cục dọc.
+
 ## Kiểm thử
 
 Máy chủ cần `OLYMPIA_ACCESS_HASH` chứa verifier scrypt do `hashPassword` trong `multiplayer/access.js` tạo. Không đưa mật khẩu hoặc verifier vào Git. Thiếu cấu hình thì tạo phòng và truy cập MC bị từ chối. Render hiện cấu hình biến này qua lệnh khởi động riêng của service; giữ cấu hình đó khi cập nhật triển khai. Giới hạn 10 lần nhập sai/phút theo phòng/vai trò; tạo phòng giới hạn theo địa chỉ kết nối máy chủ.

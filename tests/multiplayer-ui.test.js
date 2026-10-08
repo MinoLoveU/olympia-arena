@@ -1,10 +1,19 @@
+import {hashPassword} from '../multiplayer/access.js';
 import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import {WebSocket} from 'ws';import {once} from 'node:events';import {createGameServer} from '../server.js';
 const wait=async(fn)=>{const end=Date.now()+3500;while(Date.now()<end){if(fn())return;await new Promise(r=>setTimeout(r,15));}throw Error('UI sync timeout');};
 test('Five clients: oral judging adjusts warm-up scores; later rounds keep manual scoring',async()=>{
- const {server,wss}=createGameServer();server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST'})).json();const doms=[],sockets=[];
+ const {server,wss}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json();const doms=[],sockets=[];
  try{
  for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
- const [host,display,p0,p1,p2]=doms.map(d=>d.window.document);await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
+ const [host,display,p0,p1,p2]=doms.map(d=>d.window.document);
+ for(const dom of doms.slice(0,2)){
+  const d=dom.window.document;await wait(()=>!d.querySelector('#access-gate').hidden);
+  assert.equal(d.querySelector('#game').hidden,true);
+  assert.equal(d.querySelector('#scoreboard').children.length,0);
+  d.querySelector('#access-password').value='test-only-password';
+  d.querySelector('#access-form').dispatchEvent(new dom.window.Event('submit',{cancelable:true}));
+ }
+ await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
  // Projection follows window resizes even without the Fullscreen API.
  const projection=doms[1].window;
  for(const height of [900,360,768]){

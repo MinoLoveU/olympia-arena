@@ -3,13 +3,37 @@ const params=new URLSearchParams(location.hash.slice(1));let room=params.get('ro
 const roles={host:'BÀN ĐIỀU KHIỂN MC',display:'MÀN TRÌNH CHIẾU',p0:'NGƯỜI CHƠI 1',p1:'NGƯỜI CHƠI 2',p2:'NGƯỜI CHƠI 3'};
 function error(message){$('#error').textContent=message;$('#error').hidden=false;}
 function send(msg){if(socket?.readyState!==WebSocket.OPEN){error('Mất kết nối. Chờ kết nối lại trước khi thao tác.');return false;}$('#error').hidden=true;socket.send(JSON.stringify(msg));return true;}
-$('#create').onclick=async()=>{try{$('#create').disabled=true;const response=await fetch('/api/rooms',{method:'POST'}),data=await response.json();if(!response.ok)throw Error(data.error||'Không tạo được phòng.');room=data.id;secret=data.tokens.host;links=data.tokens;sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));location.hash=new URLSearchParams({room,token:secret}).toString();connect();}catch(e){error(e.message);$('#create').disabled=false;}};
+let accessPassword,accessAction='join';
+function showAccess(message,action='join'){
+ accessPassword=undefined;accessAction=action;
+ $('#game').hidden=true;$('#lobby').hidden=true;$('#local-backups').hidden=true;
+ $('#access-gate').hidden=false;$('#access-message').textContent=message;
+ $('#access-password').value='';$('#access-password').focus();
+ $('#connection').textContent='Đang khóa';
+}
+async function createMatch(){
+ try{
+  $('#create').disabled=true;
+  const response=await fetch('/api/rooms',{method:'POST',headers:{'X-Olympia-Password':accessPassword}}),data=await response.json();
+  if(!response.ok){showAccess(data.error||'Không tạo được phòng.','create');return;}
+  room=data.id;secret=data.tokens.host;links=data.tokens;
+  sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));
+  location.hash=new URLSearchParams({room,token:secret}).toString();connect();
+ }catch(e){error(e.message);}finally{$('#create').disabled=false;}
+}
+$('#create').onclick=()=>showAccess('Nhập mật khẩu để tạo phòng và mở bàn MC.','create');
+$('#access-form').onsubmit=event=>{
+ event.preventDefault();accessPassword=$('#access-password').value;$('#access-password').value='';
+ if(accessAction==='create'){createMatch();return;}
+ if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'join',room,token:secret,password:accessPassword}));
+ else connect();
+};
 function connect(){
  stopReconnect=false;
  $('#lobby').hidden=true;$('#connection').textContent='Đang kết nối…';$('#connection').className='';
  socket=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}`);
- socket.onopen=()=>socket.send(JSON.stringify({type:'join',room,token:secret}));
- socket.onmessage=e=>{const msg=JSON.parse(e.data);if(msg.type==='links'){links=msg.tokens;sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));return;}if(msg.type==='error'){error(msg.message);if(msg.fatal){stopReconnect=true;$('#lobby').hidden=false;}return;}if(msg.type==='state'){state=msg.state;clockOffset=state.serverNow-Date.now();$('#connection').textContent='● Đã đồng bộ';$('#connection').className='online';render();}};
+ socket.onopen=()=>socket.send(JSON.stringify({type:'join',room,token:secret,password:accessPassword}));
+ socket.onmessage=e=>{const msg=JSON.parse(e.data);if(msg.type==='password-required'){showAccess(msg.message);return;}if(msg.type==='links'){links=msg.tokens;sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));return;}if(msg.type==='error'){error(msg.message);if(msg.fatal){stopReconnect=true;$('#lobby').hidden=false;}return;}if(msg.type==='state'){$('#access-gate').hidden=true;$('#error').hidden=true;state=msg.state;clockOffset=state.serverNow-Date.now();$('#connection').textContent='● Đã đồng bộ';$('#connection').className='online';render();}};
  socket.onclose=()=>{$('#connection').textContent='● Mất kết nối · đang thử lại';$('#connection').className='offline';$('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=true);if(!stopReconnect)setTimeout(connect,1500);else $('#connection').textContent='Phòng không còn tồn tại';};
  socket.onerror=()=>{};
 }
@@ -19,7 +43,7 @@ const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không 
 function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
  const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';
- $('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
+ $('#local-backups').hidden=!host;$('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
  $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card"><span>${esc(t.name)}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
  $('#phase-label').textContent=({waiting:'CHƯA MỞ CÂU HỎI',ready:'CÂU HỎI ĐÃ MỞ · CHỜ HIỆU LỆNH',open:'ĐANG NHẬN ĐÁP ÁN',closed:'ĐÃ KHÓA NHẬN ĐÁP ÁN'})[s.phase];
@@ -158,3 +182,7 @@ $('#fullscreen').onclick=async()=>{
 for(const event of ['fullscreenchange','webkitfullscreenchange'])document.addEventListener(event,()=>{
  $('#fullscreen').textContent=document.fullscreenElement||document.webkitFullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';scheduleDisplayFit();
 });
+
+// Back/forward cache must not restore an unlocked privileged screen.
+window.addEventListener('pagehide',()=>{accessPassword=undefined;stopReconnect=true;$('#game').hidden=true;$('#local-backups').hidden=true;socket?.close();});
+window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});

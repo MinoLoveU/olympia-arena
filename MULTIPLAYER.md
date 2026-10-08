@@ -15,7 +15,8 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 
 ## Điều khiển trận
 
-- Mở URL Render → **Tạo phòng thi mới**. Máy này nhận vai trò MC.
+- Mở URL Render → **Tạo phòng thi mới** → nhập mật khẩu. Máy này nhận vai trò MC.
+- Màn MC và màn trình chiếu yêu cầu nhập lại mật khẩu mỗi lần tải lại trang. Người chơi chỉ cần link riêng. Máy chủ kiểm tra mật khẩu trước khi gửi trạng thái hoặc link vai trò, kể cả kết nối WebSocket trực tiếp. Không lưu mật khẩu vào cookie/localStorage/sessionStorage; mất mạng tạm thời có thể kết nối lại trong cùng lần mở trang.
 - Trong **Liên kết cho 5 thiết bị**, sao chép link trình chiếu và ba link người chơi. Mỗi link mang quyền riêng; giữ kín link MC. MC cũng có thể mở link của mình trên máy khác, các link vai trò được máy chủ gửi lại cho MC.
 - Chọn vòng và bấm **Hiện tên vòng**. Với Chướng ngại vật, lúc này chỉ có ảnh che, chưa có câu hỏi.
 - **Bộ đề 01 có sẵn 263 mục chơi**, không có form nhập câu hỏi, nhập JSON bộ đề hay URL media. Chọn vòng và câu trong danh sách; xem trước chỉ MC thấy. **Mở câu đã chọn** đưa câu lên năm máy, **Bắt đầu** chạy đồng hồ. Câu đã mở được đánh dấu và khóa để tránh lặp. Khởi động riêng trả lời miệng, không có ô nhập hoặc chuông. Khởi động chung chỉ bấm chuông, đội đầu trả lời miệng. Về đích chỉ đội được chỉ định gửi đáp án.
@@ -40,6 +41,8 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 - Không gửi dữ liệu nhạy cảm vào câu hỏi/đáp án. Các link vai trò là quyền truy cập; không đăng công khai link MC.
 
 ## Kiểm thử
+
+Máy chủ cần `OLYMPIA_ACCESS_HASH` chứa verifier scrypt do `hashPassword` trong `multiplayer/access.js` tạo. Không đưa mật khẩu hoặc verifier vào Git. Thiếu cấu hình thì tạo phòng và truy cập MC/màn chiếu bị từ chối. Render hiện cấu hình biến này qua lệnh khởi động riêng của service; giữ cấu hình đó khi cập nhật triển khai. Giới hạn 10 lần nhập sai/phút theo phòng/vai trò; tạo phòng giới hạn theo địa chỉ kết nối máy chủ.
 
 `npm ci && npm test`. Có kiểm thử bằng năm kết nối WebSocket độc lập và năm giao diện jsdom: câu hỏi mở đồng thời, nhập/trắc nghiệm, đổi 8 bộ và khôi phục tiến độ độc lập, kiểm tra 263 câu và đếm hình SVG, không mất nội dung đang soạn khi đội khác gửi, ẩn/công bố đáp án, sửa điểm, thứ tự chuông, phân quyền, timeout, chống gửi lặp/câu cũ, kết nối lại và khôi phục sao lưu. Chưa có browser kết nối trong phiên để xác minh hình thức bằng screenshot.
 

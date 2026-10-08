@@ -45,8 +45,8 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH}={}
    if(Date.now()-window>1000){window=Date.now();count=0;}if(++count>30)throw Error('Thao tác quá nhanh.');
    const msg=JSON.parse(raw);
    if(!room){if(msg.type!=='join')throw Error('Cần tham gia phòng.');const found=rooms.get(msg.room);const foundRole=found&&authenticate(found,msg.token);if(!foundRole)throw Error('Liên kết phòng không hợp lệ hoặc phòng đã đóng.');
-    if(foundRole==='host'||foundRole==='display'){
-     const denied=msg.password===undefined?'Nhập mật khẩu để mở màn MC hoặc màn trình chiếu.':checkPassword(msg.password,found.id+':'+foundRole);
+    if(foundRole==='host'){
+     const denied=msg.password===undefined?'Nhập mật khẩu để mở màn điều khiển MC.':checkPassword(msg.password,found.id+':'+foundRole);
      if(denied){socket.send(JSON.stringify({type:'password-required',message:denied}));return;}
     }
     room=found;role=foundRole;clearTimeout(authTimer);room.connections.set(socket,role);if(role==='host')socket.send(JSON.stringify({type:'links',tokens:room.tokens}));broadcast(room);return;}

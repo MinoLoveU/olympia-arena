@@ -8,7 +8,7 @@ import {createGameServer} from '../server.js';
 import {hashPassword} from '../multiplayer/access.js';
 const password='test-only-password';
 const wait=async(fn)=>{for(let i=0;i<150;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Timeout');};
-test('Password gates room creation and privileged sockets before links/state; players retain access',async()=>{
+test('Password gates room creation and MC sockets before links/state; display and players retain access',async()=>{
  const {server,wss}=createGameServer({accessHash:hashPassword(password)});
  server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${server.address().port}`,clients=[];
@@ -21,7 +21,7 @@ test('Password gates room creation and privileged sockets before links/state; pl
    const ws=new WebSocket(base.replace('http','ws')),messages=[];clients.push(ws);
    ws.on('message',raw=>messages.push(JSON.parse(raw)));await once(ws,'open');
    const join={type:'join',room:room.id,token:room.tokens[role]};ws.send(JSON.stringify(join));
-   if(role==='p0'){await wait(()=>messages.some(m=>m.type==='state'));continue;}
+   if(role!=='host'){await wait(()=>messages.some(m=>m.type==='state'));continue;}
    await wait(()=>messages.length);assert.deepEqual(messages.map(m=>m.type),['password-required']);messages.length=0;
    ws.send(JSON.stringify({...join,password:'wrong'}));await wait(()=>messages.length);
    assert.deepEqual(messages.map(m=>m.type),['password-required']);messages.length=0;

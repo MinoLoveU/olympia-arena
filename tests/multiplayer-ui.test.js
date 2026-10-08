@@ -6,7 +6,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  try{
  for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
  const [host,display,p0,p1,p2]=doms.map(d=>d.window.document);
- for(const dom of doms.slice(0,2)){
+ for(const dom of doms.slice(0,1)){
   const d=dom.window.document;await wait(()=>!d.querySelector('#access-gate').hidden);
   assert.equal(d.querySelector('#game').hidden,true);
   assert.equal(d.querySelector('#scoreboard').children.length,0);
@@ -14,6 +14,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
   d.querySelector('#access-form').dispatchEvent(new dom.window.Event('submit',{cancelable:true}));
  }
  await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
+ assert.equal(display.querySelector('#access-gate').hidden,true);
  // Projection follows window resizes even without the Fullscreen API.
  const projection=doms[1].window;
  for(const height of [900,360,768]){

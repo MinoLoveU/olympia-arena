@@ -44,11 +44,18 @@ test('Audio requires an explicit enable, creates finite tones, and mutes immedia
  }
  const audio=setup(Audio);audio.play('buzz');assert.equal(tones.length,0);
  assert.equal(await audio.toggle(),true);const before=tones.length;
- audio.play('buzz');audio.play('correct');audio.play('wrong');audio.play('tick');audio.play('urgent');audio.play('end');
+ audio.play('buzz');
+ const correctStart=tones.length;audio.play('correct');const correctTones=tones.slice(correctStart);
+ const wrongStart=tones.length;audio.play('wrong');const wrongTones=tones.slice(wrongStart);
+ assert.ok(Math.max(...wrongTones.map(t=>t.frequency.value))<Math.min(...correctTones.map(t=>t.frequency.value)));
+ assert.ok(wrongTones.every(t=>!correctTones.some(c=>c.type===t.type)));
+ assert.ok(wrongTones.some(t=>t.startTime>0));
+ audio.play('tick');audio.play('urgent');audio.play('end');
  assert.equal(tones.length-before,18);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
  assert.ok(tones.some(t=>t.type==='square'));assert.ok(tones.some(t=>t.type==='triangle'));
  assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,0);
- assert.ok(tones.every(t=>t.type!=='sawtooth'));
+ assert.equal(gains[0].value,.30);
+ assert.ok(wrongTones.some(t=>t.type==='sawtooth'));
  assert.equal(await audio.toggle(),false);assert.equal(gains[0].value,0);const muted=tones.length;audio.play('correct');assert.equal(tones.length,muted);
  await assert.rejects(()=>setup().toggle(),/hỗ trợ/);
 });

@@ -24,18 +24,30 @@ test('Countdown ticks once per second, resets for buzzer extension, stops when c
  audio.tick(snapshot({deadline:12000}),3);assert.equal(events.length,6);
  audio.tick(snapshot({phase:'closed'}),2);audio.tick(snapshot({role:'p0'}),2);assert.equal(events.length,6);
 });
+test('Wrong verdict sounds once; corrections sound again but clear/no-answer and reconnect do not',()=>{
+ const audio=setup(),events=[];audio.play=kind=>events.push(kind);
+ const judged=result=>snapshot({judgements:{0:{result,version:1}}});
+ audio.observe(snapshot());audio.observe(judged('wrong'));audio.observe(judged('wrong'));
+ audio.observe(judged('correct'));audio.observe(judged('wrong'));
+ audio.observe(judged(null));audio.observe(judged('no-answer'));
+ assert.deepEqual(events,['wrong','correct','wrong']);
+ audio.reset();audio.observe(judged('wrong'));assert.equal(events.length,3);
+ audio.reset();audio.observe(snapshot({role:'host'}));audio.observe({...judged('wrong'),role:'host'});assert.equal(events.length,3);
+});
 test('Audio requires an explicit enable, creates finite tones, and mutes immediately',async()=>{
  const tones=[],gains=[];
  class Audio {
   state='suspended';currentTime=0;destination={};
   async resume(){this.state='running';}
   createGain(){const gain={value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}};gains.push(gain);return {gain,connect(){},disconnect(){}};}
-  createOscillator(){const tone={frequency:{},connect(){},disconnect(){},start(t){this.startTime=t;},stop(t){this.endTime=t;}};tones.push(tone);return tone;}
+  createOscillator(){const tone={frequency:{setValueAtTime(value){this.value=value;},exponentialRampToValueAtTime(value){this.end=value;}},connect(){},disconnect(){},start(t){this.startTime=t;},stop(t){this.endTime=t;}};tones.push(tone);return tone;}
  }
  const audio=setup(Audio);audio.play('buzz');assert.equal(tones.length,0);
  assert.equal(await audio.toggle(),true);const before=tones.length;
- audio.play('buzz');audio.play('correct');audio.play('tick');audio.play('urgent');audio.play('end');
- assert.equal(tones.length-before,10);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
+ audio.play('buzz');audio.play('correct');audio.play('wrong');audio.play('tick');audio.play('urgent');audio.play('end');
+ assert.equal(tones.length-before,18);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
+ assert.ok(tones.some(t=>t.type==='square'));assert.ok(tones.some(t=>t.type==='triangle'));
+ assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,4);
  assert.equal(await audio.toggle(),false);assert.equal(gains[0].value,0);const muted=tones.length;audio.play('correct');assert.equal(tones.length,muted);
  await assert.rejects(()=>setup().toggle(),/hỗ trợ/);
 });

@@ -21,7 +21,7 @@ window.OlympiaSounds=class {
   if(previous.phase==='open'&&s.phase==='closed'&&s.deadline&&s.serverNow>=s.deadline)this.play('end');
  }
  tick(s,left){
-  if(s.role!=='display'||s.phase!=='open'||left<=0)return;
+  if(s.role!=='display'||s.phase!=='open'||s.deadline===null||left<=0)return;
   const key=`${s.questionId}:${s.deadline}:${left}`;
   if(key===this.lastTick)return;this.lastTick=key;
   if(Date.now()>=this.quietUntil)this.play(left<=3?'urgent':'tick');
@@ -34,7 +34,7 @@ window.OlympiaSounds=class {
    enable:[[660,0,.1],[880,.12,.16]],
    buzz:[[740,0,.22,'square',.38],[1480,0,.12,'sine',.5],[988,.12,.35,'triangle',.85],[1976,.12,.2,'sine',.4]],
    correct:[[523,0,.15,'triangle',.8],[659,.1,.15,'triangle',.8],[784,.2,.18,'triangle',.8],[1047,.3,.4,'triangle',.7],[1319,.3,.32,'sine',.4],[1568,.3,.3,'sine',.35]],
-   wrong:[[190,0,.2,'sawtooth',.65,100],[380,0,.13,'square',.2,200],[155,.22,.32,'sawtooth',.7,75],[310,.22,.2,'square',.22,150]],
+   wrong:[[294,0,.11,'triangle',.8],[311,0,.1,'sine',.4],[220,.16,.18,'triangle',.85],[233,.16,.16,'sine',.4]],
    tick:[[650,0,.045,'sine',.25]],urgent:[[1000,0,.07]],end:[[440,0,.18],[330,.2,.35]]
   };
   if(['buzz','correct','wrong','end'].includes(kind))this.quietUntil=Date.now()+750;

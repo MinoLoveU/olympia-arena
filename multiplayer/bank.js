@@ -52,7 +52,7 @@ const originalBank=[
   `warm-${i<6?team*6+i+1:19+team*9+i-6}`,
   `Đội ${team+1} · Câu ${i+1}/15`,warm,text,solution,{duration:3,players:[team],points:10}
  ))),
- ...commonPairs.map(([text,solution],i)=>make(`common-${i+1}`,`Khởi động chung · Câu ${i+1}/15`,warm,text,solution,{type:'buzz',duration:3,buzzAnswerSeconds:3,points:10})),
+ ...commonPairs.map(([text,solution],i)=>make(`common-${i+1}`,`Khởi động chung · Câu ${i+1}/15`,warm,text,solution,{type:'buzz',duration:3,points:10})),
  make('obstacle-1','Gợi ý 1',obstacle,'Hiện tượng các giọt nước rơi từ mây xuống mặt đất được gọi là gì?','MƯA',{clue:0,points:10}),
  make('obstacle-2','Gợi ý 2',obstacle,'Điền từ: Mặt Trời là nguồn cung cấp nhiệt và … tự nhiên cho Trái Đất.','ÁNH SÁNG',{clue:1,points:10}),
  make('obstacle-3','Gợi ý 3',obstacle,'Khối thủy tinh thường có tiết diện tam giác, dùng để phân tích ánh sáng trắng thành dải màu, gọi là gì?','LĂNG KÍNH',{clue:2,points:10}),

@@ -116,11 +116,11 @@ export function act(room,role,msg,now=Date.now()){
   }else fail('Lệnh MC không hợp lệ.');
  }else if(/^p[0-2]$/.test(role)){
   const player=Number(role[1]);if(room.question?.players&&!room.question.players.includes(player))fail('Câu này dành cho đội khác.');if(msg.questionId!==room.questionId)fail('Câu hỏi đã đổi. Vui lòng gửi lại ở câu hiện tại.');
-  if(room.phase!=='open'||!room.question||now>=room.deadline)fail('Chưa mở hoặc đã hết thời gian nhận đáp án.');
+  if(room.phase!=='open'||!room.question||(room.deadline!==null&&now>=room.deadline))fail('Chưa mở hoặc đã hết thời gian nhận đáp án.');
   if(msg.type==='buzz'){
    if(room.question.type!=='buzz')fail('Câu này không dùng chuông.');
    if(room.buzzes.some(b=>b.player===player))fail('Đã ghi nhận chuông của bạn.');
-   if(!room.buzzes.length&&room.question.buzzAnswerSeconds)room.deadline=now+room.question.buzzAnswerSeconds*1000;room.buzzes.push({player,rank:room.buzzes.length+1,receivedAt:now});room.log=`Chuông thứ ${room.buzzes.length}: ${room.teams[player].name}.`;
+   if(!room.buzzes.length){if(room.round==='Khởi động')room.deadline=null;else if(room.question.buzzAnswerSeconds)room.deadline=now+room.question.buzzAnswerSeconds*1000;}room.buzzes.push({player,rank:room.buzzes.length+1,receivedAt:now});room.log=`Chuông thứ ${room.buzzes.length}: ${room.teams[player].name}.`;
   }else if(msg.type==='answer'){
    if(room.answers[player])fail('Đã nhận đáp án đầu tiên; không thể thay đổi.');
    if(room.question.type==='buzz'&&room.buzzes[0]?.player!==player)fail('Chỉ đội giành chuông đầu tiên được trả lời.');
@@ -131,4 +131,4 @@ export function act(room,role,msg,now=Date.now()){
  }else fail('Màn trình chiếu chỉ được xem.');
  saveObstacle(room);room.updatedAt=now;room.revision++;return snapshot(room,role,now);
 }
-export function expire(room,now=Date.now()){if(room.phase==='open'&&now>=room.deadline){room.phase='closed';room.log='Hết giờ. Đã khóa nhận đáp án.';room.revision++;return true;}return false;}
+export function expire(room,now=Date.now()){if(room.phase==='open'&&room.deadline!==null&&now>=room.deadline){room.phase='closed';room.log='Hết giờ. Đã khóa nhận đáp án.';room.revision++;return true;}return false;}

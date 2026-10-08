@@ -22,7 +22,7 @@ test('Countdown ticks once per second, resets for buzzer extension, stops when c
  audio.tick(snapshot(),4);audio.tick(snapshot(),3);audio.tick(snapshot(),2);audio.tick(snapshot(),1);audio.tick(snapshot(),0);
  assert.deepEqual(events,['tick','tick','urgent','urgent','urgent']);
  audio.tick(snapshot({deadline:12000}),3);assert.equal(events.length,6);
- audio.tick(snapshot({phase:'closed'}),2);audio.tick(snapshot({role:'p0'}),2);assert.equal(events.length,6);
+ audio.tick(snapshot({deadline:null}),3);audio.tick(snapshot({phase:'closed'}),2);audio.tick(snapshot({role:'p0'}),2);assert.equal(events.length,6);
 });
 test('Wrong verdict sounds once; corrections sound again but clear/no-answer and reconnect do not',()=>{
  const audio=setup(),events=[];audio.play=kind=>events.push(kind);
@@ -47,7 +47,8 @@ test('Audio requires an explicit enable, creates finite tones, and mutes immedia
  audio.play('buzz');audio.play('correct');audio.play('wrong');audio.play('tick');audio.play('urgent');audio.play('end');
  assert.equal(tones.length-before,18);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
  assert.ok(tones.some(t=>t.type==='square'));assert.ok(tones.some(t=>t.type==='triangle'));
- assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,4);
+ assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,0);
+ assert.ok(tones.every(t=>t.type!=='sawtooth'));
  assert.equal(await audio.toggle(),false);assert.equal(gains[0].value,0);const muted=tones.length;audio.play('correct');assert.equal(tones.length,muted);
  await assert.rejects(()=>setup().toggle(),/hỗ trợ/);
 });

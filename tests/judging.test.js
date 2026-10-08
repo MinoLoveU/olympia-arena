@@ -15,7 +15,7 @@ test('Private warm-up awards once, wrong/absent costs zero; corrections preserve
  assert.throws(()=>judge(r,1,'correct'));
 });
 test('Common warm-up judges only first buzzer, +10 or -5 including silence, corrections replace previous award',()=>{
- const r=prepare('common-1');act(r,'p1',{type:'buzz',questionId:r.questionId},101);act(r,'p0',{type:'buzz',questionId:r.questionId},102);expire(r,3101);
+ const r=prepare('common-1');act(r,'p1',{type:'buzz',questionId:r.questionId},101);act(r,'p0',{type:'buzz',questionId:r.questionId},102);assert.equal(expire(r,3101),false);assert.throws(()=>judge(r,1,'correct'));act(r,'host',{type:'close'});
  assert.throws(()=>judge(r,0,'correct'));
  judge(r,1,'no-answer');assert.equal(r.teams[1].score,-5);
  judge(r,1,'wrong');assert.equal(r.teams[1].score,-5);

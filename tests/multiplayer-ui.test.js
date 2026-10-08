@@ -61,6 +61,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  for(const d of [p0,p1,p2])assert.equal(d.querySelector('#answer-text,#send-answer,input[name="choice"]'),null);
  assert.equal(p1.querySelector('#buzz').disabled,true);
  assert.match(display.querySelectorAll('#answer-cards p')[1].textContent,/Giành quyền/);
+ for(const d of [host,display,p0,p1,p2])assert.equal(d.querySelector('#clock-text').textContent,'TRẢ LỜI MIỆNG');
  for(const d of [host,display,p0,p1,p2]){assert.equal(d.querySelectorAll('.buzz-winner').length,1);assert.equal(d.querySelectorAll('.score-card')[1].classList.contains('buzz-winner'),true);assert.match(d.querySelector('.winner-label').textContent,/GIÀNH QUYỀN/);}
  assert.equal(host.querySelector('#show-answers').hidden,true);
  assert.equal(host.querySelector('#scoreboard strong').textContent,'0');

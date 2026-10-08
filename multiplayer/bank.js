@@ -1,3 +1,7 @@
+import {speedReasoning,speedOrders,finishPairs} from './expanded-bank.js';
+import {visualQuestions} from './visual-questions.js';
+import {obstacleSets} from './obstacle-sets.js';
+export {obstacleSets};
 // Bộ đề tự biên soạn: kiến thức phổ thông, không phải đề chính thức của VTV.
 const warm='Khởi động',obstacle='Vượt chướng ngại vật',speed='Tăng tốc',finish='Về đích',tie='Câu hỏi phụ';
 const make=(id,label,round,text,solution,extra={})=>({id,label,round,text,solution,type:'text',duration:15,choices:[],...extra});
@@ -43,7 +47,7 @@ const extraPrivatePairs=[
 ];
 const commonPairs=[
 ['Số nguyên tố nhỏ nhất là số nào?','2'],['Một tam giác có tổng ba góc trong bằng bao nhiêu độ?','180°'],['Loài vật nào thường được gọi là “chúa sơn lâm” trong tiếng Việt?','Hổ'],['Số La Mã X biểu thị số mấy?','10'],['Đàn bầu truyền thống có bao nhiêu dây?','1'],['Số tiếp theo của dãy 3, 6, 12, 24, … là gì?','48'],['Đơn vị đo tần số trong hệ SI là gì?','Hertz (Hz)'],['Một byte gồm bao nhiêu bit?','8'],['Từ nào trái nghĩa với “khiêm tốn”?','Kiêu ngạo / tự phụ (chấp nhận từ đồng nghĩa phù hợp)'],['Ở điều kiện thông thường, chất nào có ba trạng thái: rắn là băng, lỏng và hơi?','Nước'],['Một hình lục giác có bao nhiêu cạnh?','6'],['Điền từ: “Có công mài sắt, có ngày nên …”.','Kim'],['Một tá có bao nhiêu đơn vị?','12'],['Số nhỏ nhất có ba chữ số là số nào?','100'],['Một giờ rưỡi bằng bao nhiêu phút?','90']];
-export const builtInBank=[
+const originalBank=[
  ...extraPrivatePairs.flatMap((extra,team)=>[...privatePairs.slice(team*6,team*6+6),...extra].map(([text,solution],i)=>make(
   `warm-${i<6?team*6+i+1:19+team*9+i-6}`,
   `Đội ${team+1} · Câu ${i+1}/15`,warm,text,solution,{duration:3,players:[team],points:10}
@@ -76,4 +80,19 @@ export const builtInBank=[
  make('tie-2','Câu phụ 2/3',tie,'Số nguyên tố lớn nhất nhỏ hơn 20 là số nào?','19',{type:'buzz'}),
  make('tie-3','Câu phụ 3/3',tie,'Điền số tiếp theo theo quy luật mỗi số bằng tổng hai số liền trước: 1, 1, 2, 3, 5, 8, …','13',{type:'buzz'})
 ];
-export const bankInfo={title:'Chinh phục tri thức · Bộ đề 01',description:'86 mục chơi cho 3 đội: 60 Khởi động (15 câu riêng mỗi đội + 15 câu chung), 8 gợi ý + 1 ô trung tâm + 1 chướng ngại vật, 4 Tăng tốc, 9 Về đích, 3 câu phụ.'};
+
+const extraSpeed=[
+ ...visualQuestions.map(q=>({...q,type:'text',duration:20,mediaType:'image',kind:'Nhìn nhanh'})),
+ ...speedOrders.map(([order,items])=>({text:`Sắp xếp ${order}: ${[items[2],items[0],items[3],items[1]].join(' ; ')}.`,solution:items.join(' → '),duration:20,kind:'Sắp xếp'})),
+ ...speedReasoning.map(([text,solution])=>({text,solution,duration:30,kind:'Suy luận'}))
+];
+export const builtInBank=[
+ ...originalBank.map(q=>q.round===finish?{...q,points:20,duration:15,label:q.label.replace('30 điểm','20 điểm').replace(/Câu (\d+) ·/, 'Câu $1/20 ·')}:q.round===obstacle?{...q,obstacleSet:'1'}:q),
+ ...extraSpeed.map((q,i)=>make(`speed-${i+5}`,`Câu ${i+5}/60 · ${q.kind}`,speed,q.text,q.solution,q)),
+ ...finishPairs.map(([text,solution],i)=>{const team=Math.floor(i/17);return make(`finish-${i+10}`,`Đội ${team+1} · Câu ${i%17+4}/20 · 20 điểm`,finish,text,solution,{players:[team],points:20,duration:15});}),
+ ...obstacleSets.slice(1).flatMap(set=>[
+  ...[...set.clues,set.center].map(([text,solution],i)=>make(`obstacle-${set.id}-${i===8?'center':i+1}`,i===8?'Ô trung tâm':`Gợi ý ${i+1}`,obstacle,text,solution,{clue:i,points:10,obstacleSet:set.id})),
+  make(`obstacle-${set.id}-answer`,'Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật.',set.answer,{type:'buzz',obstacleGuess:true,obstacleSet:set.id})
+ ])
+];
+export const bankInfo={title:'Chinh phục tri thức · Bộ đề 01',description:'263 mục: 60 Khởi động, 8 bộ Chướng ngại vật (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (đều 20 điểm), 3 câu phụ.'};

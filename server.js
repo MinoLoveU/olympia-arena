@@ -3,12 +3,14 @@ import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer,WebSocket} from 'ws';
+import {builtInBank,obstacleSets} from './multiplayer/bank.js';
 import {createRoom,authenticate,snapshot,act,expire} from './multiplayer/game.js';
 const root=fileURLToPath(new URL('.',import.meta.url));
 function sameOrigin(origin,host){try{return !origin||new URL(origin).host===host;}catch{return false;}}
 export function createGameServer(){
  const rooms=new Map();
  const allowed=new Map([['/','multiplayer/index.html'],['/app.js','multiplayer/client.js'],['/style.css','style.css'],['/multiplayer.css','multiplayer/style.css'],['/assets/library.svg','assets/library.svg'],['/assets/obstacle-rainbow.svg','assets/obstacle-rainbow.svg'],['/assets/speed-shapes.svg','assets/speed-shapes.svg'],['/assets/speed-motion.mp4','assets/speed-motion.mp4'],['/assets/olympia-title.webp','assets/olympia-title.webp']]);
+ for(const url of [...builtInBank.map(q=>q.media),...obstacleSets.map(s=>s.image)].filter(Boolean)){if(url.startsWith('/assets/'))allowed.set(url,url.slice(1));}
  const server=http.createServer(async(req,res)=>{
   const path=new URL(req.url,'http://local').pathname;
   const json=(status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};

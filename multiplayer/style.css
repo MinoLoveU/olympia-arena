@@ -157,4 +157,4 @@ body[data-role="host"] .judge-controls button{font-size:11px;padding:5px 7px}
 .judgement-badge.correct{color:var(--success)}
 
 /* Eight surrounding clues plus center: seamless independent 3 × 3 masks. */
-.tiles .picture-cover{font-size:32px;inset:auto;left:calc(var(--column) * 100% / 3);top:calc(var(--row) * 100% / 3);width:calc(100% / 3);height:calc(100% / 3);clip-path:none}
+.tiles .picture-cover{font-size:32px;inset:auto;left:var(--tile-x);top:var(--tile-y);width:var(--tile-w);height:var(--tile-h);clip-path:none}

@@ -74,5 +74,26 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  assert.equal(display.querySelectorAll('.picture-cover[hidden]').length,1);assert.equal(display.querySelector('.cover-8').hidden,false);
  host.querySelector('#waiting').click();await wait(()=>display.querySelector('#question-title').textContent==='Mời đội chơi chọn câu hỏi');
  assert.equal(display.querySelector('.cover-7').hidden,true);
+ // Pause between scenarios to stay below the production 30-message/second limit.
+ await new Promise(r=>setTimeout(r,1100));
+ // Center is larger; the nine rectangles exactly partition the image.
+ const rects=[...display.querySelectorAll('.picture-cover')].map(el=>Object.fromEntries(['x','y','w','h'].map(k=>[k,parseFloat(el.style.getPropertyValue('--tile-'+k))])));
+ assert.equal(rects.reduce((area,r)=>area+r.w*r.h,0),10000);
+ assert.ok(rects.slice(0,8).every(r=>r.w*r.h<rects[8].w*rects[8].h));
+ for(let i=0;i<9;i++)for(let j=i+1;j<9;j++){const a=rects[i],b=rects[j];assert.ok(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y);}
+ assert.equal(host.querySelectorAll('#obstacle-set option').length,8);
+ host.querySelector('#obstacle-set').value='2';host.querySelector('#select-obstacle-set').click();
+ await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 2'));
+ assert.equal(display.querySelector('#picture img').getAttribute('src'),'/assets/obstacle-2.svg');
+ assert.equal(display.querySelectorAll('.picture-cover[hidden]').length,0);
+ assert.equal(host.querySelectorAll('#preset-question option').length,10);
+ assert.equal(host.querySelector('option[value="obstacle-2-center"]').disabled,true);
+ host.querySelector('#preset-question').value='obstacle-2-1';host.querySelector('#publish-question').click();await wait(()=>!host.querySelector('#open-tile').disabled);
+ host.querySelector('#open-tile').click();await wait(()=>display.querySelector('.cover-0').hidden);
+ host.querySelector('#obstacle-set').value='1';host.querySelector('#select-obstacle-set').click();await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 1')).catch(e=>{throw Error(host.querySelector('#error').textContent||e.message);});
+ assert.equal(display.querySelector('.cover-7').hidden,true);assert.equal(display.querySelector('.cover-0').hidden,false);
+ host.querySelector('#round').value='Về đích';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelectorAll('#preset-question option').length,60);
+ host.querySelector('#preset-question').value='finish-60';host.querySelector('#publish-question').click();await wait(()=>p2.querySelector('#question-title').textContent.includes('chia cho 5 được thương 7'));assert.ok(p2.querySelector('#answer-text'));
+ assert.equal(p2.querySelector('#clock-text').textContent,'15 GIÂY');
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });

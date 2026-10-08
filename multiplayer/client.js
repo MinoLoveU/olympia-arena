@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const params=new URLSearchParams(location.hash.slice(1));let room=params.get('room'),secret=params.get('token'),socket,state,clockOffset=0,lastQuestion=null,lastResponseMode=null,links,stopReconnect=false;
+const params=new URLSearchParams(location.hash.slice(1));let room=params.get('room'),secret=params.get('token'),socket,state,clockOffset=0,lastQuestion=null,lastResponseMode=null,lastObstacleSet=null,links,stopReconnect=false;
 const roles={host:'BÀN ĐIỀU KHIỂN MC',display:'MÀN TRÌNH CHIẾU',p0:'NGƯỜI CHƠI 1',p1:'NGƯỜI CHƠI 2',p2:'NGƯỜI CHƠI 3'};
 function error(message){$('#error').textContent=message;$('#error').hidden=false;}
 function send(msg){if(socket?.readyState!==WebSocket.OPEN){error('Mất kết nối. Chờ kết nối lại trước khi thao tác.');return false;}$('#error').hidden=true;socket.send(JSON.stringify(msg));return true;}
@@ -19,13 +19,13 @@ const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không 
 function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
  const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';
- $('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round;
+ $('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
  $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card"><span>${esc(t.name)}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
  $('#phase-label').textContent=({waiting:'CHƯA MỞ CÂU HỎI',ready:'CÂU HỎI ĐÃ MỞ · CHỜ HIỆU LỆNH',open:'ĐANG NHẬN ĐÁP ÁN',closed:'ĐÃ KHÓA NHẬN ĐÁP ÁN'})[s.phase];
  if(lastQuestion!==s.questionId||!s.question){$('#question-media').innerHTML=media(s.question);lastQuestion=s.questionId;}
  $('#solution').hidden=!s.showSolution||!s.question;$('#solution').textContent=`Đáp án: ${s.question?.solution||''}`;
- $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý"><span class="picture-label"></span>${[0,1,2,3,4,5,6,7,8].map(i=>`<span class="picture-cover cover-${i}" style="--column:${[0,1,2,0,2,0,1,2,1][i]};--row:${[0,0,0,1,1,2,2,2,1][i]}" aria-label="${i===8?'Ô trung tâm':'Gợi ý '+(i+1)}" ${s.opened.includes(i)?'hidden':''}>${i===8?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===8?'Ô trung tâm':`Gợi ý ${s.selectedClue+1}`}</p></div>`:'';
+ $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý"><span class="picture-label"></span>${[0,1,2,3,4,5,6,7,8].map(i=>`<span class="picture-cover cover-${i}" style="--column:${[0,1,2,0,2,0,1,2,1][i]};--row:${[0,0,0,1,1,2,2,2,1][i]};--tile-x:${[0,32,68,0,68,0,32,68,32][i]}%;--tile-y:${[0,0,0,32,32,68,68,68,32][i]}%;--tile-w:${[32,36,32,32,32,32,36,32,36][i]}%;--tile-h:${[32,32,32,36,36,32,32,32,36][i]}%" aria-label="${i===8?'Ô trung tâm':'Gợi ý '+(i+1)}" ${s.opened.includes(i)?'hidden':''}>${i===8?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===8?'Ô trung tâm':`Gợi ý ${s.selectedClue+1}`}</p></div>`:'';
  $('#stage').classList.toggle('has-picture',s.round==='Vượt chướng ngại vật');
  const warm=s.round==='Khởi động';
  document.body.classList.toggle('oral-round',warm);
@@ -80,8 +80,13 @@ $('#start').onclick=()=>send({type:'start'});$('#stop').onclick=()=>send({type:'
 function renderCatalog(){
  const catalog=state.catalog||[],used=state.usedQuestions||[],round=$('#round').value;
  $('#bank-title').textContent=state.bankInfo?.title||'Bộ đề có sẵn';$('#bank-description').textContent=state.bankInfo?.description||'';
- const locked=q=>used.includes(q.id)||(q.id==='obstacle-center'&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
- const items=catalog.filter(q=>q.round===round),previous=$('#preset-question').value;
+ $('#obstacle-picker').hidden=round!=='Vượt chướng ngại vật';
+ const sets=state.obstacleSets||[];let selected=$('#obstacle-set').value||state.obstacleSet||'1';
+ if(lastObstacleSet!==state.obstacleSet){selected=state.obstacleSet||'1';lastObstacleSet=state.obstacleSet;}
+ $('#obstacle-set').innerHTML=sets.map(set=>`<option value="${set.id}">Bộ ${set.id} · ${esc(set.name)}</option>`).join('');$('#obstacle-set').value=selected;
+ $('#select-obstacle-set').disabled=state.phase==='open';
+ const locked=q=>used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
+ const items=catalog.filter(q=>q.round===round&&(!q.obstacleSet||q.obstacleSet===(state.obstacleSet||'1'))).sort((a,b)=>a.round==='Về đích'?(a.players[0]-b.players[0]||parseInt(a.label.split('Câu ')[1])-parseInt(b.label.split('Câu ')[1])):0),previous=$('#preset-question').value;
  $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
  $('#preset-question').value=items.some(q=>q.id===previous&&!locked(q))?previous:(items.find(q=>!locked(q))?.id||'');
  previewPreset();
@@ -91,6 +96,7 @@ function previewPreset(){
  $('#preset-preview').innerHTML=q?`<b>${esc(q.label)}</b><p>${esc(q.text)}</p><p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${q.round==='Khởi động'?(q.type==='buzz'?'Bấm chuông · trả lời miệng':'Trả lời miệng'):{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:'<p>Đã chơi hết các câu trong vòng này.</p>';
  $('#publish-question').disabled=!q||state.phase==='open';
 }
+$('#select-obstacle-set').onclick=()=>send({type:'obstacleSet',id:$('#obstacle-set').value});
 $('#preset-question').onchange=previewPreset;
 $('#round').onchange=()=>{if(state)renderCatalog();};
 $('#publish-question').onclick=()=>send({type:'preset',id:$('#preset-question').value});
@@ -106,7 +112,7 @@ try{
  document.querySelectorAll('[data-backup]').forEach(b=>b.onclick=()=>{const key=backups[+b.dataset.backup];downloadJSON(JSON.parse(localStorage.getItem(key)),key+'.json');});
 }catch{}
 
-function matchBackup(s){const {catalog,bankInfo,...backup}=s;return backup;}
+function matchBackup(s){const {catalog,bankInfo,obstacleSets,...backup}=s;return backup;}
 
 // Fit live text after fonts, content or the viewport changes, without truncating answers.
 let displayFitFrame;

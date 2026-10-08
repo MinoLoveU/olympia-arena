@@ -60,5 +60,19 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#show-answers').disabled);host.querySelector('#show-answers').click();await wait(()=>display.querySelector('#answer-cards').textContent.includes('Đáp án đội 1'));assert.ok(!display.querySelector('#solution').textContent.includes('30 viên bi'));
  host.querySelector('#score-0').value='45';host.querySelector('[data-save-score="0"]').click();await wait(()=>p2.querySelector('#scoreboard strong').textContent==='45');
  host.querySelector('#preset-question').value='speed-2';host.querySelector('#publish-question').click();await wait(()=>p0.querySelectorAll('input[name="choice"]').length===4);host.querySelector('#start').click();await wait(()=>!p0.querySelector('input[name="choice"]').disabled);p0.querySelectorAll('input[name="choice"]')[1].checked=true;p0.querySelector('#send-answer').click();await wait(()=>host.querySelector('#answer-cards p').textContent==='⅔ → ½ → 0,75 → 0,8');assert.equal(host.querySelector('#scoreboard strong').textContent,'45');
+ host.querySelector('#stop').click();await wait(()=>!host.querySelector('#publish-question').disabled);
+ host.querySelector('#round').value='Vượt chướng ngại vật';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
+ host.querySelector('#set-round').click();await wait(()=>display.querySelectorAll('.picture-cover').length===9);
+ assert.equal(host.querySelector('option[value="obstacle-center"]').disabled,true);
+ const cells=[...display.querySelectorAll('.picture-cover')];
+ assert.equal(new Set(cells.map(el=>el.style.getPropertyValue('--column')+','+el.style.getPropertyValue('--row'))).size,9);
+ assert.equal(display.querySelector('.cover-8').style.getPropertyValue('--column'),'1');
+ assert.equal(display.querySelector('.cover-8').style.getPropertyValue('--row'),'1');
+ host.querySelector('#preset-question').value='obstacle-8';host.querySelector('#publish-question').click();
+ await wait(()=>!host.querySelector('#open-tile').disabled);
+ host.querySelector('#open-tile').click();await wait(()=>[display,p0,p1,p2].every(d=>d.querySelector('.cover-7').hidden));
+ assert.equal(display.querySelectorAll('.picture-cover[hidden]').length,1);assert.equal(display.querySelector('.cover-8').hidden,false);
+ host.querySelector('#waiting').click();await wait(()=>display.querySelector('#question-title').textContent==='Mời đội chơi chọn câu hỏi');
+ assert.equal(display.querySelector('.cover-7').hidden,true);
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });

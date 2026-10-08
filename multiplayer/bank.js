@@ -49,12 +49,16 @@ export const builtInBank=[
   `Đội ${team+1} · Câu ${i+1}/15`,warm,text,solution,{duration:3,players:[team],points:10}
  ))),
  ...commonPairs.map(([text,solution],i)=>make(`common-${i+1}`,`Khởi động chung · Câu ${i+1}/15`,warm,text,solution,{type:'buzz',duration:3,buzzAnswerSeconds:3,points:10})),
- make('obstacle-1','Hàng 1',obstacle,'Hiện tượng các giọt nước rơi từ mây xuống mặt đất được gọi là gì?','MƯA',{clue:0,points:10}),
- make('obstacle-2','Hàng 2',obstacle,'Điền từ: Mặt Trời là nguồn cung cấp nhiệt và … tự nhiên cho Trái Đất.','ÁNH SÁNG',{clue:1,points:10}),
- make('obstacle-3','Hàng 3',obstacle,'Khối thủy tinh thường có tiết diện tam giác, dùng để phân tích ánh sáng trắng thành dải màu, gọi là gì?','LĂNG KÍNH',{clue:2,points:10}),
- make('obstacle-4','Hàng 4',obstacle,'Theo cách gọi bảy sắc quen thuộc, dải màu đỏ, da cam, vàng, lục, lam, chàm, tím có mấy màu?','BẢY (7)',{clue:3,points:10}),
- make('obstacle-center','Ô trung tâm',obstacle,'Trong dải màu đỏ, da cam, vàng, lục, lam, chàm, tím, màu nào đứng trước da cam?','ĐỎ',{clue:4,points:10}),
- make('obstacle-answer','Đoán chướng ngại vật',obstacle,'Từ các hàng ngang và bức hình được hé lộ, hãy gọi tên chướng ngại vật gồm 7 chữ cái (không tính khoảng trắng).','CẦU VỒNG',{type:'buzz',duration:15,obstacleGuess:true}),
+ make('obstacle-1','Gợi ý 1',obstacle,'Hiện tượng các giọt nước rơi từ mây xuống mặt đất được gọi là gì?','MƯA',{clue:0,points:10}),
+ make('obstacle-2','Gợi ý 2',obstacle,'Điền từ: Mặt Trời là nguồn cung cấp nhiệt và … tự nhiên cho Trái Đất.','ÁNH SÁNG',{clue:1,points:10}),
+ make('obstacle-3','Gợi ý 3',obstacle,'Khối thủy tinh thường có tiết diện tam giác, dùng để phân tích ánh sáng trắng thành dải màu, gọi là gì?','LĂNG KÍNH',{clue:2,points:10}),
+ make('obstacle-4','Gợi ý 4',obstacle,'Theo cách gọi bảy sắc quen thuộc, dải màu đỏ, da cam, vàng, lục, lam, chàm, tím có mấy màu?','BẢY (7)',{clue:3,points:10}),
+ make('obstacle-5','Gợi ý 5',obstacle,'Hiện tượng ánh sáng đổi hướng khi truyền xiên qua mặt phân cách giữa hai môi trường trong suốt gọi là gì?','KHÚC XẠ',{clue:4,points:10}),
+ make('obstacle-6','Gợi ý 6',obstacle,'Hiện tượng ánh sáng bị hắt trở lại môi trường cũ khi gặp một bề mặt được gọi là gì?','PHẢN XẠ',{clue:5,points:10}),
+ make('obstacle-7','Gợi ý 7',obstacle,'Ánh sáng trắng qua lăng kính bị phân tách thành nhiều màu. Hiện tượng đó gọi là gì?','TÁN SẮC',{clue:6,points:10}),
+ make('obstacle-8','Gợi ý 8',obstacle,'Vật thể hình cầu rất nhỏ tạo nên mưa, có thể làm ánh sáng khúc xạ và phản xạ bên trong, là gì?','GIỌT NƯỚC',{clue:7,points:10}),
+ make('obstacle-center','Ô trung tâm',obstacle,'Trong dải màu đỏ, da cam, vàng, lục, lam, chàm, tím, màu nào đứng trước da cam?','ĐỎ',{clue:8,points:10}),
+ make('obstacle-answer','Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật gồm 7 chữ cái (không tính khoảng trắng).','CẦU VỒNG',{type:'buzz',duration:15,obstacleGuess:true}),
  make('speed-1','Câu 1 · Nhìn nhanh',speed,'Quan sát hình: có bao nhiêu hình tam giác màu vàng?','5',{duration:20,media:'/assets/speed-shapes.svg',mediaType:'image'}),
  make('speed-2','Câu 2 · Sắp xếp',speed,'Chọn cách sắp xếp các số theo thứ tự tăng dần.','½ → ⅔ → 0,75 → 0,8',{duration:20,type:'choice',choices:['½ → ⅔ → 0,75 → 0,8','⅔ → ½ → 0,75 → 0,8','½ → 0,75 → ⅔ → 0,8','0,8 → 0,75 → ⅔ → ½']}),
  make('speed-3','Câu 3 · Suy luận',speed,'Có 3 hộp, mỗi hộp chứa 4 túi, mỗi túi có 5 viên bi. Lấy ra 2 túi từ mỗi hộp. Còn lại tổng cộng bao nhiêu viên bi?','30 viên bi: 3 × (4 − 2) × 5.',{duration:30}),
@@ -72,4 +76,4 @@ export const builtInBank=[
  make('tie-2','Câu phụ 2/3',tie,'Số nguyên tố lớn nhất nhỏ hơn 20 là số nào?','19',{type:'buzz'}),
  make('tie-3','Câu phụ 3/3',tie,'Điền số tiếp theo theo quy luật mỗi số bằng tổng hai số liền trước: 1, 1, 2, 3, 5, 8, …','13',{type:'buzz'})
 ];
-export const bankInfo={title:'Chinh phục tri thức · Bộ đề 01',description:'82 mục chơi cho 3 đội: 60 Khởi động (15 câu riêng mỗi đội + 15 câu chung), 5 ô gợi ý + 1 chướng ngại vật, 4 Tăng tốc, 9 Về đích, 3 câu phụ.'};
+export const bankInfo={title:'Chinh phục tri thức · Bộ đề 01',description:'86 mục chơi cho 3 đội: 60 Khởi động (15 câu riêng mỗi đội + 15 câu chung), 8 gợi ý + 1 ô trung tâm + 1 chướng ngại vật, 4 Tăng tốc, 9 Về đích, 3 câu phụ.'};

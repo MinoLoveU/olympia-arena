@@ -7,7 +7,7 @@ export function snapshot(room,role,now=Date.now()){
  const {revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,judgements}=room;
  const question=room.question?{text:room.question.text,type:room.question.type,choices:room.question.choices,media:room.question.media,mediaType:room.question.mediaType,players:room.question.players,points:room.question.points,label:room.question.label,...(role==='host'||showSolution?{solution:room.question.solution}:{})}:null;
  const answers=Object.fromEntries(Object.entries(room.answers).map(([id,a])=>[id,{...a,text:role==='host'||showAnswers||role===`p${id}`?a.text:null}]));
- return {...(role==='host'?{catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
+ return {...(role==='host'?{catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,obstacleClueCount:8,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
 }
 const fail=message=>{throw Error(message);};
 const clean=(s,max=2000)=>typeof s==='string'?s.trim().slice(0,max):'';
@@ -27,9 +27,9 @@ export function act(room,role,msg,now=Date.now()){
    const seconds=Number(msg.duration);if(!Number.isInteger(seconds)||seconds<1||seconds>600)fail('Thời gian từ 1 đến 600 giây.');
    const round=clean(msg.round,80)||'Khởi động';const clue=msg.clue;
    if(round==='Vượt chướng ngại vật'&&!q.obstacleGuess){
-    if(!Number.isInteger(clue)||clue<0||clue>4)fail('Chọn hàng trước khi mở câu hỏi.');
+    if(!Number.isInteger(clue)||clue<0||clue>8)fail('Chọn hàng trước khi mở câu hỏi.');
     if(round===room.round&&room.usedClues.includes(clue))fail('Câu này đã được chọn.');
-    if(clue===4&&(round!==room.round||room.usedClues.filter(n=>n<4).length<4))fail('Chọn bốn hàng trước ô trung tâm.');
+    if(clue===8&&(round!==room.round||room.usedClues.filter(n=>n<8).length<8))fail('Chọn đủ tám gợi ý trước ô trung tâm.');
    }
    if(round!==room.round){room.opened=[];room.usedClues=[];}room.round=round;
    room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:q.type,choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
@@ -77,9 +77,11 @@ export function act(room,role,msg,now=Date.now()){
    if(room.phase==='open')fail('Khóa nhận đáp án trước khi khôi phục.');
    const b=msg.backup;
    if(!b||!Array.isArray(b.teams)||b.teams.length!==3||b.teams.some(t=>!clean(t.name,40)||!Number.isFinite(t.score)||Math.abs(t.score)>100000))fail('Bản sao không hợp lệ.');
-   if(!Array.isArray(b.opened)||!Array.isArray(b.usedClues)||[...b.opened,...b.usedClues].some(i=>!Number.isInteger(i)||i<0||i>4))fail('Các ô hình trong bản sao không hợp lệ.');
+   if(b.obstacleClueCount!==undefined&&b.obstacleClueCount!==8)fail('Phiên bản ô hình không hỗ trợ.');
+   const legacy=b.obstacleClueCount===undefined;
+   if(!Array.isArray(b.opened)||!Array.isArray(b.usedClues)||[...b.opened,...b.usedClues].some(i=>!Number.isInteger(i)||i<0||i>(legacy?4:8)))fail('Các ô hình trong bản sao không hợp lệ.');
    room.usedQuestions=Array.isArray(b.usedQuestions)?b.usedQuestions.filter(id=>builtInBank.some(q=>q.id===id)):[];
-   room.teams=b.teams.map(t=>({name:clean(t.name,40),score:t.score}));room.round=clean(b.round,80);room.opened=[...new Set(b.opened)];room.usedClues=[...new Set(b.usedClues)];
+   room.teams=b.teams.map(t=>({name:clean(t.name,40),score:t.score}));room.round=clean(b.round,80);room.opened=[...new Set(b.opened.map(i=>legacy&&i===4?8:i))];room.usedClues=[...new Set(b.usedClues.map(i=>legacy&&i===4?8:i))];
    room.question=null;room.questionId++;room.selectedClue=null;room.phase='waiting';room.deadline=null;room.answers={};room.judgements={};room.buzzes=[];room.showAnswers=false;room.showSolution=false;
    if(/^(https?:\/\/|\/assets\/)/.test(b.image||''))room.image=b.image;
    room.log='Đã khôi phục điểm và ô hình; MC chọn câu tiếp theo. Đáp án/chuông cũ chỉ nằm trong bản sao để đối chiếu.';

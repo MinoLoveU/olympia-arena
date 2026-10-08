@@ -25,7 +25,7 @@ function render(){
  $('#phase-label').textContent=({waiting:'CHƯA MỞ CÂU HỎI',ready:'CÂU HỎI ĐÃ MỞ · CHỜ HIỆU LỆNH',open:'ĐANG NHẬN ĐÁP ÁN',closed:'ĐÃ KHÓA NHẬN ĐÁP ÁN'})[s.phase];
  if(lastQuestion!==s.questionId||!s.question){$('#question-media').innerHTML=media(s.question);lastQuestion=s.questionId;}
  $('#solution').hidden=!s.showSolution||!s.question;$('#solution').textContent=`Đáp án: ${s.question?.solution||''}`;
- $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý"><span class="picture-label"></span>${[0,1,2,3,4].map(i=>`<span class="picture-cover cover-${i}" ${s.opened.includes(i)?'hidden':''}>${i===4?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===4?'Ô trung tâm':`Hàng ${s.selectedClue+1}`}</p></div>`:'';
+ $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý"><span class="picture-label"></span>${[0,1,2,3,4,5,6,7,8].map(i=>`<span class="picture-cover cover-${i}" style="--column:${[0,1,2,0,2,0,1,2,1][i]};--row:${[0,0,0,1,1,2,2,2,1][i]}" aria-label="${i===8?'Ô trung tâm':'Gợi ý '+(i+1)}" ${s.opened.includes(i)?'hidden':''}>${i===8?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===8?'Ô trung tâm':`Gợi ý ${s.selectedClue+1}`}</p></div>`:'';
  $('#stage').classList.toggle('has-picture',s.round==='Vượt chướng ngại vật');
  const warm=s.round==='Khởi động';
  document.body.classList.toggle('oral-round',warm);
@@ -80,9 +80,10 @@ $('#start').onclick=()=>send({type:'start'});$('#stop').onclick=()=>send({type:'
 function renderCatalog(){
  const catalog=state.catalog||[],used=state.usedQuestions||[],round=$('#round').value;
  $('#bank-title').textContent=state.bankInfo?.title||'Bộ đề có sẵn';$('#bank-description').textContent=state.bankInfo?.description||'';
+ const locked=q=>used.includes(q.id)||(q.id==='obstacle-center'&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
  const items=catalog.filter(q=>q.round===round),previous=$('#preset-question').value;
- $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${used.includes(q.id)?'disabled':''}>${used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
- $('#preset-question').value=items.some(q=>q.id===previous&&!used.includes(q.id))?previous:(items.find(q=>!used.includes(q.id))?.id||'');
+ $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
+ $('#preset-question').value=items.some(q=>q.id===previous&&!locked(q))?previous:(items.find(q=>!locked(q))?.id||'');
  previewPreset();
 }
 function previewPreset(){

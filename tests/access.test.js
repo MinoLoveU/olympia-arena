@@ -51,6 +51,7 @@ test('Reloaded MC page locks even with existing browser storage; wrong password 
    win.fetch=(path,options)=>fetch(new URL(path,base),options);
    if(page)for(const storage of ['localStorage','sessionStorage'])for(const key of Object.keys(doms[0].window[storage]))win[storage].setItem(key,doms[0].window[storage].getItem(key));
    win.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};
+   win.eval(readFileSync(new URL('../multiplayer/sounds.js',import.meta.url),'utf8'));
    win.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));
    if(!page)d.querySelector('#create').click();
    await wait(()=>!d.querySelector('#access-gate').hidden);

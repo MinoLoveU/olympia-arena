@@ -40,6 +40,12 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 - Sau khi máy chủ mất phòng: tạo phòng mới, nhập bản sao để khôi phục tên, điểm, ô hình và hàng đã chọn. Bắt đầu ở trạng thái chờ câu mới; đáp án/chuông cũ chỉ để đối chiếu trong tệp, không tự diễn lại. Gửi lại năm link của phòng mới.
 - Không gửi dữ liệu nhạy cảm vào câu hỏi/đáp án. Các link vai trò là quyền truy cập; không đăng công khai link MC.
 
+## Âm thanh và đội giành quyền
+
+Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ và giai điệu khi MC chấm đúng ở mọi vòng. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
+
+Khởi động chung: thẻ điểm đội bấm đầu tiên đổi nền/viền vàng, hiện nhãn **GIÀNH QUYỀN** ở cả năm vai trò; giữ đến khi đổi câu hoặc về màn chờ.
+
 ## Màn người chơi trên máy tính
 
 Cả ba vai trò người chơi dùng toàn bộ cửa sổ từ 761px ngang: câu hỏi bên trái, nhập/chọn đáp án hoặc chuông bên phải, bảng điểm ở trên và kết quả ở dưới. Chiều cao bám visualViewport/innerHeight, tự cập nhật khi resize; chữ câu hỏi/đáp án dài tự thu để vừa khung. Màn nhỏ hơn vẫn dùng bố cục dọc.

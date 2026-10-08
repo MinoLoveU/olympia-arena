@@ -4,7 +4,7 @@ const wait=async(fn)=>{const end=Date.now()+3500;while(Date.now()<end){if(fn())r
 test('Five clients: oral judging adjusts warm-up scores; later rounds keep manual scoring',async()=>{
  const {server,wss}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json();const doms=[],sockets=[];
  try{
- for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
+ for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/sounds.js',import.meta.url),'utf8'));dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
  const [host,display,p0,p1,p2]=doms.map(d=>d.window.document);
  for(const dom of doms.slice(0,1)){
   const d=dom.window.document;await wait(()=>!d.querySelector('#access-gate').hidden);
@@ -15,6 +15,8 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  }
  await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
  assert.equal(display.querySelector('#access-gate').hidden,true);
+ assert.equal(display.querySelector('#sound-toggle').hidden,false);
+ for(const d of [host,p0,p1,p2])assert.equal(d.querySelector('#sound-toggle').hidden,true);
  // Projection follows window resizes even without the Fullscreen API.
  const projection=doms[1].window;
  for(const height of [900,360,768]){
@@ -59,6 +61,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  for(const d of [p0,p1,p2])assert.equal(d.querySelector('#answer-text,#send-answer,input[name="choice"]'),null);
  assert.equal(p1.querySelector('#buzz').disabled,true);
  assert.match(display.querySelectorAll('#answer-cards p')[1].textContent,/Giành quyền/);
+ for(const d of [host,display,p0,p1,p2]){assert.equal(d.querySelectorAll('.buzz-winner').length,1);assert.equal(d.querySelectorAll('.score-card')[1].classList.contains('buzz-winner'),true);assert.match(d.querySelector('.winner-label').textContent,/GIÀNH QUYỀN/);}
  assert.equal(host.querySelector('#show-answers').hidden,true);
  assert.equal(host.querySelector('#scoreboard strong').textContent,'0');
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#publish-question').disabled);
@@ -70,6 +73,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  await wait(()=>p1.querySelector('#buzz').textContent==='BẤM CHUÔNG');
  assert.equal(p1.querySelector('#buzz').disabled,true);
  assert.ok(!display.querySelector('#buzz-results').textContent);
+ assert.equal(display.querySelector('.buzz-winner'),null);
  assert.equal(host.querySelector('#question-input'),null);assert.equal(host.querySelector('#bank-file'),null);host.querySelector('#round').value='Tăng tốc';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='speed-3';host.querySelector('#publish-question').click();await wait(()=>[display,p0,p1,p2].every(d=>d.querySelector('#question-title').textContent.includes('Có 3 hộp')));
  assert.equal(p0.querySelector('#answer-text').disabled,true);host.querySelector('#start').click();await wait(()=>!p0.querySelector('#answer-text').disabled);
  p1.querySelector('#answer-text').value='Đang soạn';p0.querySelector('#answer-text').value='Đáp án đội 1';p0.querySelector('#send-answer').click();await wait(()=>display.querySelector('#answer-cards').textContent.includes('Đã gửi đáp án'));assert.equal(p1.querySelector('#answer-text').value,'Đang soạn');assert.ok(!display.querySelector('#answer-cards').textContent.includes('Đáp án đội 1'));

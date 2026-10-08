@@ -18,7 +18,7 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH}={}
   attempts.set(key,{count:entry&&entry.until>now?entry.count+1:1,until:entry&&entry.until>now?entry.until:now+60000});
   return 'Mật khẩu chưa đúng. Vui lòng nhập lại.';
  }
- const allowed=new Map([['/','multiplayer/index.html'],['/app.js','multiplayer/client.js'],['/style.css','style.css'],['/multiplayer.css','multiplayer/style.css'],['/assets/library.svg','assets/library.svg'],['/assets/obstacle-rainbow.svg','assets/obstacle-rainbow.svg'],['/assets/speed-shapes.svg','assets/speed-shapes.svg'],['/assets/speed-motion.mp4','assets/speed-motion.mp4'],['/assets/olympia-title.webp','assets/olympia-title.webp']]);
+ const allowed=new Map([['/','multiplayer/index.html'],['/app.js','multiplayer/client.js'],['/sounds.js','multiplayer/sounds.js'],['/style.css','style.css'],['/multiplayer.css','multiplayer/style.css'],['/assets/library.svg','assets/library.svg'],['/assets/obstacle-rainbow.svg','assets/obstacle-rainbow.svg'],['/assets/speed-shapes.svg','assets/speed-shapes.svg'],['/assets/speed-motion.mp4','assets/speed-motion.mp4'],['/assets/olympia-title.webp','assets/olympia-title.webp']]);
  for(const url of [...builtInBank.map(q=>q.media),...obstacleSets.map(s=>s.image)].filter(Boolean)){if(url.startsWith('/assets/'))allowed.set(url,url.slice(1));}
  const server=http.createServer(async(req,res)=>{
   const path=new URL(req.url,'http://local').pathname;

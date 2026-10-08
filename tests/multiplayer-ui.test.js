@@ -76,11 +76,18 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  assert.equal(display.querySelector('.cover-7').hidden,true);
  // Pause between scenarios to stay below the production 30-message/second limit.
  await new Promise(r=>setTimeout(r,1100));
- // Center is larger; the nine rectangles exactly partition the image.
+ // Equal outer squares and a centered, larger overlay overlapping all eight.
  const rects=[...display.querySelectorAll('.picture-cover')].map(el=>Object.fromEntries(['x','y','w','h'].map(k=>[k,parseFloat(el.style.getPropertyValue('--tile-'+k))])));
- assert.equal(rects.reduce((area,r)=>area+r.w*r.h,0),10000);
- assert.ok(rects.slice(0,8).every(r=>r.w*r.h<rects[8].w*rects[8].h));
- for(let i=0;i<9;i++)for(let j=i+1;j<9;j++){const a=rects[i],b=rects[j];assert.ok(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y);}
+ const outer=rects.slice(0,8),center=rects[8];
+ assert.ok(outer.every(r=>r.w===outer[0].w&&r.h===outer[0].h&&r.w===r.h));
+ assert.equal(center.w,38);assert.equal(center.h,38);
+ assert.equal(center.x+center.w/2,50);assert.equal(center.y+center.h/2,50);
+ const overlaps=(a,b)=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h;
+ assert.ok(outer.every(r=>r.w<center.w&&overlaps(r,center)));
+ // Every point of the image remains masked initially, even around the center edges.
+ for(let x=.5;x<100;x++)for(let y=.5;y<100;y++)assert.ok(rects.some(r=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h));
+ const css=readFileSync(new URL('../multiplayer/style.css',import.meta.url),'utf8');
+ assert.match(css,/\.tiles \.cover-8\{z-index:2/);
  assert.equal(host.querySelectorAll('#obstacle-set option').length,8);
  host.querySelector('#obstacle-set').value='2';host.querySelector('#select-obstacle-set').click();
  await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 2'));

@@ -1,6 +1,6 @@
 # Olympia trực tuyến — 5 thiết bị
 
-Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động tự tính điểm khi MC chấm; các vòng khác vẫn nhập điểm thủ công.
+Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
 
 ## Triển khai Render
 
@@ -25,7 +25,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
 - Trong **Chấm và sửa điểm**, sau khi hết giờ hoặc bấm **Khóa trả lời**, MC chọn **Đúng / Sai / Không trả lời** cho đội có quyền trả lời. Khởi động riêng: đúng +10, sai/không trả lời 0. Khởi động chung: đúng +10, sai/không trả lời −5, chỉ chấm đội giành chuông đầu tiên. MC xác nhận không trả lời miệng bằng nút **Không trả lời**; hết giờ không tự suy đoán kết quả. Không ai bấm chuông thì không trừ đội nào.
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
-- Các vòng còn lại có nút chấm để ghi nhận, chưa tự cộng/trừ điểm hoặc mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
+- Ngoài Khởi động và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
 - Bộ đề kiến thức phổ thông tự biên soạn: 60 câu Khởi động: 45 câu riêng (15/đội) + 15 câu chung, 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Đủ câu hỏi, đáp án, lựa chọn, thời gian, hình và video 6 giây tự tạo. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
@@ -40,9 +40,15 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 - Sau khi máy chủ mất phòng: tạo phòng mới, nhập bản sao để khôi phục tên, điểm, ô hình và hàng đã chọn. Bắt đầu ở trạng thái chờ câu mới; đáp án/chuông cũ chỉ để đối chiếu trong tệp, không tự diễn lại. Gửi lại năm link của phòng mới.
 - Không gửi dữ liệu nhạy cảm vào câu hỏi/đáp án. Các link vai trò là quyền truy cập; không đăng công khai link MC.
 
+## Ngôi sao hy vọng — Về đích
+
+Mỗi đội có 20 câu Về đích (20 điểm/câu) và 2 ngôi sao trong toàn trận. MC mở câu của đội đó, bấm **★ Ngôi sao hy vọng** trước **Bắt đầu**. Dùng sao tiêu hao ngay một lượt; mỗi câu tối đa một sao, không hoàn lượt khi bỏ câu hoặc bỏ chấm. Bảng điểm hiện số sao còn lại của cả ba đội.
+
+Màn trình chiếu có sao vàng lướt qua và giai điệu riêng (cần bật âm thanh). Nhãn sao ở câu hiện tại đồng bộ cả năm thiết bị; hiệu ứng không phát lại khi sync/tải lại/kết nối lại. MC khóa trả lời rồi chấm: đúng **+40**, sai hoặc không trả lời **−40**. Sửa kết quả áp dụng chênh lệch; bỏ chấm hoàn điểm câu, không hoàn sao. Câu không dùng sao vẫn nhập điểm thủ công. Backup giữ số sao đã dùng, không phát lại hiệu ứng hay lần chấm khi khôi phục; backup cũ mặc định chưa dùng sao.
+
 ## Âm thanh và đội giành quyền
 
-Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ giai điệu khi MC chấm đúng và một tiếng thụp trầm có đuôi ngân ngắn khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai là một tiếng đơn dùng sóng sin mềm, hạ cao độ về 90/180 Hz, không còn tiếng rè hoặc nhịp lặp. Mức khuếch đại chung tăng từ 0,22 lên 0,30. Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
+Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ, giai điệu khi MC chấm đúng và ba nốt mềm đi xuống khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai gồm ba nốt sin 494–392–294 Hz đi xuống. Mức khuếch đại chung tăng từ 0,22 lên 0,30. Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
 
 Khởi động chung: thẻ điểm đội bấm đầu tiên đổi nền/viền vàng, hiện nhãn **GIÀNH QUYỀN** ở cả năm vai trò; giữ đến khi đổi câu hoặc về màn chờ.
 
@@ -74,4 +80,4 @@ Deploy script chờ kết quả và báo lỗi nếu deploy thất bại. Xem b�
 
 Chướng ngại vật: trên máy MC chọn **Bộ chướng ngại vật** → **Đưa bộ lên màn chiếu**, sau đó chọn gợi ý. Có 8 bộ, mỗi bộ có ảnh và tiến độ mở ô riêng; đổi bộ hoặc đổi vòng rồi quay lại vẫn giữ các ô đã mở. Sao lưu giữ tiến độ cả 8 bộ. Ảnh chia 3 × 3: 8 ô gợi ý ngoài là các hình vuông bằng nhau (mỗi chiều bằng 1/3 ảnh). Ô trung tâm rộng/cao 38%, nằm chính giữa (cách mép trái/trên 31%) và đè lên cả 8 ô ngoài bằng lớp hiển thị cao hơn. MC chọn gợi ý 1–8 theo thứ tự đội yêu cầu; trung tâm chỉ chọn sau đủ 8 gợi ý. Bản sao cũ tự chuyển ô trung tâm cũ sang ô trung tâm mới.
 
-Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; các câu nhìn nhanh/sắp xếp 20 giây, suy luận/video 30 giây. Các vòng ngoài Khởi động vẫn chấm và nhập điểm thủ công theo phạm vi hiện tại.
+Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; các câu nhìn nhanh/sắp xếp 20 giây, suy luận/video 30 giây. Các câu ngoài Khởi động và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.

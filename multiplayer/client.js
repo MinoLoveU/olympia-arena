@@ -1,6 +1,7 @@
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const params=new URLSearchParams(location.hash.slice(1));let room=params.get('room'),secret=params.get('token'),socket,state,clockOffset=0,lastQuestion=null,lastResponseMode=null,lastObstacleSet=null,links,stopReconnect=false;
 const sounds=new window.OlympiaSounds();
+let lastHopeKey;
 $('#sound-toggle').onclick=async()=>{try{const enabled=await sounds.toggle();$('#sound-toggle').textContent=enabled?'🔊 Tắt âm thanh':'🔇 Bật âm thanh';$('#sound-toggle').setAttribute('aria-pressed',String(enabled));}catch(e){error(e.message);}};
 const roles={host:'BÀN ĐIỀU KHIỂN MC',display:'MÀN TRÌNH CHIẾU',p0:'NGƯỜI CHƠI 1',p1:'NGƯỜI CHƠI 2',p2:'NGƯỜI CHƠI 3'};
 function error(message){$('#error').textContent=message;$('#error').hidden=false;}
@@ -31,7 +32,7 @@ $('#access-form').onsubmit=event=>{
  else connect();
 };
 function connect(){
- sounds.reset();stopReconnect=false;
+ sounds.reset();lastHopeKey=undefined;$('#hope-effect').innerHTML='';stopReconnect=false;
  $('#lobby').hidden=true;$('#connection').textContent='Đang kết nối…';$('#connection').className='';
  socket=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}`);
  socket.onopen=()=>socket.send(JSON.stringify({type:'join',room,token:secret,password:accessPassword}));
@@ -42,12 +43,12 @@ function connect(){
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
 function media(q){if(!q?.media)return '';const src=esc(safeURL(q.media));return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
 const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không trả lời'};
-function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
+function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.hopeStar?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
  const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';$('#sound-toggle').hidden=s.role!=='display';
  $('#local-backups').hidden=!host;$('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
  const winner=s.round==='Khởi động'&&s.question?.type==='buzz'?s.buzzes[0]?.player:undefined;
- $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card${winner===i?' buzz-winner':''}"><span>${winner===i?'<b class="winner-label">⚑ GIÀNH QUYỀN</b>':''}${esc(t.name)}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
+ $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card${winner===i?' buzz-winner':''}"><span>${winner===i?'<b class="winner-label">⚑ GIÀNH QUYỀN</b>':''}${esc(t.name)}${s.round==='Về đích'?`<em class="hope-count">★ Còn ${2-(s.hopeUsed?.[i]||0)}/2 sao</em>`:''}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
  $('#phase-label').textContent=({waiting:'CHƯA MỞ CÂU HỎI',ready:'CÂU HỎI ĐÃ MỞ · CHỜ HIỆU LỆNH',open:'ĐANG NHẬN ĐÁP ÁN',closed:'ĐÃ KHÓA NHẬN ĐÁP ÁN'})[s.phase];
  if(lastQuestion!==s.questionId||!s.question){$('#question-media').innerHTML=media(s.question);lastQuestion=s.questionId;}
@@ -71,14 +72,29 @@ function render(){
   if(!links){try{links=JSON.parse(sessionStorage.getItem(`olympia-links-${room}`));}catch{}}
   if(links&&!$('#links').children.length){$('#links').innerHTML=Object.entries(links).map(([r,t])=>`<label class="share-link">${roles[r]}<input readonly data-link="${r}" value="${esc(location.origin+'/#'+new URLSearchParams({room,token:t}))}"><button data-copy="${r}">Sao chép liên kết</button></label>`).join('');document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const input=document.querySelector(`[data-link="${b.dataset.copy}"]`);try{await navigator.clipboard.writeText(input.value);b.textContent='Đã sao chép';}catch{input.select();b.textContent='Nhấn Ctrl/Cmd+C để sao chép';}});}
  }
- updateClock();scheduleDisplayFit();
+ renderHope();updateClock();scheduleDisplayFit();
 }
+function renderHope(){
+ const s=state,star=s.hopeStar,key=star?`${star.questionId}:${star.player}`:null;
+ const player=s.question?.players?.length===1?s.question.players[0]:null;
+ const remaining=player===null?null:2-(s.hopeUsed?.[player]||0),button=$('#hope-star');
+ button.hidden=s.round!=='Về đích';
+ button.disabled=s.phase!=='ready'||s.question?.points!==20||player===null||!!star||remaining===0;
+ button.textContent=star?'★ Đã dùng Ngôi sao hy vọng':player===null?'★ Ngôi sao hy vọng':`★ ${s.teams[player].name} · còn ${remaining}/2 sao`;
+ $('#hope-status').hidden=!star;
+ $('#hope-status').textContent=star?`★ NGÔI SAO HY VỌNG · ${s.teams[star.player].name} · Đúng +40 / Sai −40`:'';
+ if(s.role==='display'&&key&&lastHopeKey!==undefined&&lastHopeKey!==key){
+  $('#hope-effect').innerHTML=`<div class="hope-flight"><span class="hope-streak">★</span><strong>NGÔI SAO HY VỌNG</strong><span>${esc(s.teams[star.player].name)}</span></div>`;
+ }else if(!star)$('#hope-effect').innerHTML='';
+ lastHopeKey=key;
+}
+$('#hope-star').onclick=()=>send({type:'hopeStar',questionId:state.questionId});
 function renderJudging(){
- const s=state,warm=s.round==='Khởi động';
- $('#judging-note').textContent=warm?'Khóa trả lời để chấm. Đúng +10; chung sai/không trả lời −5, riêng không trừ. Đổi hoặc bỏ chấm sẽ điều chỉnh điểm câu này.':'Khóa trả lời để đánh dấu đúng/sai. Vòng này chưa tự tính điểm; MC nhập tổng điểm rồi Lưu.';
+ const s=state,warm=s.round==='Khởi động',auto=warm||!!s.hopeStar;
+ $('#judging-note').textContent=s.hopeStar?'Ngôi sao hy vọng: đúng +40; sai/không trả lời −40. Khóa trả lời rồi chấm; sửa kết quả tự điều chỉnh điểm.':warm?'Khóa trả lời để chấm. Đúng +10; chung sai/không trả lời −5, riêng không trừ. Đổi hoặc bỏ chấm sẽ điều chỉnh điểm câu này.':'Khóa trả lời để đánh dấu đúng/sai. Vòng này chưa tự tính điểm; MC nhập tổng điểm rồi Lưu.';
  s.teams.forEach((t,i)=>{
   const j=s.judgements?.[i],eligible=s.question?.players?.includes(i)&&(s.question.type!=='buzz'||s.buzzes[0]?.player===i),enabled=s.phase==='closed'&&eligible;
-  $(`#judge-${i}`).innerHTML=[['correct','✓ Đúng'],['wrong','✕ Sai'],['no-answer','Không trả lời'],['clear','Bỏ chấm']].map(([result,label])=>`<button data-judge="${result}" data-player="${i}" aria-label="${esc(label+' · '+t.name)}" aria-pressed="${j?.result===result}" ${!enabled||(result==='clear'&&!j?.result)?'disabled':''}>${label}</button>`).join('')+`<span class="judge-status">${j?.result?judgementLabels[j.result]+(warm?` (${j.points>0?'+':''}${j.points} điểm)`:' · điểm thủ công'):!s.question?'Chưa có câu hỏi':!eligible?'Không có quyền trả lời câu này':s.phase!=='closed'?'Chờ khóa trả lời':'Chưa chấm'}</span>`;
+  $(`#judge-${i}`).innerHTML=[['correct','✓ Đúng'],['wrong','✕ Sai'],['no-answer','Không trả lời'],['clear','Bỏ chấm']].map(([result,label])=>`<button data-judge="${result}" data-player="${i}" aria-label="${esc(label+' · '+t.name)}" aria-pressed="${j?.result===result}" ${!enabled||(result==='clear'&&!j?.result)?'disabled':''}>${label}</button>`).join('')+`<span class="judge-status">${j?.result?judgementLabels[j.result]+(auto?` (${j.points>0?'+':''}${j.points} điểm)`:' · điểm thủ công'):!s.question?'Chưa có câu hỏi':!eligible?'Không có quyền trả lời câu này':s.phase!=='closed'?'Chờ khóa trả lời':'Chưa chấm'}</span>`;
  });
 }
 $('#score-editor').addEventListener('click',event=>{

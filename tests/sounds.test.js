@@ -49,14 +49,22 @@ test('Audio requires an explicit enable, creates finite tones, and mutes immedia
  const wrongStart=tones.length;audio.play('wrong');const wrongTones=tones.slice(wrongStart);
  assert.ok(Math.max(...wrongTones.map(t=>t.frequency.value))<Math.min(...correctTones.map(t=>t.frequency.value)));
  assert.ok(wrongTones.every(t=>t.type==='sine'));
- assert.equal(new Set(wrongTones.map(t=>t.startTime)).size,1);
+ assert.equal(new Set(wrongTones.map(t=>t.startTime)).size,3);
+ assert.ok(wrongTones[0].frequency.value>wrongTones[1].frequency.value&&wrongTones[1].frequency.value>wrongTones[2].frequency.value);
  assert.ok(new Set(correctTones.map(t=>t.startTime)).size>1);
- audio.play('tick');audio.play('urgent');audio.play('end');
- assert.equal(tones.length-before,17);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
+ audio.play('hope');audio.play('tick');audio.play('urgent');audio.play('end');
+ assert.equal(tones.length-before,22);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
  assert.ok(tones.some(t=>t.type==='square'));assert.ok(tones.some(t=>t.type==='triangle'));
- assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,2);
+ assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,0);
  assert.equal(gains[0].value,.30);
  assert.ok(wrongTones.every(t=>t.type!=='sawtooth'&&t.type!=='square'));
  assert.equal(await audio.toggle(),false);assert.equal(gains[0].value,0);const muted=tones.length;audio.play('correct');assert.equal(tones.length,muted);
  await assert.rejects(()=>setup().toggle(),/hỗ trợ/);
+});
+
+test('Hope star sound fires once on activation, never on initial join, sync or reconnect',()=>{
+ const audio=setup(),events=[];audio.play=kind=>events.push(kind);
+ const active=snapshot({hopeStar:{questionId:1,player:0}});
+ audio.observe(snapshot());audio.observe(active);audio.observe(active);assert.deepEqual(events,['hope']);
+ audio.reset();audio.observe(active);assert.equal(events.length,1);
 });

@@ -123,5 +123,21 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('#round').value='Về đích';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelectorAll('#preset-question option').length,60);
  host.querySelector('#preset-question').value='finish-60';host.querySelector('#publish-question').click();await wait(()=>p2.querySelector('#question-title').textContent.includes('chia cho 5 được thương 7'));assert.ok(p2.querySelector('#answer-text'));
  assert.equal(p2.querySelector('#clock-text').textContent,'15 GIÂY');
+ await new Promise(r=>setTimeout(r,1100));
+ assert.equal(host.querySelector('#hope-star').hidden,false);assert.equal(host.querySelector('#hope-star').disabled,false);
+ host.querySelector('#hope-star').click();await wait(()=>doms.every(d=>!d.window.document.querySelector('#hope-status').hidden));
+ for(const d of [host,display,p0,p1,p2])assert.match(d.querySelectorAll('.hope-count')[2].textContent,/1\/2/);
+ assert.ok(display.querySelector('.hope-flight'));assert.equal(p2.querySelector('.hope-flight'),null);
+ const flight=display.querySelector('.hope-flight');assert.equal(host.querySelector('#hope-star').disabled,true);
+ host.querySelector('#start').click();await wait(()=>!host.querySelector('#stop').disabled);
+ host.querySelector('#stop').click();await wait(()=>!host.querySelector('[data-judge="correct"][data-player="2"]').disabled);
+ host.querySelector('[data-judge="correct"][data-player="2"]').click();
+ await wait(()=>[host,display,p0,p1,p2].every(d=>d.querySelectorAll('#scoreboard strong')[2].textContent==='40'));
+ assert.equal(display.querySelector('.hope-flight'),flight);
+ host.querySelector('[data-judge="wrong"][data-player="2"]').click();await wait(()=>display.querySelectorAll('#scoreboard strong')[2].textContent==='-40');
+ host.querySelector('#preset-question').value='finish-59';host.querySelector('#publish-question').click();
+ await wait(()=>display.querySelector('#hope-status').hidden);assert.equal(display.querySelector('.hope-flight'),null);
+ assert.match(host.querySelector('#hope-star').textContent,/1\/2/);
+
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });

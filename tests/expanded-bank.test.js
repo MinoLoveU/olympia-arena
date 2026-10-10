@@ -20,11 +20,11 @@ test('Visual counting answers match SVG contents',()=>{
   assert.equal(doc.window.document.querySelectorAll(`${tag}[fill="${fill}"]`).length,Number(q.solution),q.id);doc.window.close();
  }
 });
-test('All 263 presets can be played, including center gates in each set',()=>{
+test('All 260 filled presets can be played, including center gates in each set',()=>{
  const r=createRoom();
- for(const round of ['Khởi động','Tăng tốc','Về đích','Câu hỏi phụ'])for(const q of builtInBank.filter(q=>q.round===round)){play(r,q.id);assert.equal(r.question.solution,q.solution);}
+ for(const round of ['Khởi động','Tăng tốc','Về đích','Câu hỏi phụ'])for(const q of builtInBank.filter(q=>q.round===round&&!q.pending)){play(r,q.id);assert.equal(r.question.solution,q.solution);}
  for(const set of obstacleSets){choose(r,set.id);const qs=builtInBank.filter(q=>q.obstacleSet===set.id);const center=qs.find(q=>q.clue===8);assert.throws(()=>play(r,center.id));for(const q of qs){play(r,q.id);assert.equal(r.question.solution,q.solution);}}
- assert.equal(r.usedQuestions.length,263);assert.equal(new Set(r.usedQuestions).size,263);
+ assert.equal(r.usedQuestions.length,260);assert.equal(new Set(r.usedQuestions).size,260);
 });
 test('Switching sets, leaving round, and backup preserve independent progress without leaking host catalog',()=>{
  const r=createRoom();choose(r,'1');play(r,'obstacle-1');act(r,'host',{type:'tile',open:true});
@@ -41,6 +41,6 @@ test('Switching sets, leaving round, and backup preserve independent progress wi
 test('All added visual assets are served; answer modules remain private',async()=>{
  const {createGameServer}=await import('../server.js');const {once}=await import('node:events');const {server}=createGameServer();server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${server.address().port}`;
- try{for(const path of new Set([...obstacleSets.map(s=>s.image),...builtInBank.map(q=>q.media)].filter(Boolean))){const res=await fetch(base+path);assert.equal(res.status,200,path);}for(const path of ['/multiplayer/expanded-bank.js','/multiplayer/obstacle-sets.js','/multiplayer/visual-questions.js'])assert.equal((await fetch(base+path)).status,404);}
+ try{for(const path of new Set([...obstacleSets.map(s=>s.image),...builtInBank.map(q=>q.media)].filter(Boolean))){const res=await fetch(base+path);assert.equal(res.status,200,path);if(path.endsWith('.jpg'))assert.match(res.headers.get('content-type'),/^image\/jpeg/);}for(const path of ['/multiplayer/expanded-bank.js','/multiplayer/obstacle-sets.js','/multiplayer/visual-questions.js','/multiplayer/warmup-bank.js'])assert.equal((await fetch(base+path)).status,404);}
  finally{await new Promise(r=>server.close(r));}
 });

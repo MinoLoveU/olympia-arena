@@ -136,16 +136,16 @@ function renderCatalog(){
  if(lastObstacleSet!==state.obstacleSet){selected=state.obstacleSet||'1';lastObstacleSet=state.obstacleSet;}
  $('#obstacle-set').innerHTML=sets.map(set=>`<option value="${set.id}">Bộ ${set.id} · ${esc(set.name)}</option>`).join('');$('#obstacle-set').value=selected;
  $('#select-obstacle-set').disabled=state.phase==='open';
- const locked=q=>used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
+ const locked=q=>q.pending||used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
  const items=catalog.filter(q=>q.round===round&&(!q.obstacleSet||q.obstacleSet===(state.obstacleSet||'1'))).sort((a,b)=>a.round==='Về đích'?(a.players[0]-b.players[0]||parseInt(a.label.split('Câu ')[1])-parseInt(b.label.split('Câu ')[1])):0),previous=$('#preset-question').value;
- $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
+ $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${q.pending?'Để trống · ':used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
  $('#preset-question').value=items.some(q=>q.id===previous&&!locked(q))?previous:(items.find(q=>!locked(q))?.id||'');
  previewPreset();
 }
 function previewPreset(){
  const q=state?.catalog?.find(q=>q.id===$('#preset-question').value);
  $('#preset-preview').innerHTML=q?`<b>${esc(q.label)}</b><p>${esc(q.text)}</p><p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${q.round==='Khởi động'?(q.type==='buzz'?'Bấm chuông · trả lời miệng':'Trả lời miệng'):{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:'<p>Đã chơi hết các câu trong vòng này.</p>';
- $('#publish-question').disabled=!q||state.phase==='open';
+ $('#publish-question').disabled=!q||!!q.pending||state.phase==='open';
 }
 $('#select-obstacle-set').onclick=()=>send({type:'obstacleSet',id:$('#obstacle-set').value});
 $('#preset-question').onchange=previewPreset;

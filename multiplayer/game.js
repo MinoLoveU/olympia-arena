@@ -29,6 +29,7 @@ export function act(room,role,msg,now=Date.now()){
    room.log=`Đã chọn bộ chướng ngại vật ${msg.id}. Mời đội chọn gợi ý.`;
   }else if(msg.type==='preset'){
    const entry=builtInBank.find(q=>q.id===msg.id);if(!entry)fail('Câu hỏi không tồn tại trong bộ đề.');
+   if(entry.pending)fail('Câu này đang để trống trong tài liệu, chưa thể mở.');
    if(entry.obstacleSet&&entry.obstacleSet!==room.obstacleSet)fail('Chọn đúng bộ chướng ngại vật trước khi mở gợi ý.');
    if(room.usedQuestions.includes(entry.id))fail('Câu này đã được mở. Hãy chọn câu chưa chơi.');
    act(room,'host',{type:'question',question:entry,round:entry.round,clue:entry.clue,duration:entry.duration},now);

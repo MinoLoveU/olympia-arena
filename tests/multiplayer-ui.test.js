@@ -138,6 +138,13 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('#preset-question').value='finish-59';host.querySelector('#publish-question').click();
  await wait(()=>display.querySelector('#hope-status').hidden);assert.equal(display.querySelector('.hope-flight'),null);
  assert.match(host.querySelector('#hope-star').textContent,/1\/2/);
+ host.querySelector('#round').value='Khởi động';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
+ for(const id of ['warm-27','warm-36','warm-45']){const option=host.querySelector(`option[value="${id}"]`);assert.equal(option.disabled,true);assert.match(option.textContent,/Để trống/);}
+ host.querySelector('#preset-question').value='common-5';host.querySelector('#publish-question').click();
+ await wait(()=>[host,display,p0,p1,p2].every(d=>d.querySelector('#question-media img')?.getAttribute('src')==='/assets/warmup-common-5.jpg'));
+ assert.match(host.querySelector('#host-solution').textContent,/Đoàn kết dân tộc/);
+ for(const d of [display,p0,p1,p2])assert.ok(!d.querySelector('#question-title').textContent.includes('Đoàn kết dân tộc'));
+
 
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });

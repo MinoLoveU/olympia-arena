@@ -33,7 +33,7 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH}={}
   }
   if(req.method==='GET'&&path==='/health')return json(200,{ok:true});
   if(req.method!=='GET'||!allowed.has(path)){res.writeHead(404);res.end('Not found');return;}
-  try{const file=allowed.get(path),data=await readFile(root+file);const ext=file.split('.').pop();res.writeHead(200,{'Content-Type':{html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',svg:'image/svg+xml',webp:'image/webp',mp4:'video/mp4'}[ext],'Cache-Control':'no-cache','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);}catch{res.writeHead(500);res.end('Không đọc được tệp.');}
+  try{const file=allowed.get(path),data=await readFile(root+file);const ext=file.split('.').pop();res.writeHead(200,{'Content-Type':{html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',svg:'image/svg+xml',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',mp4:'video/mp4'}[ext],'Cache-Control':'no-cache','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);}catch{res.writeHead(500);res.end('Không đọc được tệp.');}
  });
  const wss=new WebSocketServer({server,maxPayload:16384});
  function broadcast(room){for(const [socket,role] of room.connections)if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'state',state:snapshot(room,role)}));}

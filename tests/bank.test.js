@@ -1,12 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {builtInBank} from '../multiplayer/bank.js';import {createRoom,act,snapshot,expire} from '../multiplayer/game.js';import {existsSync} from 'node:fs';
-test('Complete built-in pack: 263 unique entries, answers, timings and bundled media',()=>{assert.equal(builtInBank.length,263);assert.equal(new Set(builtInBank.map(q=>q.id)).size,263);assert.deepEqual(['Khởi động','Vượt chướng ngại vật','Tăng tốc','Về đích','Câu hỏi phụ'].map(round=>builtInBank.filter(q=>q.round===round).length),[60,80,60,60,3]);for(const q of builtInBank){assert.ok(q.text&&q.solution&&q.duration>0);if(q.type==='choice')assert.ok(q.choices.includes(q.solution));if(q.media)assert.ok(existsSync(new URL('..'+q.media,import.meta.url)));}assert.deepEqual(builtInBank.filter(q=>q.round==='Tăng tốc').slice(0,4).map(q=>q.duration),[20,20,30,30]);});
+test('Built-in pack: 263 slots, 260 filled entries, timings and bundled media',()=>{assert.equal(builtInBank.length,263);assert.equal(new Set(builtInBank.map(q=>q.id)).size,263);assert.deepEqual(['Khởi động','Vượt chướng ngại vật','Tăng tốc','Về đích','Câu hỏi phụ'].map(round=>builtInBank.filter(q=>q.round===round).length),[60,80,60,60,3]);for(const q of builtInBank){if(q.pending){assert.equal(q.text,'');assert.equal(q.solution,'');}else assert.ok(q.text&&q.solution&&q.duration>0);if(q.type==='choice')assert.ok(q.choices.includes(q.solution));if(q.media)assert.ok(existsSync(new URL('..'+q.media,import.meta.url)));}assert.deepEqual(builtInBank.filter(q=>q.round==='Tăng tốc').slice(0,4).map(q=>q.duration),[20,20,30,30]);});
 test('Only host gets built-in catalog; preset opens correct question without typed content',()=>{const r=createRoom();assert.equal(snapshot(r,'host').catalog.length,263);for(const role of ['display','p0','p1','p2'])assert.equal(snapshot(r,role).catalog,undefined);assert.throws(()=>act(r,'p0',{type:'preset',id:'speed-1'}));act(r,'host',{type:'preset',id:'speed-2'});assert.equal(r.question.type,'choice');assert.equal(r.duration,20);assert.equal(snapshot(r,'display').question.solution,undefined);assert.throws(()=>act(r,'host',{type:'preset',id:'speed-2'}));});
-test('Private questions accept only assigned team; common buzzer stops the countdown until MC closes',()=>{const r=createRoom();act(r,'host',{type:'preset',id:'warm-1'});act(r,'host',{type:'start'},100);assert.throws(()=>act(r,'p1',{type:'answer',questionId:1,text:'Hà Nội'},101));act(r,'p0',{type:'answer',questionId:1,text:'Hà Nội'},102);act(r,'host',{type:'close'});act(r,'host',{type:'preset',id:'common-1'});act(r,'host',{type:'start'},10000);act(r,'p2',{type:'buzz',questionId:2},12000);assert.equal(r.deadline,null);assert.equal(expire(r,60000),false);assert.equal(r.phase,'open');act(r,'host',{type:'close'},60001);assert.equal(r.phase,'closed');});
+test('Private questions accept only assigned team; common buzzer stops the countdown until MC closes',()=>{const r=createRoom();act(r,'host',{type:'preset',id:'warm-1'});act(r,'host',{type:'start'},100);assert.throws(()=>act(r,'p1',{type:'answer',questionId:1,text:'Lúa nước'},101));act(r,'p0',{type:'answer',questionId:1,text:'Lúa nước'},102);act(r,'host',{type:'close'});act(r,'host',{type:'preset',id:'common-1'});act(r,'host',{type:'start'},10000);act(r,'p2',{type:'buzz',questionId:2},12000);assert.equal(r.deadline,null);assert.equal(expire(r,60000),false);assert.equal(r.phase,'open');act(r,'host',{type:'close'},60001);assert.equal(r.phase,'closed');});
 test('Obstacle choice preserves waiting, independent masks and final answer',()=>{const r=createRoom();act(r,'host',{type:'round',round:'Vượt chướng ngại vật'});assert.equal(r.question,null);act(r,'host',{type:'preset',id:'obstacle-3'});assert.equal(r.selectedClue,2);act(r,'host',{type:'tile',open:true});act(r,'host',{type:'waiting'});assert.equal(r.question,null);assert.deepEqual(r.opened,[2]);act(r,'host',{type:'preset',id:'obstacle-answer'});assert.equal(r.question.type,'buzz');assert.equal(r.selectedClue,null);assert.equal(r.question.solution,'CẦU VỒNG');});
 
 test('Warm-up has 15 private questions per team and 15 common questions, preserving saved IDs',()=>{
  const warm=builtInBank.filter(q=>q.round==='Khởi động');
- assert.equal(new Set(warm.map(q=>q.text)).size,60);
+ assert.equal(new Set(warm.filter(q=>!q.pending).map(q=>q.text)).size,57);
  for(let team=0;team<3;team++){
   const questions=warm.filter(q=>q.players?.includes(team));
   assert.equal(questions.length,15);
@@ -18,8 +18,8 @@ test('Warm-up has 15 private questions per team and 15 common questions, preserv
  assert.deepEqual(common.map(q=>q.id),Array.from({length:15},(_,i)=>`common-${i+1}`));
  assert.ok(common.every(q=>!q.players&&q.duration===3&&q.buzzAnswerSeconds===undefined));
  const room=createRoom();
- for(const q of warm){act(room,'host',{type:'preset',id:q.id});assert.equal(room.question.text,q.text);assert.equal(room.question.solution,q.solution);}
- assert.equal(room.usedQuestions.length,60);
+ for(const q of warm.filter(q=>!q.pending)){act(room,'host',{type:'preset',id:q.id});assert.equal(room.question.text,q.text);assert.equal(room.question.solution,q.solution);}
+ assert.equal(room.usedQuestions.length,57);
 });
 
 test('Eight obstacle clues may be selected in any order; center unlocks only after all eight',()=>{

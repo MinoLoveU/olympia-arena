@@ -1,6 +1,6 @@
 # Olympia trực tuyến — 5 thiết bị
 
-Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
+Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động, Tăng tốc và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
 
 ## Triển khai Render
 
@@ -29,7 +29,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
 - Trong **Chấm và sửa điểm**, sau khi hết giờ hoặc bấm **Khóa trả lời**, MC chọn **Đúng / Sai / Không trả lời** cho đội có quyền trả lời. Khởi động riêng: đúng +10, sai/không trả lời 0. Khởi động chung: đúng +10, sai/không trả lời −5, chỉ chấm đội giành chuông đầu tiên. MC xác nhận không trả lời miệng bằng nút **Không trả lời**; hết giờ không tự suy đoán kết quả. Không ai bấm chuông thì không trừ đội nào.
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
-- Ngoài Khởi động và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
+- Ngoài Khởi động, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
 - Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, câu 15 mỗi đội để trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
@@ -84,4 +84,14 @@ Deploy script chờ kết quả và báo lỗi nếu deploy thất bại. Xem b�
 
 Chướng ngại vật: trên máy MC chọn **Bộ chướng ngại vật** → **Đưa bộ lên màn chiếu**, sau đó chọn gợi ý. Có 8 bộ, mỗi bộ có ảnh và tiến độ mở ô riêng; đổi bộ hoặc đổi vòng rồi quay lại vẫn giữ các ô đã mở. Sao lưu giữ tiến độ cả 8 bộ. Ảnh chia 3 × 3: 8 ô gợi ý ngoài là các hình vuông bằng nhau (mỗi chiều bằng 1/3 ảnh). Ô trung tâm rộng/cao 38%, nằm chính giữa (cách mép trái/trên 31%) và đè lên cả 8 ô ngoài bằng lớp hiển thị cao hơn. MC chọn gợi ý 1–8 theo thứ tự đội yêu cầu; trung tâm chỉ chọn sau đủ 8 gợi ý. Bản sao cũ tự chuyển ô trung tâm cũ sang ô trung tâm mới.
 
-Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; các câu nhìn nhanh/sắp xếp 20 giây, suy luận/video 30 giây. Các câu ngoài Khởi động và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.
+Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; các câu nhìn nhanh/sắp xếp 20 giây, suy luận/video 30 giây. Các câu ngoài Khởi động, Tăng tốc và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.
+
+
+## Tăng tốc — cập nhật 12/10/2026
+Cả 60 câu đều nhập đáp án, không đặt giới hạn ký tự và không cắt ngắn nội dung gửi lên. Giữ đáp án đầu tiên, khóa sau hạn như cũ. Câu sắp xếp số đã đưa các số vào đề để người chơi tự nhập thứ tự.
+
+Khi MC công bố, màn chiếu xếp ba câu trả lời từ trên xuống theo thứ tự máy chủ nhận, đội chưa gửi nằm cuối. Góc mỗi câu ghi số giây với ba chữ số thập phân, tính từ Bắt đầu đến lúc máy chủ nhận; có bao gồm độ trễ mạng. Nếu cùng mili giây, dùng thứ tự nhận để phân hạng. Hiển thị thời gian không đồng nghĩa đo riêng thời gian suy nghĩ với độ chính xác tuyệt đối.
+
+MC khóa trả lời rồi tích Đúng theo thứ tự muốn trao điểm: 40–30–20–10. Hiện có ba đội nên dùng ba mức đầu. Thứ tự điểm là thứ tự MC tích Đúng, độc lập với thứ tự gửi. Sai/Không trả lời được 0; đội chưa gửi không thể tích Đúng. Bấm lặp không cộng lại. Sửa hoặc Bỏ chấm sẽ tự xếp lại mức điểm các đội còn đúng và áp dụng chênh lệch vào tổng; tích Đúng lại sau khi bỏ/sửa đưa đội về cuối thứ tự chấm. Điều chỉnh điểm thủ công vẫn được giữ.
+
+59 kiểm thử đạt, gồm năm giao diện/WebSocket, gửi văn bản Unicode dài hơn giới hạn cũ, giữ kín trước công bố, thời gian và thứ tự nhận, chấm theo thứ tự khác thứ tự gửi, sửa/bỏ chấm và sao lưu. Chưa kiểm tra bố cục bằng trình duyệt thực tế.

@@ -252,3 +252,13 @@ body[data-role="display"] #question-panel.large-clue-image #question-media svg{p
  body[data-role^="p"] #question-panel.large-clue-image #question-media{flex:1 1 0;position:relative;min-height:0}
  body[data-role^="p"] #question-panel.large-clue-image #question-media svg{position:absolute;inset:0;width:100%;height:100%;max-height:100%;object-fit:contain}
 }
+
+/* Reveal speed answers vertically in server receipt order. */
+.answer-card{position:relative}
+.answer-time{position:absolute;top:8px;right:10px;color:var(--gold);font-size:12px;font-variant-numeric:tabular-nums}
+.answer-card:has(.answer-time)>b{padding-right:100px}
+body[data-role="display"].speed-revealed #game{grid-template-rows:minmax(0,7fr) minmax(0,45fr) minmax(0,48fr)}
+body[data-role="display"].speed-revealed #answer-cards{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:calc(.6 * var(--u))}
+body[data-role="display"].speed-revealed .answer-time{top:calc(.6 * var(--u));right:1vw;font-size:calc(1.8 * var(--u))}
+body[data-role="display"].speed-revealed .answer-card>b{padding-right:15vw}
+body[data-role="display"].speed-revealed .answer-card p{font-size:calc(3 * var(--u));white-space:pre-wrap}

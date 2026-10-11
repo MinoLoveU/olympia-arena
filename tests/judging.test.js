@@ -32,7 +32,7 @@ test('Judging enforces host, question ID, closed phase, version, and valid paylo
  assert.deepEqual(r.judgements,{});assert.throws(()=>judge(r,0,'correct',{questionId:1}));assert.equal(r.teams[0].score,before);
 });
 test('Other rounds record judgement without automatic points or opening obstacle tiles',()=>{
- for(const id of ['obstacle-1','speed-1','finish-1','tie-1']){
+ for(const id of ['obstacle-1','finish-1','tie-1']){
   const r=prepare(id);if(r.question.type==='buzz')act(r,'p0',{type:'buzz',questionId:r.questionId},101);act(r,'host',{type:'close'});
   for(const result of ['correct','wrong','no-answer']){judge(r,0,result);assert.equal(r.judgements[0].result,result);assert.equal(r.teams[0].score,0);}
   assert.deepEqual(r.opened,[]);

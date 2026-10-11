@@ -48,7 +48,7 @@ export function act(room,role,msg,now=Date.now()){
     if(clue===8&&clues.filter(n=>n<8).length<8)fail('Chọn đủ tám gợi ý trước ô trung tâm.');
    }
    if(round!==room.round){saveObstacle(room);if(round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}}room.round=round;
-   room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:q.type,choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
+   room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
    room.selectedClue=round==='Vượt chướng ngại vật'&&!q.obstacleGuess?clue:null;if(room.selectedClue!==null)room.usedClues.push(clue);
    room.duration=seconds;room.phase='ready';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;room.log='Câu hỏi đã mở. Chờ MC bắt đầu.';
   }else if(msg.type==='round'){
@@ -64,7 +64,7 @@ export function act(room,role,msg,now=Date.now()){
    room.hopeUsed[player]++;room.hopeStar={questionId:room.questionId,player};
    room.log=`${room.teams[player].name} dùng Ngôi sao hy vọng: đúng +40, sai/không trả lời −40. Còn ${2-room.hopeUsed[player]} sao.`;
   }else if(msg.type==='start'){
-   if(!room.question||room.phase!=='ready')fail('Cần mở câu hỏi mới trước khi bắt đầu.');room.phase='open';room.deadline=now+room.duration*1000;room.log='Đang nhận đáp án / chuông.';
+   if(!room.question||room.phase!=='ready')fail('Cần mở câu hỏi mới trước khi bắt đầu.');room.phase='open';room.startedAt=now;room.deadline=now+room.duration*1000;room.log='Đang nhận đáp án / chuông.';
   }else if(msg.type==='close'){
    room.phase=room.question?'closed':'waiting';room.deadline=null;room.log='Đã khóa nhận đáp án.';
   }else if(msg.type==='waiting'){
@@ -80,6 +80,21 @@ export function act(room,role,msg,now=Date.now()){
    if(msg.version!==(previous?.version||0))fail('Kết quả đã thay đổi. Kiểm tra lại trước khi chấm.');
    const normalized=result==='clear'?null:result;
    if(previous?.result===normalized)return snapshot(room,role,now);
+   if(room.round==='Tăng tốc'){
+    if(result==='correct'&&!room.answers[player])fail('Đội chưa gửi đáp án.');
+    const next={...room.judgements,[player]:{result:normalized,points:0,version:(previous?.version||0)+1,correctOrder:result==='correct'?room.revision+1:null}};
+    const ordered=Object.keys(next).filter(i=>next[i].result==='correct').sort((a,b)=>next[a].correctOrder-next[b].correctOrder);
+    const scores=room.teams.map(t=>t.score);
+    for(const key of Object.keys(next)){
+     const rank=ordered.indexOf(key),points=rank<0?0:([40,30,20,10][rank]||0),old=room.judgements[key];
+     scores[key]+=points-(old?.points||0);
+     if(!Number.isFinite(scores[key])||Math.abs(scores[key])>100000)fail('Điểm vượt giới hạn.');
+     next[key]={...next[key],points,version:next[key].version+(Number(key)!==player&&points!==(old?.points||0)?1:0)};
+    }
+    room.judgements=next;room.teams.forEach((t,i)=>t.score=scores[i]);
+    room.log='Tăng tốc: điểm 40–30–20–10 theo thứ tự MC tích Đúng; sửa/bỏ chấm tự xếp lại điểm.';
+    room.updatedAt=now;room.revision++;return snapshot(room,role,now);
+   }
    const starred=room.round==='Về đích'&&room.hopeStar?.questionId===room.questionId&&room.hopeStar.player===player;
    const points=starred?(result==='correct'?40:['wrong','no-answer'].includes(result)?-40:0):room.round==='Khởi động'?(result==='correct'?10:room.question.type==='buzz'&&['wrong','no-answer'].includes(result)?-5:0):0;
    const score=room.teams[player].score+points-(previous?.points||0);
@@ -137,9 +152,9 @@ export function act(room,role,msg,now=Date.now()){
   }else if(msg.type==='answer'){
    if(room.answers[player])fail('Đã nhận đáp án đầu tiên; không thể thay đổi.');
    if(room.question.type==='buzz'&&room.buzzes[0]?.player!==player)fail('Chỉ đội giành chuông đầu tiên được trả lời.');
-   const text=clean(msg.text,1000);if(!text)fail('Đáp án không được để trống.');
+   const text=room.round==='Tăng tốc'?(typeof msg.text==='string'?msg.text.trim():''):clean(msg.text,1000);if(!text)fail('Đáp án không được để trống.');
    if(room.question.type==='choice'&&!room.question.choices.includes(text))fail('Lựa chọn không hợp lệ.');
-   room.answers[player]={text,receivedAt:now};room.log=`Đã nhận đáp án ${room.teams[player].name}.`;
+   room.answers[player]={text,receivedAt:now,...(room.round==='Tăng tốc'?{elapsedMs:Math.max(0,now-room.startedAt),rank:Object.keys(room.answers).length+1}:{})};room.log=`Đã nhận đáp án ${room.teams[player].name}.`;
   }else fail('Người chơi không được điều khiển cuộc thi.');
  }else fail('Màn trình chiếu chỉ được xem.');
  saveObstacle(room);room.updatedAt=now;room.revision++;return snapshot(room,role,now);

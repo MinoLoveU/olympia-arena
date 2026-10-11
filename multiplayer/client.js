@@ -43,7 +43,7 @@ function connect(){
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
 function media(q){if(!q?.media)return '';const src=esc(safeURL(q.media));if(q.media==='/assets/warmup-common-5.jpg')return `<svg viewBox="0 35 640 545" width="640" height="545" role="img" aria-label="Gợi ý câu hỏi" style="overflow:hidden"><defs><clipPath id="clue-crop"><rect x="0" y="35" width="640" height="545"/></clipPath></defs><image href="${src}" width="640" height="640" clip-path="url(#clue-crop)"/></svg>`;return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
 const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không trả lời'};
-function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.hopeStar?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
+function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.round==='Tăng tốc'||state.hopeStar?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
  const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';$('#sound-toggle').hidden=s.role!=='display';
  $('#local-backups').hidden=!host;$('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
@@ -58,9 +58,12 @@ function render(){
  $('#question-panel').classList.toggle('large-clue-image',s.question?.media==='/assets/warmup-common-5.jpg');
  const warm=s.round==='Khởi động';
  document.body.classList.toggle('oral-round',warm);
+ document.body.classList.toggle('speed-revealed',s.round==='Tăng tốc'&&s.showAnswers);
  $('#results h2').textContent=warm?'Trả lời miệng · MC chấm điểm':'Đáp án các đội';
  $('#answer-status').textContent=warm?'':s.showAnswers?'ĐÃ CÔNG BỐ':'CHỜ MC CÔNG BỐ';
- $('#answer-cards').innerHTML=s.teams.map((t,i)=>{const a=s.answers[i];return `<div class="answer-card"><b>${esc(t.name)}</b><p>${warm?(s.buzzes[0]?.player===i?'⚑ Giành quyền trả lời':s.question?.type==='buzz'?'Chờ chuông':s.question?.players?.includes(i)?'Trả lời miệng':'Theo dõi') : a?(a.text===null?'✓ Đã gửi đáp án':esc(a.text)):'Chưa gửi đáp án'}${judgementBadge(i)}</p><small>${a?'Đã ghi nhận trên máy chủ':''}</small></div>`;}).join('');
+ const answerTeams=s.teams.map((t,i)=>({t,i}));
+ if(s.round==='Tăng tốc')answerTeams.sort((a,b)=>(s.answers[a.i]?.rank??Infinity)-(s.answers[b.i]?.rank??Infinity));
+ $('#answer-cards').innerHTML=answerTeams.map(({t,i})=>{const a=s.answers[i];return `<div class="answer-card" data-player="${i}"><b>${esc(t.name)}</b>${s.round==='Tăng tốc'&&a?`<span class="answer-time" title="Thời gian máy chủ nhận đáp án kể từ Bắt đầu">${(a.elapsedMs/1000).toFixed(3)} s</span>`:''}<p>${warm?(s.buzzes[0]?.player===i?'⚑ Giành quyền trả lời':s.question?.type==='buzz'?'Chờ chuông':s.question?.players?.includes(i)?'Trả lời miệng':'Theo dõi') : a?(a.text===null?'✓ Đã gửi đáp án':esc(a.text)):'Chưa gửi đáp án'}${judgementBadge(i)}</p><small>${a?'Đã ghi nhận trên máy chủ':''}</small></div>`;}).join('');
  $('#buzz-results').innerHTML=s.buzzes.length?'<b>THỨ TỰ CHUÔNG</b><br>'+s.buzzes.map(b=>`${b.rank===1?'⚑':'·'} ${b.rank}. ${esc(s.teams[b.player].name)}${b.rank===1?' — Giành quyền trả lời':''}`).join('<br>'):'';
  if(player)renderPlayer();
  if(host){
@@ -91,11 +94,11 @@ function renderHope(){
 }
 $('#hope-star').onclick=()=>send({type:'hopeStar',questionId:state.questionId});
 function renderJudging(){
- const s=state,warm=s.round==='Khởi động',auto=warm||!!s.hopeStar;
- $('#judging-note').textContent=s.hopeStar?'Ngôi sao hy vọng: đúng +40; sai/không trả lời −40. Khóa trả lời rồi chấm; sửa kết quả tự điều chỉnh điểm.':warm?'Khóa trả lời để chấm. Đúng +10; chung sai/không trả lời −5, riêng không trừ. Đổi hoặc bỏ chấm sẽ điều chỉnh điểm câu này.':'Khóa trả lời để đánh dấu đúng/sai. Vòng này chưa tự tính điểm; MC nhập tổng điểm rồi Lưu.';
+ const s=state,warm=s.round==='Khởi động',auto=warm||s.round==='Tăng tốc'||!!s.hopeStar;
+ $('#judging-note').textContent=s.hopeStar?'Ngôi sao hy vọng: đúng +40; sai/không trả lời −40. Khóa trả lời rồi chấm; sửa kết quả tự điều chỉnh điểm.':warm?'Khóa trả lời để chấm. Đúng +10; chung sai/không trả lời −5, riêng không trừ. Đổi hoặc bỏ chấm sẽ điều chỉnh điểm câu này.':s.round==='Tăng tốc'?'Tích Đúng theo thứ tự để cộng 40–30–20–10. Sai/không trả lời: 0. Sửa/bỏ chấm tự xếp lại điểm; tích Đúng lại đưa đội xuống cuối.':'Khóa trả lời để đánh dấu đúng/sai. Vòng này chưa tự tính điểm; MC nhập tổng điểm rồi Lưu.';
  s.teams.forEach((t,i)=>{
   const j=s.judgements?.[i],eligible=s.question?.players?.includes(i)&&(s.question.type!=='buzz'||s.buzzes[0]?.player===i),enabled=s.phase==='closed'&&eligible;
-  $(`#judge-${i}`).innerHTML=[['correct','✓ Đúng'],['wrong','✕ Sai'],['no-answer','Không trả lời'],['clear','Bỏ chấm']].map(([result,label])=>`<button data-judge="${result}" data-player="${i}" aria-label="${esc(label+' · '+t.name)}" aria-pressed="${j?.result===result}" ${!enabled||(result==='clear'&&!j?.result)?'disabled':''}>${label}</button>`).join('')+`<span class="judge-status">${j?.result?judgementLabels[j.result]+(auto?` (${j.points>0?'+':''}${j.points} điểm)`:' · điểm thủ công'):!s.question?'Chưa có câu hỏi':!eligible?'Không có quyền trả lời câu này':s.phase!=='closed'?'Chờ khóa trả lời':'Chưa chấm'}</span>`;
+  $(`#judge-${i}`).innerHTML=[['correct','✓ Đúng'],['wrong','✕ Sai'],['no-answer','Không trả lời'],['clear','Bỏ chấm']].map(([result,label])=>`<button data-judge="${result}" data-player="${i}" aria-label="${esc(label+' · '+t.name)}" aria-pressed="${j?.result===result}" ${!enabled||(s.round==='Tăng tốc'&&result==='correct'&&!s.answers[i])||(result==='clear'&&!j?.result)?'disabled':''}>${label}</button>`).join('')+`<span class="judge-status">${j?.result?judgementLabels[j.result]+(auto?` (${j.points>0?'+':''}${j.points} điểm)`:' · điểm thủ công'):!s.question?'Chưa có câu hỏi':!eligible?'Không có quyền trả lời câu này':s.phase!=='closed'?'Chờ khóa trả lời':'Chưa chấm'}</span>`;
  });
 }
 $('#score-editor').addEventListener('click',event=>{
@@ -108,7 +111,7 @@ function renderPlayer(){
  const warm=s.round==='Khởi động';
  const mode=`${s.round}:${s.questionId}:${s.question?.type}:${canAnswer}:${!!a}:${!!s.question}`;
  if(mode!==lastResponseMode){lastResponseMode=mode;const q=s.question;
-  $('#response').innerHTML=!q?'<p>Chờ MC mở câu hỏi.</p>':warm?(q.type==='buzz'?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':'<p>Khởi động riêng: trả lời miệng khi MC gọi đội của bạn.</p>'):a?'<p>✓ Máy chủ đã nhận đáp án. Không thể thay đổi.</p>':q.type==='buzz'&&!canAnswer?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':`${q.type==='choice'?`<div class="choices">${q.choices.map(c=>`<label><input type="radio" name="choice" value="${esc(c)}"> ${esc(c)}</label>`).join('')}</div>`:'<textarea id="answer-text" maxlength="1000" placeholder="Nhập đáp án của bạn…" aria-label="Đáp án"></textarea>'}<button id="send-answer" class="primary">Gửi đáp án cuối cùng</button>`;
+  $('#response').innerHTML=!q?'<p>Chờ MC mở câu hỏi.</p>':warm?(q.type==='buzz'?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':'<p>Khởi động riêng: trả lời miệng khi MC gọi đội của bạn.</p>'):a?'<p>✓ Máy chủ đã nhận đáp án. Không thể thay đổi.</p>':q.type==='buzz'&&!canAnswer?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':`${q.type==='choice'?`<div class="choices">${q.choices.map(c=>`<label><input type="radio" name="choice" value="${esc(c)}"> ${esc(c)}</label>`).join('')}</div>`:`<textarea id="answer-text" ${s.round==='Tăng tốc'?'':'maxlength="1000"'} placeholder="Nhập đáp án của bạn…" aria-label="Đáp án"></textarea>`}<button id="send-answer" class="primary">Gửi đáp án cuối cùng</button>`;
   $('#buzz')?.addEventListener('click',()=>send({type:'buzz',questionId:state.questionId}));
   $('#send-answer')?.addEventListener('click',()=>{const text=$('#answer-text')?.value||document.querySelector('input[name="choice"]:checked')?.value||'';if(!text.trim()){error('Hãy điền hoặc chọn đáp án.');return;}send({type:'answer',questionId:state.questionId,text});});
  }

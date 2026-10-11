@@ -2,7 +2,7 @@
 
 ## Bản trực tuyến 5 thiết bị (mới)
 
-**1 MC + 1 màn chiếu + 3 người chơi**, WebSocket đồng bộ câu hỏi, đáp án, chuông và điểm nhập thủ công. Chạy `npm start`; deploy máy chủ lên Render bằng [liên kết triển khai](https://render.com/deploy?repo=https://github.com/MinoLoveU/olympia-arena). Xem [MULTIPLAYER.md](MULTIPLAYER.md) để kết nối tài khoản, vận hành, sao lưu và hiểu giới hạn của cấu hình chạy thử. GitHub Pages bên dưới vẫn là bản một máy cũ.
+**1 MC + 1 màn chiếu + 3 người chơi**, WebSocket đồng bộ câu hỏi, đáp án, chuông và điểm số. MC chấm để tự tính điểm Khởi động, Tăng tốc và câu Về đích dùng sao; các câu còn lại nhập điểm thủ công. Chạy `npm start`; deploy máy chủ lên Render bằng [liên kết triển khai](https://render.com/deploy?repo=https://github.com/MinoLoveU/olympia-arena). Xem [MULTIPLAYER.md](MULTIPLAYER.md) để kết nối tài khoản, vận hành, sao lưu và hiểu giới hạn của cấu hình chạy thử. GitHub Pages bên dưới vẫn là bản một máy cũ.
 
 ## Bản một máy trên GitHub Pages
 

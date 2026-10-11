@@ -80,7 +80,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  p1.querySelector('#answer-text').value='Đang soạn';p0.querySelector('#answer-text').value='Đáp án đội 1';p0.querySelector('#send-answer').click();await wait(()=>display.querySelector('#answer-cards').textContent.includes('Đã gửi đáp án'));assert.equal(p1.querySelector('#answer-text').value,'Đang soạn');assert.ok(!display.querySelector('#answer-cards').textContent.includes('Đáp án đội 1'));
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#show-answers').disabled);host.querySelector('#show-answers').click();await wait(()=>display.querySelector('#answer-cards').textContent.includes('Đáp án đội 1'));assert.ok(!display.querySelector('#solution').textContent.includes('30 viên bi'));
  host.querySelector('#score-0').value='45';host.querySelector('[data-save-score="0"]').click();await wait(()=>p2.querySelector('#scoreboard strong').textContent==='45');
- host.querySelector('#preset-question').value='speed-2';host.querySelector('#publish-question').click();await wait(()=>p0.querySelectorAll('input[name="choice"]').length===4);host.querySelector('#start').click();await wait(()=>!p0.querySelector('input[name="choice"]').disabled);p0.querySelectorAll('input[name="choice"]')[1].checked=true;p0.querySelector('#send-answer').click();await wait(()=>host.querySelector('#answer-cards p').textContent==='⅔ → ½ → 0,75 → 0,8');assert.equal(host.querySelector('#scoreboard strong').textContent,'45');
+ host.querySelector('#preset-question').value='speed-2';host.querySelector('#publish-question').click();await wait(()=>p0.querySelector('#answer-text')&&p0.querySelector('#question-title').textContent.includes('0,8;'));assert.equal(p0.querySelector('input[name="choice"]'),null);assert.equal(p0.querySelector('#answer-text').hasAttribute('maxlength'),false);host.querySelector('#start').click();await wait(()=>!p0.querySelector('#answer-text').disabled);p0.querySelector('#answer-text').value='⅔ → ½ → 0,75 → 0,8';p0.querySelector('#send-answer').click();await wait(()=>host.querySelector('#answer-cards p').textContent==='⅔ → ½ → 0,75 → 0,8');assert.equal(host.querySelector('#scoreboard strong').textContent,'45');
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#publish-question').disabled);
  host.querySelector('#round').value='Vượt chướng ngại vật';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
  host.querySelector('#set-round').click();await wait(()=>display.querySelectorAll('.picture-cover').length===9);
@@ -146,5 +146,33 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  for(const d of [display,p0,p1,p2])assert.ok(!d.querySelector('#question-title').textContent.includes('Đoàn kết dân tộc'));
 
 
+ }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
+});
+
+test('Speed UI: unlimited text through WebSockets, ranked vertical reveal, millisecond times and MC click-order points on all five clients',async()=>{
+ const {server,wss}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');
+ const base=`http://127.0.0.1:${server.address().port}`,room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json(),doms=[],sockets=[];
+ try{
+  for(const role of ['host','display','p0','p1','p2']){
+   const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);
+   dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};
+   dom.window.eval(readFileSync(new URL('../multiplayer/sounds.js',import.meta.url),'utf8'));dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));
+  }
+  const [host,display,...players]=doms.map(d=>d.window.document);
+  await wait(()=>!host.querySelector('#access-gate').hidden);host.querySelector('#access-password').value='test-only-password';host.querySelector('#access-form').dispatchEvent(new doms[0].window.Event('submit',{cancelable:true}));
+  await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
+  host.querySelector('#round').value='Tăng tốc';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='speed-2';host.querySelector('#publish-question').click();
+  await wait(()=>players.every(d=>d.querySelector('#answer-text')));
+  for(const d of players){assert.equal(d.querySelector('#answer-text').hasAttribute('maxlength'),false);assert.equal(d.querySelector('input[name="choice"]'),null);}
+  host.querySelector('#start').click();await wait(()=>players.every(d=>!d.querySelector('#answer-text').disabled));
+  const texts=['Đội một','<script>test</script>','Đáp án dài 🌟 '.repeat(2000)];
+  for(const i of [2,0,1]){players[i].querySelector('#answer-text').value=texts[i];players[i].querySelector('#send-answer').click();await wait(()=>host.querySelector(`.answer-card[data-player="${i}"] p`)?.textContent===texts[i].trim());}
+  assert.ok(!display.querySelector('#answer-cards').textContent.includes('Đội một'));
+  host.querySelector('#stop').click();await wait(()=>!host.querySelector('#show-answers').disabled);host.querySelector('#show-answers').click();
+  await wait(()=>display.body.classList.contains('speed-revealed'));
+  assert.deepEqual([...display.querySelectorAll('#answer-cards .answer-card')].map(el=>el.dataset.player),['2','0','1']);
+  for(const i of [0,1,2]){const card=display.querySelector(`.answer-card[data-player="${i}"]`);assert.equal(card.querySelector('p').textContent,texts[i].trim());assert.match(card.querySelector('.answer-time').textContent,/^\d+\.\d{3} s$/);assert.equal(card.querySelector('script'),null);}
+  for(const [i,score] of [[1,40],[2,30],[0,20]]){host.querySelector(`[data-judge="correct"][data-player="${i}"]`).click();await wait(()=>doms.every(d=>d.window.document.querySelectorAll('#scoreboard strong')[i].textContent===String(score)));}
+  host.querySelector('[data-judge="wrong"][data-player="1"]').click();await wait(()=>doms.every(d=>[...d.window.document.querySelectorAll('#scoreboard strong')].map(el=>el.textContent).join(',')==='30,0,40'));
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });

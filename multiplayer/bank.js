@@ -19,7 +19,7 @@ const originalBank=[
  make('obstacle-center','Ô trung tâm',obstacle,'Trong dải màu đỏ, da cam, vàng, lục, lam, chàm, tím, màu nào đứng trước da cam?','ĐỎ',{clue:8,points:10}),
  make('obstacle-answer','Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật gồm 7 chữ cái (không tính khoảng trắng).','CẦU VỒNG',{type:'buzz',duration:15,obstacleGuess:true}),
  make('speed-1','Câu 1 · Nhìn nhanh',speed,'Quan sát hình: có bao nhiêu hình tam giác màu vàng?','5',{duration:20,media:'/assets/speed-shapes.svg',mediaType:'image'}),
- make('speed-2','Câu 2 · Sắp xếp',speed,'Chọn cách sắp xếp các số theo thứ tự tăng dần.','½ → ⅔ → 0,75 → 0,8',{duration:20,type:'choice',choices:['½ → ⅔ → 0,75 → 0,8','⅔ → ½ → 0,75 → 0,8','½ → 0,75 → ⅔ → 0,8','0,8 → 0,75 → ⅔ → ½']}),
+ make('speed-2','Câu 2 · Sắp xếp',speed,'Sắp xếp các số 0,8; ½; 0,75; ⅔ theo thứ tự tăng dần.','½ → ⅔ → 0,75 → 0,8',{duration:20,type:'choice',choices:['½ → ⅔ → 0,75 → 0,8','⅔ → ½ → 0,75 → 0,8','½ → 0,75 → ⅔ → 0,8','0,8 → 0,75 → ⅔ → ½']}),
  make('speed-3','Câu 3 · Suy luận',speed,'Có 3 hộp, mỗi hộp chứa 4 túi, mỗi túi có 5 viên bi. Lấy ra 2 túi từ mỗi hộp. Còn lại tổng cộng bao nhiêu viên bi?','30 viên bi: 3 × (4 − 2) × 5.',{duration:30}),
  make('speed-4','Câu 4 · Đoạn băng',speed,'Xem đoạn băng trên màn trình chiếu. Hình vuông chuyển động từ trái sang phải có màu gì?','Xanh dương',{duration:30,type:'choice',choices:['Đỏ','Vàng','Xanh dương','Trắng'],media:'/assets/speed-motion.mp4',mediaType:'video'}),
  make('finish-1','Đội 1 · Câu 1 · 20 điểm',finish,'Một hình chữ nhật dài 12 cm, rộng 8 cm. Chu vi bằng bao nhiêu cm?','40 cm: (12 + 8) × 2.',{players:[0],points:20}),
@@ -49,5 +49,5 @@ export const builtInBank=[
   ...[...set.clues,set.center].map(([text,solution],i)=>make(`obstacle-${set.id}-${i===8?'center':i+1}`,i===8?'Ô trung tâm':`Gợi ý ${i+1}`,obstacle,text,solution,{clue:i,points:10,obstacleSet:set.id})),
   make(`obstacle-${set.id}-answer`,'Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật.',set.answer,{type:'buzz',obstacleGuess:true,obstacleSet:set.id})
  ])
-];
+].map(q=>q.round===speed?{...q,type:'text',choices:[]}:q);
 export const bankInfo={title:'Chinh phục tri thức · Bộ đề 01',description:'263 vị trí (260 câu đã điền): Khởi động có 57 câu và 3 vị trí trống, 8 bộ Chướng ngại vật (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (đều 20 điểm), 3 câu phụ.'};

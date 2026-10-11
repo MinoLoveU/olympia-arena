@@ -257,8 +257,13 @@ body[data-role="display"] #question-panel.large-clue-image #question-media svg{p
 .answer-card{position:relative}
 .answer-time{position:absolute;top:8px;right:10px;color:var(--gold);font-size:12px;font-variant-numeric:tabular-nums}
 .answer-card:has(.answer-time)>b{padding-right:100px}
-body[data-role="display"].speed-revealed #game{grid-template-rows:minmax(0,7fr) minmax(0,45fr) minmax(0,48fr)}
+body[data-role="display"].speed-revealed #game{grid-template-rows:minmax(0,7fr) minmax(0,93fr);grid-template-areas:"heading heading" "scores results"}
+body[data-role="display"].speed-revealed #stage{display:none}
+body[data-role="display"].speed-revealed #results{grid-template-rows:auto minmax(0,1fr) auto}
+body[data-role="display"].speed-revealed #results .panel-title{padding:calc(.8 * var(--u)) 0}
+body[data-role="display"].speed-revealed .answer-card{padding:calc(1.2 * var(--u)) 1.5vw}
+body[data-role="display"].speed-revealed .answer-card b{font-size:calc(2.2 * var(--u))}
 body[data-role="display"].speed-revealed #answer-cards{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:calc(.6 * var(--u))}
-body[data-role="display"].speed-revealed .answer-time{top:calc(.6 * var(--u));right:1vw;font-size:calc(1.8 * var(--u))}
+body[data-role="display"].speed-revealed .answer-time{top:calc(1.2 * var(--u));right:1.5vw;font-size:calc(2.2 * var(--u))}
 body[data-role="display"].speed-revealed .answer-card>b{padding-right:15vw}
-body[data-role="display"].speed-revealed .answer-card p{font-size:calc(3 * var(--u));white-space:pre-wrap}
+body[data-role="display"].speed-revealed .answer-card p{font-size:calc(4.5 * var(--u));white-space:pre-wrap}

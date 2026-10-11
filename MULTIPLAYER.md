@@ -90,7 +90,7 @@ Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có
 ## Tăng tốc — cập nhật 12/10/2026
 Cả 60 câu đều nhập đáp án, không đặt giới hạn ký tự và không cắt ngắn nội dung gửi lên. Giữ đáp án đầu tiên, khóa sau hạn như cũ. Câu sắp xếp số đã đưa các số vào đề để người chơi tự nhập thứ tự.
 
-Khi MC công bố, màn chiếu xếp ba câu trả lời từ trên xuống theo thứ tự máy chủ nhận, đội chưa gửi nằm cuối. Góc mỗi câu ghi số giây với ba chữ số thập phân, tính từ Bắt đầu đến lúc máy chủ nhận; có bao gồm độ trễ mạng. Nếu cùng mili giây, dùng thứ tự nhận để phân hạng. Hiển thị thời gian không đồng nghĩa đo riêng thời gian suy nghĩ với độ chính xác tuyệt đối.
+Khi MC công bố, màn chiếu ẩn khung câu hỏi và dùng toàn vùng bên phải bảng điểm cho ba câu trả lời, xếp từ trên xuống theo thứ tự máy chủ nhận; đội chưa gửi nằm cuối. Ẩn đáp án hoặc chuyển câu sẽ hiện lại khung câu hỏi. Góc mỗi câu ghi số giây với ba chữ số thập phân, tính từ Bắt đầu đến lúc máy chủ nhận; có bao gồm độ trễ mạng. Nếu cùng mili giây, dùng thứ tự nhận để phân hạng. Hiển thị thời gian không đồng nghĩa đo riêng thời gian suy nghĩ với độ chính xác tuyệt đối.
 
 MC khóa trả lời rồi tích Đúng theo thứ tự muốn trao điểm: 40–30–20–10. Hiện có ba đội nên dùng ba mức đầu. Thứ tự điểm là thứ tự MC tích Đúng, độc lập với thứ tự gửi. Sai/Không trả lời được 0; đội chưa gửi không thể tích Đúng. Bấm lặp không cộng lại. Sửa hoặc Bỏ chấm sẽ tự xếp lại mức điểm các đội còn đúng và áp dụng chênh lệch vào tổng; tích Đúng lại sau khi bỏ/sửa đưa đội về cuối thứ tự chấm. Điều chỉnh điểm thủ công vẫn được giữ.
 

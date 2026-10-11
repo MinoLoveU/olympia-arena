@@ -1,11 +1,11 @@
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const params=new URLSearchParams(location.hash.slice(1));let room=params.get('room'),secret=params.get('token'),socket,state,clockOffset=0,lastQuestion=null,lastResponseMode=null,lastObstacleSet=null,links,stopReconnect=false;
 const sounds=new window.OlympiaSounds();
-let lastHopeKey;
+let lastHopeKey,reconnectTimer,lastMessageAt=Date.now(),reconnectAttempts=0,connectionReady=false;
 $('#sound-toggle').onclick=async()=>{try{const enabled=await sounds.toggle();$('#sound-toggle').textContent=enabled?'🔊 Tắt âm thanh':'🔇 Bật âm thanh';$('#sound-toggle').setAttribute('aria-pressed',String(enabled));}catch(e){error(e.message);}};
 const roles={host:'BÀN ĐIỀU KHIỂN MC',display:'MÀN TRÌNH CHIẾU',p0:'NGƯỜI CHƠI 1',p1:'NGƯỜI CHƠI 2',p2:'NGƯỜI CHƠI 3'};
 function error(message){$('#error').textContent=message;$('#error').hidden=false;}
-function send(msg){if(socket?.readyState!==WebSocket.OPEN){error('Mất kết nối. Chờ kết nối lại trước khi thao tác.');return false;}$('#error').hidden=true;socket.send(JSON.stringify(msg));return true;}
+function send(msg){if(socket?.readyState!==WebSocket.OPEN||!connectionReady){error('Mất kết nối. Chờ kết nối lại trước khi thao tác.');return false;}$('#error').hidden=true;socket.send(JSON.stringify(msg));return true;}
 let accessPassword,accessAction='join';
 function showAccess(message,action='join'){
  accessPassword=undefined;accessAction=action;
@@ -20,7 +20,7 @@ async function createMatch(){
   const response=await fetch('/api/rooms',{method:'POST',headers:{'X-Olympia-Password':accessPassword}}),data=await response.json();
   if(!response.ok){showAccess(data.error||'Không tạo được phòng.','create');return;}
   room=data.id;secret=data.tokens.host;links=data.tokens;
-  sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));
+  try{sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));}catch{}
   location.hash=new URLSearchParams({room,token:secret}).toString();connect();
  }catch(e){error(e.message);}finally{$('#create').disabled=false;}
 }
@@ -32,12 +32,14 @@ $('#access-form').onsubmit=event=>{
  else connect();
 };
 function connect(){
+ clearTimeout(reconnectTimer);connectionReady=false;
+ if(socket){socket.onclose=null;socket.close();}
  sounds.reset();lastHopeKey=undefined;$('#hope-effect').innerHTML='';stopReconnect=false;
  $('#lobby').hidden=true;$('#connection').textContent='Đang kết nối…';$('#connection').className='';
- socket=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}`);
- socket.onopen=()=>socket.send(JSON.stringify({type:'join',room,token:secret,password:accessPassword}));
- socket.onmessage=e=>{const msg=JSON.parse(e.data);if(msg.type==='password-required'){showAccess(msg.message);return;}if(msg.type==='links'){links=msg.tokens;sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));return;}if(msg.type==='error'){error(msg.message);if(msg.fatal){stopReconnect=true;$('#lobby').hidden=false;}return;}if(msg.type==='state'){$('#access-gate').hidden=true;$('#error').hidden=true;state=msg.state;sounds.observe(state);clockOffset=state.serverNow-Date.now();$('#connection').textContent='● Đã đồng bộ';$('#connection').className='online';render();}};
- socket.onclose=()=>{sounds.reset();$('#connection').textContent='● Mất kết nối · đang thử lại';$('#connection').className='offline';$('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=true);if(!stopReconnect)setTimeout(connect,1500);else $('#connection').textContent='Phòng không còn tồn tại';};
+ const activeSocket=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}`);socket=activeSocket;lastMessageAt=Date.now();
+ socket.onopen=()=>{if(socket===activeSocket)activeSocket.send(JSON.stringify({type:'join',room,token:secret,password:accessPassword}));};
+ socket.onmessage=e=>{if(socket!==activeSocket)return;lastMessageAt=Date.now();const msg=JSON.parse(e.data);if(msg.type==='heartbeat'){clockOffset=msg.serverNow-Date.now();return;}if(msg.type==='password-required'){showAccess(msg.message);return;}if(msg.type==='links'){links=msg.tokens;try{sessionStorage.setItem(`olympia-links-${room}`,JSON.stringify(links));}catch{}return;}if(msg.type==='error'){error(msg.message);if(msg.fatal){stopReconnect=true;$('#lobby').hidden=false;}return;}if(msg.type==='state'){connectionReady=true;reconnectAttempts=0;$('#access-gate').hidden=true;$('#error').hidden=true;state=msg.state;sounds.observe(state);clockOffset=state.serverNow-Date.now();$('#connection').textContent='● Đã đồng bộ';$('#connection').className='online';render();}};
+ socket.onclose=()=>{if(socket!==activeSocket)return;connectionReady=false;sounds.reset();$('#connection').textContent='● Mất kết nối · đang thử lại';$('#connection').className='offline';$('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=true);if(!stopReconnect)reconnectTimer=setTimeout(connect,Math.min(1500*2**reconnectAttempts++,15000));else $('#connection').textContent='Phòng không còn tồn tại';};
  socket.onerror=()=>{};
 }
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
@@ -67,7 +69,7 @@ function render(){
  $('#buzz-results').innerHTML=s.buzzes.length?'<b>THỨ TỰ CHUÔNG</b><br>'+s.buzzes.map(b=>`${b.rank===1?'⚑':'·'} ${b.rank}. ${esc(s.teams[b.player].name)}${b.rank===1?' — Giành quyền trả lời':''}`).join('<br>'):'';
  if(player)renderPlayer();
  if(host){
-  $('#game-log').textContent=s.log;$('#host-solution').textContent=s.question?`Đáp án riêng MC: ${s.question.solution||'(chưa nhập)'}`:'';try{localStorage.setItem(`olympia-live-backup-${room}`,JSON.stringify(matchBackup(s)));}catch{}$('#start').disabled=s.phase!=='ready';$('#stop').disabled=s.phase!=='open';$('#waiting').disabled=s.phase==='open';$('#set-round').disabled=s.phase==='open';renderCatalog();
+  $('#game-log').textContent=s.log;$('#host-solution').textContent=s.question?`Đáp án riêng MC: ${s.question.solution||'(chưa nhập)'}`:'';try{localStorage.setItem(`olympia-live-backup-${room}`,JSON.stringify(matchBackup(s)));$('#backup-warning').hidden=true;}catch{$('#backup-warning').hidden=false;}$('#start').disabled=s.phase!=='ready';$('#stop').disabled=s.phase!=='open';$('#waiting').disabled=s.phase==='open';$('#set-round').disabled=s.phase==='open';renderCatalog();
   $('#show-answers').hidden=warm;$('#show-answers').disabled=s.phase==='open';$('#open-tile').hidden=$('#close-tile').hidden=s.round!=='Vượt chướng ngại vật';$('#show-solution').disabled=s.phase==='open';$('#show-answers').textContent=s.showAnswers?'Ẩn đáp án các đội':'Công bố đáp án các đội';$('#show-solution').textContent=s.showSolution?'Ẩn đáp án chuẩn':'Hiện đáp án chuẩn';
   $('#open-tile').disabled=s.round!=='Vượt chướng ngại vật'||s.selectedClue===null;$('#close-tile').disabled=$('#open-tile').disabled;
   if(!$('#score-editor').children.length){$('#score-editor').innerHTML=s.teams.map((t,i)=>`<div class="score-edit"><input id="name-${i}" value="${esc(t.name)}" aria-label="Tên đội ${i+1}"><input id="score-${i}" type="number" value="${t.score}" aria-label="Điểm đội ${i+1}"><button data-save-score="${i}">Lưu</button><div id="judge-${i}" class="judge-controls"></div></div>`).join('');document.querySelectorAll('[data-save-score]').forEach(b=>b.onclick=()=>{const i=+b.dataset.saveScore;send({type:'name',player:i,name:$(`#name-${i}`).value});send({type:'score',player:i,score:Number($(`#score-${i}`).value)});});}
@@ -130,7 +132,17 @@ function updateClock(){
  if(state.phase==='open'&&!untimed&&left===0)$('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=true);
 }
 
-setInterval(updateClock,100);setInterval(()=>{if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'sync'}));},5000);
+setInterval(updateClock,100);
+function checkConnection(){
+ if(!socket||stopReconnect)return;
+ if(Date.now()-lastMessageAt>20000&&(socket.readyState===WebSocket.OPEN||socket.readyState===WebSocket.CONNECTING)){
+  socket.onclose=null;socket.close();connectionReady=false;connect();return;
+ }
+ if(socket.readyState===WebSocket.OPEN&&connectionReady)socket.send(JSON.stringify({type:'sync',revision:state?.revision}));
+}
+setInterval(checkConnection,5000);
+window.addEventListener('online',checkConnection);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkConnection();});
 $('#start').onclick=()=>send({type:'start'});$('#stop').onclick=()=>send({type:'close'});$('#waiting').onclick=()=>send({type:'waiting'});$('#set-round').onclick=()=>send({type:'round',round:$('#round').value});$('#show-answers').onclick=()=>send({type:'revealAnswers',show:!state.showAnswers});$('#show-solution').onclick=()=>send({type:'revealSolution',show:!state.showSolution});$('#open-tile').onclick=()=>send({type:'tile',open:true});$('#close-tile').onclick=()=>send({type:'tile',open:false});
 function renderCatalog(){
  const catalog=state.catalog||[],used=state.usedQuestions||[],round=$('#round').value;

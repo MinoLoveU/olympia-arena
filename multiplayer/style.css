@@ -267,3 +267,5 @@ body[data-role="display"].speed-revealed #answer-cards{grid-template-columns:min
 body[data-role="display"].speed-revealed .answer-time{top:calc(1.2 * var(--u));right:1.5vw;font-size:calc(2.2 * var(--u))}
 body[data-role="display"].speed-revealed .answer-card>b{padding-right:15vw}
 body[data-role="display"].speed-revealed .answer-card p{font-size:calc(4.5 * var(--u));white-space:pre-wrap}
+
+#backup-warning{color:#ffd27a;border:1px solid currentColor;padding:8px;border-radius:6px}

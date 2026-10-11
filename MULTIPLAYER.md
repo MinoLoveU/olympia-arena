@@ -95,3 +95,16 @@ Khi MC công bố, màn chiếu ẩn khung câu hỏi và dùng toàn vùng bên
 MC khóa trả lời rồi tích Đúng theo thứ tự muốn trao điểm: 40–30–20–10. Hiện có ba đội nên dùng ba mức đầu. Thứ tự điểm là thứ tự MC tích Đúng, độc lập với thứ tự gửi. Sai/Không trả lời được 0; đội chưa gửi không thể tích Đúng. Bấm lặp không cộng lại. Sửa hoặc Bỏ chấm sẽ tự xếp lại mức điểm các đội còn đúng và áp dụng chênh lệch vào tổng; tích Đúng lại sau khi bỏ/sửa đưa đội về cuối thứ tự chấm. Điều chỉnh điểm thủ công vẫn được giữ.
 
 59 kiểm thử đạt, gồm năm giao diện/WebSocket, gửi văn bản Unicode dài hơn giới hạn cũ, giữ kín trước công bố, thời gian và thứ tự nhận, chấm theo thứ tự khác thứ tự gửi, sửa/bỏ chấm và sao lưu. Chưa kiểm tra bố cục bằng trình duyệt thực tế.
+
+## Buổi chơi dài — bảo vệ kết nối
+Máy chủ kiểm tra ping/pong mỗi 30 giây để dọn kết nối bị treo. Trình duyệt kiểm tra trạng thái mỗi 5 giây; nếu không có phản hồi hơn 20 giây, nó mở lại kết nối và đồng bộ trạng thái từ máy chủ. Khi mất kết nối thông thường, khoảng thử lại tăng từ 1,5 lên tối đa 15 giây. Không gửi lại thao tác chấm hoặc đáp án cũ tự động.
+
+Nếu trạng thái không đổi, máy chủ chỉ gửi tín hiệu xác nhận nhỏ, không gửi lại toàn bộ bộ đề và dựng lại giao diện. Kết nối nhận quá chậm bị đóng khi hàng đợi gửi vượt 4 MiB để tránh tích tụ bộ nhớ; các máy khác và điểm trong phòng vẫn được giữ. Trường hợp trình duyệt MC không cho lưu bản sao, màn MC hiện cảnh báo dùng nút Tải bản sao trận.
+
+Các cơ chế này không bảo đảm phòng tồn tại sau khi máy chủ khởi động lại: hiện vẫn lưu RAM. Render Free có thể restart bất kỳ lúc nào; lưu tệp vào ổ tạm cũng không giải quyết được. Với buổi thi cần độ tin cậy cao, cần dịch vụ luôn hoạt động và lưu trạng thái bền vững (cơ sở dữ liệu hoặc persistent disk). Chưa tự chuyển gói trả phí hay thêm dịch vụ. Nguồn: https://render.com/docs/free và https://render.com/docs/websocket .
+
+Trước buổi thi, giữ các máy có nguồn điện và mạng ổn định, tắt chế độ ngủ; bật âm thanh trên màn chiếu. MC tải bản sao sau mỗi vòng. Không deploy hoặc restart trong trận. Nếu máy chủ mất phòng, tạo phòng mới, phục hồi bản sao rồi chia lại liên kết.
+
+Chạy `node --expose-gc scripts/check-stability.js` để thử 10.800 lượt đồng bộ của 5 kết nối (lượng tương đương 3 giờ với chu kỳ 5 giây), nén trong khoảng 2 phút. Đây là thử lượng thông điệp và bộ nhớ; không phải chứng nhận chạy thực tế liên tục 3 giờ hoặc kiểm tra toàn bộ hạ tầng Internet/Render.
+
+Kết quả 12/10/2026: 63 kiểm thử đạt. Thử lượng đồng bộ đạt 10.800 phản hồi trong 120 giây, giữ đủ 5 kết nối; heap giữ lại sau GC tăng 0,53 MiB, tổng dữ liệu nhận 971.284 byte, điểm cuối đồng bộ đầy đủ. Kết quả đo cục bộ, chưa phải độ bền ba giờ thực tế trên Render.

@@ -8,7 +8,7 @@ import {createRoom,authenticate,snapshot,act,expire} from './multiplayer/game.js
 import {verifyPassword} from './multiplayer/access.js';
 const root=fileURLToPath(new URL('.',import.meta.url));
 function sameOrigin(origin,host){try{return !origin||new URL(origin).host===host;}catch{return false;}}
-export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH}={}){
+export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH,heartbeatMs=30000}={}){
  const rooms=new Map();
  const attempts=new Map();
  function checkPassword(password,key){
@@ -36,10 +36,17 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH}={}
   try{const file=allowed.get(path),data=await readFile(root+file);const ext=file.split('.').pop();res.writeHead(200,{'Content-Type':{html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',svg:'image/svg+xml',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',mp4:'video/mp4'}[ext],'Cache-Control':'no-cache','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);}catch{res.writeHead(500);res.end('Không đọc được tệp.');}
  });
  const wss=new WebSocketServer({server,maxPayload:0});
- function broadcast(room){for(const [socket,role] of room.connections)if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({type:'state',state:snapshot(room,role)}));}
+ function deliver(socket,message){
+  if(socket.readyState!==WebSocket.OPEN)return;
+  // Drop a stalled receiver rather than accumulating broadcasts in memory.
+  if(socket.bufferedAmount>4*1024*1024){socket.terminate();return;}
+  socket.send(JSON.stringify(message),error=>{if(error)socket.terminate();});
+ }
+ function broadcast(room){for(const [socket,role] of room.connections)deliver(socket,{type:'state',state:snapshot(room,role)});}
+ const heartbeat=setInterval(()=>{for(const socket of wss.clients){if(socket.isAlive===false){socket.terminate();continue;}socket.isAlive=false;socket.ping(()=>{});}},heartbeatMs);
  wss.on('connection',(socket,req)=>{
   if(!sameOrigin(req.headers.origin,req.headers.host)){socket.close(1008,'Origin');return;}
-  socket.on('error',()=>{});
+  socket.on('error',()=>{});socket.isAlive=true;socket.on('pong',()=>{socket.isAlive=true;});
   let room,role,count=0,window=Date.now();const authTimer=setTimeout(()=>socket.close(1008,'Authentication timeout'),120000);
   socket.on('message',raw=>{try{
    if(Date.now()-window>1000){window=Date.now();count=0;}if(++count>30)throw Error('Thao tác quá nhanh.');
@@ -49,14 +56,14 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH}={}
      const denied=msg.password===undefined?'Nhập mật khẩu để mở màn điều khiển MC.':checkPassword(msg.password,found.id+':'+foundRole);
      if(denied){socket.send(JSON.stringify({type:'password-required',message:denied}));return;}
     }
-    room=found;role=foundRole;clearTimeout(authTimer);room.connections.set(socket,role);if(role==='host')socket.send(JSON.stringify({type:'links',tokens:room.tokens}));broadcast(room);return;}
-   if(msg.type==='sync'){socket.send(JSON.stringify({type:'state',state:snapshot(room,role)}));return;}
+    room=found;role=foundRole;clearTimeout(authTimer);room.connections.set(socket,role);room.revision++;if(role==='host')socket.send(JSON.stringify({type:'links',tokens:room.tokens}));broadcast(room);return;}
+   if(msg.type==='sync'){deliver(socket,msg.revision===room.revision?{type:'heartbeat',serverNow:Date.now()}:{type:'state',state:snapshot(room,role)});return;}
    act(room,role,msg);broadcast(room);
   }catch(error){socket.send(JSON.stringify({type:'error',message:error.message,fatal:!room}));if(!room)socket.close(1008,'Invalid room');}});
-  socket.on('close',()=>{clearTimeout(authTimer);if(room){room.connections.delete(socket);broadcast(room);}});
+  socket.on('close',()=>{clearTimeout(authTimer);if(room){room.connections.delete(socket);room.revision++;broadcast(room);}});
  });
  const ticker=setInterval(()=>{const now=Date.now();for(const [key,entry] of attempts)if(entry.until<=now)attempts.delete(key);for(const [id,room] of rooms){if(expire(room,now))broadcast(room);if(!room.connections.size&&now-room.updatedAt>86400000)rooms.delete(id);}},100);
- server.on('close',()=>{clearInterval(ticker);wss.close();});
+ server.on('close',()=>{clearInterval(ticker);clearInterval(heartbeat);wss.close();});
  return {server,wss,rooms};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){

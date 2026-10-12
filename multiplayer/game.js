@@ -50,7 +50,7 @@ export function act(room,role,msg,now=Date.now()){
    if(round!==room.round){saveObstacle(room);if(round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}}room.round=round;
    room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
    room.selectedClue=round==='Vượt chướng ngại vật'&&!q.obstacleGuess?clue:null;if(room.selectedClue!==null)room.usedClues.push(clue);
-   room.duration=seconds;room.phase='ready';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;room.log='Câu hỏi đã mở. Chờ MC bắt đầu.';
+   room.duration=round==='Tăng tốc'?25:round==='Về đích'?20:seconds;room.phase='ready';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;room.log='Câu hỏi đã mở. Chờ MC bắt đầu.';
   }else if(msg.type==='round'){
    if(room.phase==='open')fail('Đóng nhận đáp án trước khi đổi vòng.');
    saveObstacle(room);room.round=clean(msg.round,80);room.question=null;room.selectedClue=null;if(room.round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.phase='waiting';room.deadline=null;room.showAnswers=false;room.showSolution=false;room.log='Mời đội chơi chọn câu hỏi.';
@@ -60,9 +60,9 @@ export function act(room,role,msg,now=Date.now()){
    const player=room.question.players[0];
    if(!Number.isInteger(player)||player<0||player>2)fail('Đội không hợp lệ.');
    if(room.hopeStar)fail('Câu này đã dùng Ngôi sao hy vọng.');
-   if(room.hopeUsed[player]>=2)fail('Đội này đã dùng hết hai ngôi sao.');
+   if(room.hopeUsed[player]>=3)fail('Đội này đã dùng hết ba ngôi sao.');
    room.hopeUsed[player]++;room.hopeStar={questionId:room.questionId,player};
-   room.log=`${room.teams[player].name} dùng Ngôi sao hy vọng: đúng +40, sai/không trả lời −40. Còn ${2-room.hopeUsed[player]} sao.`;
+   room.log=`${room.teams[player].name} dùng Ngôi sao hy vọng: đúng +40, sai/không trả lời −40. Còn ${3-room.hopeUsed[player]} sao.`;
   }else if(msg.type==='start'){
    if(!room.question||room.phase!=='ready')fail('Cần mở câu hỏi mới trước khi bắt đầu.');room.phase='open';room.startedAt=now;room.deadline=now+room.duration*1000;room.log='Đang nhận đáp án / chuông.';
   }else if(msg.type==='close'){
@@ -121,7 +121,7 @@ export function act(room,role,msg,now=Date.now()){
    if(b.obstacleClueCount!==undefined&&b.obstacleClueCount!==8)fail('Phiên bản ô hình không hỗ trợ.');
    const legacy=b.obstacleClueCount===undefined;
    const hopeUsed=b.hopeUsed===undefined?[0,0,0]:b.hopeUsed;
-   if(!Array.isArray(hopeUsed)||hopeUsed.length!==3||hopeUsed.some(n=>!Number.isInteger(n)||n<0||n>2))fail('Số ngôi sao trong bản sao không hợp lệ.');
+   if(!Array.isArray(hopeUsed)||hopeUsed.length!==3||hopeUsed.some(n=>!Number.isInteger(n)||n<0||n>3))fail('Số ngôi sao trong bản sao không hợp lệ.');
    if(!Array.isArray(b.opened)||!Array.isArray(b.usedClues)||[...b.opened,...b.usedClues].some(i=>!Number.isInteger(i)||i<0||i>(legacy?4:8)))fail('Các ô hình trong bản sao không hợp lệ.');
    const setId=b.obstacleSet||'1';if(!obstacleSets.some(s=>s.id===setId))fail('Bộ trong bản sao không hợp lệ.');
    const progress={};

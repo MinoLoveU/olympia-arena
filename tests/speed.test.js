@@ -28,6 +28,15 @@ test('Speed points follow MC correct-click order rather than receipt order, neve
 });
 test('Speed judging rejects missing answer, open phase and non-host; deadline remains authoritative',()=>{
  const r=setup();answer(r,0);assert.throws(()=>judge(r,0,'correct'));
- assert.throws(()=>answer(r,1,'late',21000));assert.throws(()=>act(r,'p0',{type:'judge',questionId:r.questionId,player:0,result:'correct',version:0},1500));
+ assert.throws(()=>answer(r,1,'late',26000));assert.throws(()=>act(r,'p0',{type:'judge',questionId:r.questionId,player:0,result:'correct',version:0},1500));
  act(r,'host',{type:'close'});assert.throws(()=>judge(r,1,'correct'));judge(r,1,'no-answer');assert.equal(r.teams[1].score,0);
+});
+
+test('Round-wide clocks enforce 25 seconds for speed and 20 seconds for finish, including older custom durations',()=>{
+ for(const [round,seconds] of [['Tăng tốc',25],['Về đích',20]]){
+  const r=createRoom();act(r,'host',{type:'question',round,duration:15,question:{text:'Kiểm tra thời gian',type:'text',players:[0],points:20}});assert.equal(r.duration,seconds);
+  act(r,'host',{type:'start'},1000);assert.equal(r.deadline,1000+seconds*1000);
+  act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1);
+  const late=createRoom();act(late,'host',{type:'preset',id:round==='Tăng tốc'?'speed-1':'finish-1'});act(late,'host',{type:'start'},1000);assert.throws(()=>act(late,'p0',{type:'answer',questionId:late.questionId,text:'Đúng hạn'},1000+seconds*1000));
+ }
 });

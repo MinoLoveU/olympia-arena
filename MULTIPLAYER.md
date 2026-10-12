@@ -31,7 +31,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
 - Ngoài Khởi động, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
-- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, câu 15 mỗi đội để trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
+- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, câu 15 mỗi đội để trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 20 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
 
 Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn hơn. MC có bố cục hai cột trên máy tính: điều khiển/chọn câu/sửa điểm bên cạnh câu đang chơi và đáp án; liên kết, sao lưu, hướng dẫn mặc định thu gọn, bấm tiêu đề để mở.
@@ -46,7 +46,7 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 
 ## Ngôi sao hy vọng — Về đích
 
-Mỗi đội có 20 câu Về đích (20 điểm/câu) và 2 ngôi sao trong toàn trận. MC mở câu của đội đó, bấm **★ Ngôi sao hy vọng** trước **Bắt đầu**. Dùng sao tiêu hao ngay một lượt; mỗi câu tối đa một sao, không hoàn lượt khi bỏ câu hoặc bỏ chấm. Bảng điểm hiện số sao còn lại của cả ba đội.
+Mỗi đội có 20 câu Về đích (20 điểm/câu) và 3 ngôi sao trong toàn trận. MC mở câu của đội đó, bấm **★ Ngôi sao hy vọng** trước **Bắt đầu**. Dùng sao tiêu hao ngay một lượt; mỗi câu tối đa một sao, không hoàn lượt khi bỏ câu hoặc bỏ chấm. Bảng điểm hiện số sao còn lại của cả ba đội.
 
 Màn trình chiếu có sao vàng lướt qua và giai điệu riêng (cần bật âm thanh). Nhãn sao ở câu hiện tại đồng bộ cả năm thiết bị; hiệu ứng không phát lại khi sync/tải lại/kết nối lại. MC khóa trả lời rồi chấm: đúng **+40**, sai hoặc không trả lời **−40**. Sửa kết quả áp dụng chênh lệch; bỏ chấm hoàn điểm câu, không hoàn sao. Câu không dùng sao vẫn nhập điểm thủ công. Backup giữ số sao đã dùng, không phát lại hiệu ứng hay lần chấm khi khôi phục; backup cũ mặc định chưa dùng sao.
 
@@ -84,7 +84,7 @@ Deploy script chờ kết quả và báo lỗi nếu deploy thất bại. Xem b�
 
 Chướng ngại vật: trên máy MC chọn **Bộ chướng ngại vật** → **Đưa bộ lên màn chiếu**, sau đó chọn gợi ý. Có 8 bộ, mỗi bộ có ảnh và tiến độ mở ô riêng; đổi bộ hoặc đổi vòng rồi quay lại vẫn giữ các ô đã mở. Sao lưu giữ tiến độ cả 8 bộ. Ảnh chia 3 × 3: 8 ô gợi ý ngoài là các hình vuông bằng nhau (mỗi chiều bằng 1/3 ảnh). Ô trung tâm rộng/cao 38%, nằm chính giữa (cách mép trái/trên 31%) và đè lên cả 8 ô ngoài bằng lớp hiển thị cao hơn. MC chọn gợi ý 1–8 theo thứ tự đội yêu cầu; trung tâm chỉ chọn sau đủ 8 gợi ý. Bản sao cũ tự chuyển ô trung tâm cũ sang ô trung tâm mới.
 
-Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; các câu nhìn nhanh/sắp xếp 20 giây, suy luận/video 30 giây. Các câu ngoài Khởi động, Tăng tốc và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.
+Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; tất cả các câu đều có 25 giây. Các câu ngoài Khởi động, Tăng tốc và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.
 
 
 ## Tăng tốc — cập nhật 12/10/2026
@@ -108,3 +108,6 @@ Trước buổi thi, giữ các máy có nguồn điện và mạng ổn định
 Chạy `node --expose-gc scripts/check-stability.js` để thử 10.800 lượt đồng bộ của 5 kết nối (lượng tương đương 3 giờ với chu kỳ 5 giây), nén trong khoảng 2 phút. Đây là thử lượng thông điệp và bộ nhớ; không phải chứng nhận chạy thực tế liên tục 3 giờ hoặc kiểm tra toàn bộ hạ tầng Internet/Render.
 
 Kết quả 12/10/2026: 63 kiểm thử đạt. Thử lượng đồng bộ đạt 10.800 phản hồi trong 120 giây, giữ đủ 5 kết nối; heap giữ lại sau GC tăng 0,53 MiB, tổng dữ liệu nhận 971.284 byte, điểm cuối đồng bộ đầy đủ. Kết quả đo cục bộ, chưa phải độ bền ba giờ thực tế trên Render.
+
+
+Cập nhật luật 12/10/2026: mỗi đội có 3 sao Về đích, mọi câu Về đích 20 giây và mọi câu Tăng tốc 25 giây. Backup giữ số sao đã dùng; bản sao cũ vẫn hợp lệ và đội có thêm lượt còn lại theo giới hạn mới. Điểm sao vẫn đúng +40, sai/không trả lời −40.

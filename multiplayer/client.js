@@ -50,7 +50,7 @@ function render(){
  const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';$('#sound-toggle').hidden=s.role!=='display';
  $('#local-backups').hidden=!host;$('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
  const winner=s.round==='Khởi động'&&s.question?.type==='buzz'?s.buzzes[0]?.player:undefined;
- $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card${winner===i?' buzz-winner':''}"><span>${winner===i?'<b class="winner-label">⚑ GIÀNH QUYỀN</b>':''}${esc(t.name)}${s.round==='Về đích'?`<em class="hope-count">★ Còn ${2-(s.hopeUsed?.[i]||0)}/2 sao</em>`:''}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
+ $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card${winner===i?' buzz-winner':''}"><span>${winner===i?'<b class="winner-label">⚑ GIÀNH QUYỀN</b>':''}${esc(t.name)}${s.round==='Về đích'?`<em class="hope-count">★ Còn ${3-(s.hopeUsed?.[i]||0)}/3 sao</em>`:''}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
  $('#phase-label').textContent=({waiting:'CHƯA MỞ CÂU HỎI',ready:'CÂU HỎI ĐÃ MỞ · CHỜ HIỆU LỆNH',open:'ĐANG NHẬN ĐÁP ÁN',closed:'ĐÃ KHÓA NHẬN ĐÁP ÁN'})[s.phase];
  if(lastQuestion!==s.questionId||!s.question){$('#question-media').innerHTML=media(s.question);lastQuestion=s.questionId;}
@@ -83,10 +83,10 @@ function render(){
 function renderHope(){
  const s=state,star=s.hopeStar,key=star?`${star.questionId}:${star.player}`:null;
  const player=s.question?.players?.length===1?s.question.players[0]:null;
- const remaining=player===null?null:2-(s.hopeUsed?.[player]||0),button=$('#hope-star');
+ const remaining=player===null?null:3-(s.hopeUsed?.[player]||0),button=$('#hope-star');
  button.hidden=s.round!=='Về đích';
  button.disabled=s.phase!=='ready'||s.question?.points!==20||player===null||!!star||remaining===0;
- button.textContent=star?'★ Đã dùng Ngôi sao hy vọng':player===null?'★ Ngôi sao hy vọng':`★ ${s.teams[player].name} · còn ${remaining}/2 sao`;
+ button.textContent=star?'★ Đã dùng Ngôi sao hy vọng':player===null?'★ Ngôi sao hy vọng':`★ ${s.teams[player].name} · còn ${remaining}/3 sao`;
  $('#hope-status').hidden=!star;
  $('#hope-status').textContent=star?`★ NGÔI SAO HY VỌNG · ${s.teams[star.player].name} · Đúng +40 / Sai −40`:'';
  if(s.role==='display'&&key&&lastHopeKey!==undefined&&lastHopeKey!==key){

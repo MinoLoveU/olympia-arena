@@ -49,5 +49,5 @@ export const builtInBank=[
   ...[...set.clues,set.center].map(([text,solution],i)=>make(`obstacle-${set.id}-${i===8?'center':i+1}`,i===8?'Ô trung tâm':`Gợi ý ${i+1}`,obstacle,text,solution,{clue:i,points:10,obstacleSet:set.id})),
   make(`obstacle-${set.id}-answer`,'Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật.',set.answer,{type:'buzz',obstacleGuess:true,obstacleSet:set.id})
  ])
-].map(q=>q.round===speed?{...q,type:'text',choices:[]}:q);
+].map(q=>q.round===speed?{...q,type:'text',choices:[],duration:25}:q.round===finish?{...q,duration:20}:q);
 export const bankInfo={title:'Chinh phục tri thức · Bộ đề 01',description:'263 vị trí (260 câu đã điền): Khởi động có 57 câu và 3 vị trí trống, 8 bộ Chướng ngại vật (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (đều 20 điểm), 3 câu phụ.'};

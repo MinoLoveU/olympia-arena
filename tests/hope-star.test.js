@@ -3,11 +3,11 @@ import {createRoom,act,snapshot} from '../multiplayer/game.js';import {builtInBa
 const select=(r,player,index=0)=>act(r,'host',{type:'preset',id:builtInBank.filter(q=>q.round==='Về đích'&&q.players[0]===player)[index].id});
 const star=r=>act(r,'host',{type:'hopeStar',questionId:r.questionId});
 const judge=(r,player,result)=>act(r,'host',{type:'judge',questionId:r.questionId,player,result,version:r.judgements[player]?.version||0});
-test('Each team has two stars across its 20 finish questions; duplicate/stale/unauthorized use is rejected',()=>{
+test('Each team has three stars across its 20 finish questions; duplicate/stale/unauthorized use is rejected',()=>{
  const r=createRoom();assert.throws(()=>star(r));
  for(let player=0;player<3;player++){
   const questions=builtInBank.filter(q=>q.round==='Về đích'&&q.players[0]===player);assert.equal(questions.length,20);assert.ok(questions.every(q=>q.points===20));
-  for(let index=0;index<2;index++){
+  for(let index=0;index<3;index++){
    select(r,player,index);
    assert.throws(()=>act(r,'p0',{type:'hopeStar',questionId:r.questionId}));
    assert.throws(()=>act(r,'display',{type:'hopeStar',questionId:r.questionId}));
@@ -16,7 +16,7 @@ test('Each team has two stars across its 20 finish questions; duplicate/stale/un
    for(const role of ['host','display','p0','p1','p2'])assert.equal(snapshot(r,role).hopeStar.player,player);
    act(r,'host',{type:'waiting'});assert.equal(r.hopeStar,null);
   }
-  select(r,player,2);assert.throws(()=>star(r));assert.equal(r.hopeUsed[player],2);
+  select(r,player,3);assert.throws(()=>star(r));assert.equal(r.hopeUsed[player],3);
  }
 });
 test('Star scoring is +40/-40, correction is a delta, clear does not refund a star',()=>{
@@ -39,6 +39,7 @@ test('Backup preserves used stars and scores, never replays active star; legacy 
  const backup=snapshot(r,'host'),fresh=createRoom();act(fresh,'host',{type:'restore',backup});
  assert.deepEqual(fresh.hopeUsed,[0,0,1]);assert.equal(fresh.hopeStar,null);assert.equal(fresh.teams[2].score,40);
  select(fresh,2,1);star(fresh);assert.equal(fresh.hopeUsed[2],2);
- for(const hopeUsed of [[3,0,0],[-1,0,0],[0,0],{},[0,1.5,0]])assert.throws(()=>act(fresh,'host',{type:'restore',backup:{...backup,hopeUsed}}));
+ for(const hopeUsed of [[4,0,0],[-1,0,0],[0,0],{},[0,1.5,0]])assert.throws(()=>act(fresh,'host',{type:'restore',backup:{...backup,hopeUsed}}));
+ act(fresh,'host',{type:'restore',backup:{...backup,hopeUsed:[3,0,0]}});assert.deepEqual(fresh.hopeUsed,[3,0,0]);
  const {hopeUsed,...legacy}=backup;act(fresh,'host',{type:'restore',backup:legacy});assert.deepEqual(fresh.hopeUsed,[0,0,0]);
 });

@@ -20,11 +20,11 @@ test('Visual counting answers match SVG contents',()=>{
   assert.equal(doc.window.document.querySelectorAll(`${tag}[fill="${fill}"]`).length,Number(q.solution),q.id);doc.window.close();
  }
 });
-test('All 260 filled presets can be played, including center gates in each set',()=>{
+test('All 262 filled presets can be played, including center gates in each set',()=>{
  const r=createRoom();
  for(const round of ['Khởi động','Tăng tốc','Về đích','Câu hỏi phụ'])for(const q of builtInBank.filter(q=>q.round===round&&!q.pending)){play(r,q.id);assert.equal(r.question.solution,q.solution);}
  for(const set of obstacleSets){choose(r,set.id);const qs=builtInBank.filter(q=>q.obstacleSet===set.id);const center=qs.find(q=>q.clue===8);assert.throws(()=>play(r,center.id));for(const q of qs){play(r,q.id);assert.equal(r.question.solution,q.solution);}}
- assert.equal(r.usedQuestions.length,260);assert.equal(new Set(r.usedQuestions).size,260);
+ assert.equal(r.usedQuestions.length,262);assert.equal(new Set(r.usedQuestions).size,262);
 });
 test('Switching sets, leaving round, and backup preserve independent progress without leaking host catalog',()=>{
  const r=createRoom();choose(r,'1');play(r,'obstacle-1');act(r,'host',{type:'tile',open:true});

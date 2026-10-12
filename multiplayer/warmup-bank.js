@@ -1,6 +1,7 @@
 // Owner-provided questions. Bold answers separated from prompts; numbered blanks retained.
 // Source: https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit
 // Imported 2026-10-11; the three trailing supplementary questions are excluded.
+// Team 2 and 3 question 15 supplied directly by owner on 2026-10-13.
 export const warmupQuestions=[
   {
     "id": "warm-1",
@@ -413,16 +414,15 @@ export const warmupQuestions=[
     "id": "warm-36",
     "label": "Đội 2 · Câu 15/15",
     "round": "Khởi động",
-    "text": "",
-    "solution": "",
+    "text": "Nếu “đức trị” nhấn mạnh vai trò của đạo đức, thì phương thức quản lý xã hội dựa trên lòng nhân và cách đối xử có tình người được gọi là gì?",
+    "solution": "Nhân trị.",
     "type": "text",
     "duration": 3,
     "choices": [],
     "players": [
       1
     ],
-    "points": 10,
-    "pending": true
+    "points": 10
   },
   {
     "id": "warm-13",
@@ -624,16 +624,15 @@ export const warmupQuestions=[
     "id": "warm-45",
     "label": "Đội 3 · Câu 15/15",
     "round": "Khởi động",
-    "text": "",
-    "solution": "",
+    "text": "Theo Hồ Chí Minh, dù xuất phát từ những hệ tư tưởng khác nhau, Khổng Tử, Giêsu, Mác và Tôn Trung Sơn vẫn có một mục đích chung là đem lại điều gì cho con người?",
+    "solution": "Hạnh phúc.",
     "type": "text",
     "duration": 3,
     "choices": [],
     "players": [
       2
     ],
-    "points": 10,
-    "pending": true
+    "points": 10
   },
   {
     "id": "common-1",

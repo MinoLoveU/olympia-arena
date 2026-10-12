@@ -15,7 +15,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 
 ## Nguồn Khởi động — cập nhật 11/10/2026
 
-[Google Docs của chủ tài khoản](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit): nhập 57 câu đã điền, lấy đáp án in đậm sau mũi tên/ngoặc; giữ phần nhấn mạnh in đậm nằm trong câu hỏi. Giữ nguyên nội dung/đáp án nguồn, không tự hiệu đính kiến thức. Ba câu 15 riêng để trống (warm-27, warm-36, warm-45); danh sách MC ghi Để trống và không mở được. Không đưa ba câu bổ sung cuối tài liệu vào. Câu chung 5 dùng ảnh JPEG nguyên bản, giữ ảnh có sẵn và đáp án riêng MC. IDs/đội/thứ tự các vị trí vẫn giữ để tương thích sao lưu.
+[Google Docs của chủ tài khoản](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit): nhập 57 câu đã điền, lấy đáp án in đậm sau mũi tên/ngoặc; giữ phần nhấn mạnh in đậm nằm trong câu hỏi. Giữ nguyên nội dung/đáp án nguồn, không tự hiệu đính kiến thức. Câu 15 Đội Cầu truyền hình còn trống (warm-27); danh sách MC ghi Để trống và không mở được. Không đưa ba câu bổ sung cuối tài liệu vào. Câu chung 5 dùng ảnh JPEG nguyên bản, giữ ảnh có sẵn và đáp án riêng MC. IDs/đội/thứ tự các vị trí vẫn giữ để tương thích sao lưu.
 
 ## Điều khiển trận
 
@@ -23,7 +23,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Chỉ màn MC yêu cầu nhập lại mật khẩu mỗi lần tải lại trang. Màn trình chiếu và người chơi chỉ cần link riêng, không nhập mật khẩu. Máy chủ kiểm tra mật khẩu trước khi gửi trạng thái hoặc link vai trò, kể cả kết nối WebSocket trực tiếp. Không lưu mật khẩu vào cookie/localStorage/sessionStorage; mất mạng tạm thời có thể kết nối lại trong cùng lần mở trang.
 - Trong **Liên kết cho 5 thiết bị**, sao chép link trình chiếu và ba link người chơi. Mỗi link mang quyền riêng; giữ kín link MC. MC cũng có thể mở link của mình trên máy khác, các link vai trò được máy chủ gửi lại cho MC.
 - Chọn vòng và bấm **Hiện tên vòng**. Với Chướng ngại vật, lúc này chỉ có ảnh che, chưa có câu hỏi.
-- **Bộ đề 01 có sẵn 263 vị trí (260 câu đã điền, 3 vị trí trống)**, không có form nhập câu hỏi, nhập JSON bộ đề hay URL media. Chọn vòng và câu trong danh sách; xem trước chỉ MC thấy. **Mở câu đã chọn** đưa câu lên năm máy, **Bắt đầu** chạy đồng hồ. Câu đã mở được đánh dấu và khóa để tránh lặp. Khởi động riêng trả lời miệng, không có ô nhập hoặc chuông. Khởi động chung chỉ bấm chuông, đội đầu trả lời miệng. Về đích chỉ đội được chỉ định gửi đáp án.
+- **Bộ đề 01 có sẵn 263 vị trí (262 câu đã điền, 1 vị trí trống)**, không có form nhập câu hỏi, nhập JSON bộ đề hay URL media. Chọn vòng và câu trong danh sách; xem trước chỉ MC thấy. **Mở câu đã chọn** đưa câu lên năm máy, **Bắt đầu** chạy đồng hồ. Câu đã mở được đánh dấu và khóa để tránh lặp. Khởi động riêng trả lời miệng, không có ô nhập hoặc chuông. Khởi động chung chỉ bấm chuông, đội đầu trả lời miệng. Về đích chỉ đội được chỉ định gửi đáp án.
 - Chỉ đáp án đầu tiên của mỗi đội được nhận; hết giờ hoặc MC khóa thì máy chủ từ chối gửi thêm. Form hiện ngay khi mở câu, nhưng chưa được nhập/gửi trước hiệu lệnh.
 - Chuông: máy chủ gán thứ tự xử lý, luôn có duy nhất một đội đầu tiên. Cả ba đội đều thấy thứ tự; ở Khởi động chung đội đầu trả lời miệng, các vòng khác chỉ đội đầu được gửi đáp án. Không dùng thời gian do người chơi gửi. Độ trễ mạng vẫn ảnh hưởng khi bấm sát nhau.
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
@@ -31,7 +31,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
 - Ngoài Khởi động, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
-- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, câu 15 mỗi đội để trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 20 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
+- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, chỉ câu 15 Đội Cầu truyền hình còn trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 20 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
 
 Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn hơn. MC có bố cục hai cột trên máy tính: điều khiển/chọn câu/sửa điểm bên cạnh câu đang chơi và đáp án; liên kết, sao lưu, hướng dẫn mặc định thu gọn, bấm tiêu đề để mở.
@@ -64,7 +64,7 @@ Cả ba vai trò người chơi dùng toàn bộ cửa sổ từ 761px ngang: c�
 
 Máy chủ cần `OLYMPIA_ACCESS_HASH` chứa verifier scrypt do `hashPassword` trong `multiplayer/access.js` tạo. Không đưa mật khẩu hoặc verifier vào Git. Thiếu cấu hình thì tạo phòng và truy cập MC bị từ chối. Render hiện cấu hình biến này qua lệnh khởi động riêng của service; giữ cấu hình đó khi cập nhật triển khai. Giới hạn 10 lần nhập sai/phút theo phòng/vai trò; tạo phòng giới hạn theo địa chỉ kết nối máy chủ.
 
-`npm ci && npm test`. Có kiểm thử bằng năm kết nối WebSocket độc lập và năm giao diện jsdom: câu hỏi mở đồng thời, nhập/trắc nghiệm, đổi 8 bộ và khôi phục tiến độ độc lập, kiểm tra 263 vị trí/260 câu đã điền, chặn ba vị trí trống, hình JPEG và đếm hình SVG, không mất nội dung đang soạn khi đội khác gửi, ẩn/công bố đáp án, sửa điểm, thứ tự chuông, phân quyền, timeout, chống gửi lặp/câu cũ, kết nối lại và khôi phục sao lưu. Chưa có browser kết nối trong phiên để xác minh hình thức bằng screenshot.
+`npm ci && npm test`. Có kiểm thử bằng năm kết nối WebSocket độc lập và năm giao diện jsdom: câu hỏi mở đồng thời, nhập/trắc nghiệm, đổi 8 bộ và khôi phục tiến độ độc lập, kiểm tra 263 vị trí/262 câu đã điền, chặn một vị trí trống, hình JPEG và đếm hình SVG, không mất nội dung đang soạn khi đội khác gửi, ẩn/công bố đáp án, sửa điểm, thứ tự chuông, phân quyền, timeout, chống gửi lặp/câu cũ, kết nối lại và khôi phục sao lưu. Chưa có browser kết nối trong phiên để xác minh hình thức bằng screenshot.
 
 Nguồn nền tảng: [Render WebSockets](https://render.com/docs/websocket), [Blueprint](https://render.com/docs/blueprint-spec), [giới hạn Free](https://render.com/docs/free).
 
@@ -118,3 +118,6 @@ Ba đội mặc định: **Đội Cầu truyền hình**, **Đội Chủ nghĩa 
 Trên màn MC, chọn vòng **Về đích** → **Đội chơi Về đích** → chọn câu → **Mở câu đã chọn**. Có thể chọn bất kỳ đội nào chơi đầu tiên, rồi đổi đội tùy ý khi câu trước đã khóa; không bắt buộc thứ tự 1–2–3. Danh sách chỉ hiện 20 câu thuộc đội đã chọn, ghi số câu còn lại; câu đã chơi bị khóa. Đổi lựa chọn đội chưa làm đổi câu đang chiếu, cần bấm Mở câu đã chọn. Điểm, 3 sao/đội và tiến độ được giữ riêng. Bộ chọn đội bị khóa trong lúc nhận đáp án.
 
 66 kiểm thử đạt, gồm năm giao diện, chọn đội Chủ nghĩa xã hội trước rồi đổi sang Cầu truyền hình, bảo toàn số câu/sao và quyền trả lời, cùng khôi phục tên từ bản sao.
+
+
+Ngày 13/10/2026 bổ sung theo lời nhắn chủ tài khoản: câu 15 Khởi động riêng Đội Chủ nghĩa tư bản (warm-36) hỏi phương thức dựa trên lòng nhân, đáp án **Nhân trị**; câu 15 Đội Chủ nghĩa xã hội (warm-45) hỏi mục đích chung của Khổng Tử, Giêsu, Mác và Tôn Trung Sơn, đáp án **Hạnh phúc**. Khởi động hiện có 59 câu đã điền, 1 vị trí trống.

@@ -2,8 +2,9 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {builtInBank} from '../multiplayer/bank.js';import {createRoom,act,snapshot} from '../multiplayer/game.js';
 const question=id=>builtInBank.find(q=>q.id===id);
 test('Source warm-up preserves numbering/blanks and separates bold answers from bold prompt emphasis',()=>{
- const qs=builtInBank.filter(q=>q.round==='Khởi động');assert.equal(qs.length,60);assert.equal(qs.filter(q=>!q.pending).length,57);
- assert.deepEqual(qs.filter(q=>q.pending).map(q=>q.id),['warm-27','warm-36','warm-45']);
+ const qs=builtInBank.filter(q=>q.round==='Khởi động');assert.equal(qs.length,60);assert.equal(qs.filter(q=>!q.pending).length,59);
+ assert.deepEqual(qs.filter(q=>q.pending).map(q=>q.id),['warm-27']);
+ for(const [id,team,solution] of [['warm-36',1,'Nhân trị.'],['warm-45',2,'Hạnh phúc.']]){const q=question(id);assert.deepEqual(q.players,[team]);assert.equal(q.solution,solution);assert.ok(!q.pending);const r=createRoom();act(r,'host',{type:'preset',id});assert.equal(snapshot(r,'host').question.solution,solution);assert.equal(snapshot(r,'display').question.solution,undefined);}
  assert.equal(question('warm-1').solution,'Lúa nước.');
  const math=qs.find(q=>q.label==='Đội 1 · Câu 10/15');assert.ok(math.text.includes('4 × 10³ = ?'));assert.equal(math.solution,'Bốn nghìn năm.');
  const english=qs.find(q=>q.label==='Đội 2 · Câu 5/15');assert.equal(english.text,'In which year was the American Declaration of Independence adopted?');assert.equal(english.solution,'1776.');

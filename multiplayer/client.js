@@ -48,7 +48,7 @@ const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không 
 function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.round==='Tăng tốc'||state.hopeStar?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
  const s=state,host=s.role==='host',player=/^p[0-2]$/.test(s.role);document.body.dataset.role=s.role;$('#fullscreen').hidden=s.role!=='display';$('#sound-toggle').hidden=s.role!=='display';
- $('#local-backups').hidden=!host;$('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
+ $('#local-backups').hidden=!host;$('#game').hidden=false;$('#host-panel').hidden=!host;$('#player-panel').hidden=!player;$('#role-name').textContent=player?s.teams[Number(s.role[1])].name:roles[s.role];$('#room-name').textContent=`PHÒNG ${room.toUpperCase()}`;$('#round-name').textContent=s.round+(s.round==='Vượt chướng ngại vật'?` · Bộ ${s.obstacleSet||'1'}`:'');
  const winner=s.round==='Khởi động'&&s.question?.type==='buzz'?s.buzzes[0]?.player:undefined;
  $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card${winner===i?' buzz-winner':''}"><span>${winner===i?'<b class="winner-label">⚑ GIÀNH QUYỀN</b>':''}${esc(t.name)}${s.round==='Về đích'?`<em class="hope-count">★ Còn ${3-(s.hopeUsed?.[i]||0)}/3 sao</em>`:''}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
@@ -76,7 +76,7 @@ function render(){
   for(let i=0;i<3;i++){for(const key of ['name','score']){const field=$(`#${key}-${i}`);if(field&&document.activeElement!==field)field.value=s.teams[i][key];}}
   renderJudging();
   if(!links){try{links=JSON.parse(sessionStorage.getItem(`olympia-links-${room}`));}catch{}}
-  if(links&&!$('#links').children.length){$('#links').innerHTML=Object.entries(links).map(([r,t])=>`<label class="share-link">${roles[r]}<input readonly data-link="${r}" value="${esc(location.origin+'/#'+new URLSearchParams({room,token:t}))}"><button data-copy="${r}">Sao chép liên kết</button></label>`).join('');document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const input=document.querySelector(`[data-link="${b.dataset.copy}"]`);try{await navigator.clipboard.writeText(input.value);b.textContent='Đã sao chép';}catch{input.select();b.textContent='Nhấn Ctrl/Cmd+C để sao chép';}});}
+  if(links&&!$('#links').children.length){$('#links').innerHTML=Object.entries(links).map(([r,t])=>`<label class="share-link">${esc(/^p[0-2]$/.test(r)?s.teams[Number(r[1])].name:roles[r])}<input readonly data-link="${r}" value="${esc(location.origin+'/#'+new URLSearchParams({room,token:t}))}"><button data-copy="${r}">Sao chép liên kết</button></label>`).join('');document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const input=document.querySelector(`[data-link="${b.dataset.copy}"]`);try{await navigator.clipboard.writeText(input.value);b.textContent='Đã sao chép';}catch{input.select();b.textContent='Nhấn Ctrl/Cmd+C để sao chép';}});}
  }
  renderHope();updateClock();scheduleDisplayFit();
 }
@@ -144,27 +144,34 @@ setInterval(checkConnection,5000);
 window.addEventListener('online',checkConnection);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkConnection();});
 $('#start').onclick=()=>send({type:'start'});$('#stop').onclick=()=>send({type:'close'});$('#waiting').onclick=()=>send({type:'waiting'});$('#set-round').onclick=()=>send({type:'round',round:$('#round').value});$('#show-answers').onclick=()=>send({type:'revealAnswers',show:!state.showAnswers});$('#show-solution').onclick=()=>send({type:'revealSolution',show:!state.showSolution});$('#open-tile').onclick=()=>send({type:'tile',open:true});$('#close-tile').onclick=()=>send({type:'tile',open:false});
+function questionLabel(q){return q.players?.length===1?q.label.replace(/^Đội \d+(?= ·)/,()=>state.teams[q.players[0]].name):q.label;}
 function renderCatalog(){
  const catalog=state.catalog||[],used=state.usedQuestions||[],round=$('#round').value;
  $('#bank-title').textContent=state.bankInfo?.title||'Bộ đề có sẵn';$('#bank-description').textContent=state.bankInfo?.description||'';
  $('#obstacle-picker').hidden=round!=='Vượt chướng ngại vật';
+ $('#finish-picker').hidden=round!=='Về đích';
+ const finishSelect=$('#finish-team'),chosen=finishSelect.value;
+ const finishPlayer=chosen!==''?chosen:state.round==='Về đích'&&state.question?.players?.length===1?String(state.question.players[0]):'';
+ finishSelect.innerHTML='<option value="">Chọn đội chơi trước…</option>'+state.teams.map((t,i)=>`<option value="${i}">${esc(t.name)} · còn ${catalog.filter(q=>q.round==='Về đích'&&q.players?.[0]===i&&!used.includes(q.id)).length}/20 câu</option>`).join('');
+ finishSelect.value=finishPlayer;finishSelect.disabled=state.phase==='open';
  const sets=state.obstacleSets||[];let selected=$('#obstacle-set').value||state.obstacleSet||'1';
  if(lastObstacleSet!==state.obstacleSet){selected=state.obstacleSet||'1';lastObstacleSet=state.obstacleSet;}
  $('#obstacle-set').innerHTML=sets.map(set=>`<option value="${set.id}">Bộ ${set.id} · ${esc(set.name)}</option>`).join('');$('#obstacle-set').value=selected;
  $('#select-obstacle-set').disabled=state.phase==='open';
  const locked=q=>q.pending||used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
- const items=catalog.filter(q=>q.round===round&&(!q.obstacleSet||q.obstacleSet===(state.obstacleSet||'1'))).sort((a,b)=>a.round==='Về đích'?(a.players[0]-b.players[0]||parseInt(a.label.split('Câu ')[1])-parseInt(b.label.split('Câu ')[1])):0),previous=$('#preset-question').value;
- $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${q.pending?'Để trống · ':used.includes(q.id)?'✓ Đã chơi · ':''}${esc(q.label)}</option>`).join('');
+ const items=catalog.filter(q=>q.round===round&&(round!=='Về đích'||(finishPlayer!==''&&q.players?.[0]===Number(finishPlayer)))&&(!q.obstacleSet||q.obstacleSet===(state.obstacleSet||'1'))).sort((a,b)=>a.round==='Về đích'?(a.players[0]-b.players[0]||parseInt(a.label.split('Câu ')[1])-parseInt(b.label.split('Câu ')[1])):0),previous=$('#preset-question').value;
+ $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${q.pending?'Để trống · ':used.includes(q.id)?'✓ Đã chơi · ':''}${esc(questionLabel(q))}</option>`).join('');
  $('#preset-question').value=items.some(q=>q.id===previous&&!locked(q))?previous:(items.find(q=>!locked(q))?.id||'');
  previewPreset();
 }
 function previewPreset(){
  const q=state?.catalog?.find(q=>q.id===$('#preset-question').value);
- $('#preset-preview').innerHTML=q?`<b>${esc(q.label)}</b><p>${esc(q.text)}</p><p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${q.round==='Khởi động'?(q.type==='buzz'?'Bấm chuông · trả lời miệng':'Trả lời miệng'):{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:'<p>Đã chơi hết các câu trong vòng này.</p>';
+ $('#preset-preview').innerHTML=q?`<b>${esc(questionLabel(q))}</b><p>${esc(q.text)}</p><p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${q.round==='Khởi động'?(q.type==='buzz'?'Bấm chuông · trả lời miệng':'Trả lời miệng'):{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:$('#round').value==='Về đích'&&$('#finish-team').value===''?'<p>Chọn đội chơi Về đích, rồi mở câu hỏi của đội đó.</p>':'<p>Đã chơi hết các câu trong lựa chọn này. Chọn đội hoặc vòng khác để tiếp tục.</p>';
  $('#publish-question').disabled=!q||!!q.pending||state.phase==='open';
 }
 $('#select-obstacle-set').onclick=()=>send({type:'obstacleSet',id:$('#obstacle-set').value});
 $('#preset-question').onchange=previewPreset;
+$('#finish-team').onchange=()=>{if(state)renderCatalog();};
 $('#round').onchange=()=>{if(state)renderCatalog();};
 $('#publish-question').onclick=()=>send({type:'preset',id:$('#preset-question').value});
 if(room&&secret)connect();

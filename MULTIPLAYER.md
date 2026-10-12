@@ -111,3 +111,10 @@ Kết quả 12/10/2026: 63 kiểm thử đạt. Thử lượng đồng bộ đ�
 
 
 Cập nhật luật 12/10/2026: mỗi đội có 3 sao Về đích, mọi câu Về đích 20 giây và mọi câu Tăng tốc 25 giây. Backup giữ số sao đã dùng; bản sao cũ vẫn hợp lệ và đội có thêm lượt còn lại theo giới hạn mới. Điểm sao vẫn đúng +40, sai/không trả lời −40.
+
+## Tên đội và chọn lượt Về đích — 12/10/2026
+Ba đội mặc định: **Đội Cầu truyền hình**, **Đội Chủ nghĩa tư bản**, **Đội Chủ nghĩa xã hội**. Tên xuất hiện trên bảng điểm, màn người chơi, liên kết chia sẻ và nhãn câu hỏi. Khi khôi phục bản sao cũ, tên mặc định Đội 1/2/3 được chuyển sang tên mới; tên MC tự đặt vẫn giữ nguyên.
+
+Trên màn MC, chọn vòng **Về đích** → **Đội chơi Về đích** → chọn câu → **Mở câu đã chọn**. Có thể chọn bất kỳ đội nào chơi đầu tiên, rồi đổi đội tùy ý khi câu trước đã khóa; không bắt buộc thứ tự 1–2–3. Danh sách chỉ hiện 20 câu thuộc đội đã chọn, ghi số câu còn lại; câu đã chơi bị khóa. Đổi lựa chọn đội chưa làm đổi câu đang chiếu, cần bấm Mở câu đã chọn. Điểm, 3 sao/đội và tiến độ được giữ riêng. Bộ chọn đội bị khóa trong lúc nhận đáp án.
+
+66 kiểm thử đạt, gồm năm giao diện, chọn đội Chủ nghĩa xã hội trước rồi đổi sang Cầu truyền hình, bảo toàn số câu/sao và quyền trả lời, cùng khôi phục tên từ bản sao.

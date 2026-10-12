@@ -1,7 +1,8 @@
 import {builtInBank,bankInfo,obstacleSets} from './bank.js';
 import {randomBytes} from 'node:crypto';
+const teamNames=['Đội Cầu truyền hình','Đội Chủ nghĩa tư bản','Đội Chủ nghĩa xã hội'];
 const token=()=>randomBytes(24).toString('base64url');
-export function createRoom(){return {id:randomBytes(6).toString('hex'),tokens:{host:token(),display:token(),p0:token(),p1:token(),p2:token()},revision:0,questionId:0,usedQuestions:[],hopeUsed:[0,0,0],hopeStar:null,round:'Khởi động',teams:[0,1,2].map(i=>({name:`Đội ${i+1}`,score:0})),question:null,phase:'waiting',deadline:null,duration:15,answers:{},judgements:{},buzzes:[],showAnswers:false,showSolution:false,obstacleSet:'1',obstacleProgress:{},opened:[],selectedClue:null,usedClues:[],image:'/assets/obstacle-rainbow.svg',log:'Mời MC chọn câu hỏi.',connections:new Map(),updatedAt:Date.now()};}
+export function createRoom(){return {id:randomBytes(6).toString('hex'),tokens:{host:token(),display:token(),p0:token(),p1:token(),p2:token()},revision:0,questionId:0,usedQuestions:[],hopeUsed:[0,0,0],hopeStar:null,round:'Khởi động',teams:[0,1,2].map(i=>({name:teamNames[i],score:0})),question:null,phase:'waiting',deadline:null,duration:15,answers:{},judgements:{},buzzes:[],showAnswers:false,showSolution:false,obstacleSet:'1',obstacleProgress:{},opened:[],selectedClue:null,usedClues:[],image:'/assets/obstacle-rainbow.svg',log:'Mời MC chọn câu hỏi.',connections:new Map(),updatedAt:Date.now()};}
 export function authenticate(room,secret){return Object.keys(room.tokens).find(role=>room.tokens[role]===secret)||null;}
 export function snapshot(room,role,now=Date.now()){
  const {revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,judgements,hopeUsed,hopeStar}=room;
@@ -134,7 +135,7 @@ export function act(room,role,msg,now=Date.now()){
    }
    room.hopeUsed=[...hopeUsed];room.obstacleSet=setId;room.obstacleProgress=progress;
    room.usedQuestions=Array.isArray(b.usedQuestions)?b.usedQuestions.filter(id=>builtInBank.some(q=>q.id===id)):[];
-   room.teams=b.teams.map(t=>({name:clean(t.name,40),score:t.score}));room.round=clean(b.round,80);room.opened=[...new Set(b.opened.map(i=>legacy&&i===4?8:i))];room.usedClues=[...new Set(b.usedClues.map(i=>legacy&&i===4?8:i))];
+   room.teams=b.teams.map((t,i)=>({name:clean(t.name,40)===`Đội ${i+1}`?teamNames[i]:clean(t.name,40),score:t.score}));room.round=clean(b.round,80);room.opened=[...new Set(b.opened.map(i=>legacy&&i===4?8:i))];room.usedClues=[...new Set(b.usedClues.map(i=>legacy&&i===4?8:i))];
    room.question=null;room.questionId++;room.selectedClue=null;room.phase='waiting';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;
    room.image=/^(https?:\/\/|\/assets\/)/.test(b.image||'')?b.image:obstacleSets.find(s=>s.id===setId).image;
    if(room.round==='Vượt chướng ngại vật'||!b.obstacleProgress)room.obstacleProgress[setId]={opened:[...room.opened],usedClues:[...room.usedClues],image:room.image};

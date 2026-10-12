@@ -15,6 +15,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  }
  await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
  assert.equal(display.querySelector('#access-gate').hidden,true);
+ for(const d of [host,display,p0,p1,p2])assert.deepEqual([...d.querySelectorAll('.score-card>span')].map(el=>el.firstChild.textContent),['Đội Cầu truyền hình','Đội Chủ nghĩa tư bản','Đội Chủ nghĩa xã hội']);
  assert.equal(display.querySelector('#sound-toggle').hidden,false);
  for(const d of [host,p0,p1,p2])assert.equal(d.querySelector('#sound-toggle').hidden,true);
  // Projection follows window resizes even without the Fullscreen API.
@@ -120,7 +121,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('#open-tile').click();await wait(()=>display.querySelector('.cover-0').hidden);
  host.querySelector('#obstacle-set').value='1';host.querySelector('#select-obstacle-set').click();await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 1')).catch(e=>{throw Error(host.querySelector('#error').textContent||e.message);});
  assert.equal(display.querySelector('.cover-7').hidden,true);assert.equal(display.querySelector('.cover-0').hidden,false);
- host.querySelector('#round').value='Về đích';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelectorAll('#preset-question option').length,60);
+ host.querySelector('#round').value='Về đích';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelector('#publish-question').disabled,true);assert.equal(host.querySelector('#finish-picker').hidden,false);host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelectorAll('#preset-question option').length,20);assert.ok([...host.querySelectorAll('#preset-question option')].every(o=>o.textContent.includes('Đội Chủ nghĩa xã hội')));
  host.querySelector('#preset-question').value='finish-60';host.querySelector('#publish-question').click();await wait(()=>p2.querySelector('#question-title').textContent.includes('chia cho 5 được thương 7'));assert.ok(p2.querySelector('#answer-text'));
  assert.equal(p2.querySelector('#clock-text').textContent,'20 GIÂY');
  await new Promise(r=>setTimeout(r,1100));
@@ -129,7 +130,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  for(const d of [host,display,p0,p1,p2])assert.match(d.querySelectorAll('.hope-count')[2].textContent,/2\/3/);
  assert.ok(display.querySelector('.hope-flight'));assert.equal(p2.querySelector('.hope-flight'),null);
  const flight=display.querySelector('.hope-flight');assert.equal(host.querySelector('#hope-star').disabled,true);
- host.querySelector('#start').click();await wait(()=>!host.querySelector('#stop').disabled);
+ host.querySelector('#start').click();await wait(()=>!host.querySelector('#stop').disabled);assert.equal(host.querySelector('#finish-team').disabled,true);
  host.querySelector('#stop').click();await wait(()=>!host.querySelector('[data-judge="correct"][data-player="2"]').disabled);
  host.querySelector('[data-judge="correct"][data-player="2"]').click();
  await wait(()=>[host,display,p0,p1,p2].every(d=>d.querySelectorAll('#scoreboard strong')[2].textContent==='40'));
@@ -138,6 +139,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('#preset-question').value='finish-59';host.querySelector('#publish-question').click();
  await wait(()=>display.querySelector('#hope-status').hidden);assert.equal(display.querySelector('.hope-flight'),null);
  assert.match(host.querySelector('#hope-star').textContent,/2\/3/);
+ host.querySelector('#finish-team').value='0';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.ok([...host.querySelectorAll('#preset-question option')].every(o=>o.textContent.includes('Đội Cầu truyền hình')));host.querySelector('#publish-question').click();await wait(()=>p0.querySelector('#question-title').textContent.includes('hình chữ nhật'));assert.equal(host.querySelector('#finish-team').value,'0');assert.equal(host.querySelector('#finish-team option[value="2"]').textContent.includes('18/20'),true);
  host.querySelector('#round').value='Khởi động';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
  for(const id of ['warm-27','warm-36','warm-45']){const option=host.querySelector(`option[value="${id}"]`);assert.equal(option.disabled,true);assert.match(option.textContent,/Để trống/);}
  host.querySelector('#preset-question').value='common-5';host.querySelector('#publish-question').click();

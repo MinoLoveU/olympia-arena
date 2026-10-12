@@ -60,7 +60,7 @@ Màn trình chiếu có sao vàng lướt qua và giai điệu riêng (cần b�
 
 ## Âm thanh và đội giành quyền
 
-Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ, giai điệu khi MC chấm đúng và ba nốt mềm đi xuống khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai gồm ba nốt sin 494–392–294 Hz đi xuống. Mức khuếch đại chung tăng từ 0,22 lên 0,30. Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
+Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ, giai điệu khi MC chấm đúng và ba nốt mềm đi xuống khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai gồm ba nốt sin 494–392–294 Hz đi xuống. Mức khuếch đại chung hiện là 0,45 (+3,52 dB so với 0,30 trước đây). Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
 
 Khởi động chung: thẻ điểm đội bấm đầu tiên đổi nền/viền vàng, hiện nhãn **GIÀNH QUYỀN** ở cả năm vai trò; giữ đến khi đổi câu hoặc về màn chờ.
 
@@ -129,3 +129,7 @@ Trên màn MC, chọn vòng **Về đích** → **Đội chơi Về đích** →
 
 
 Ngày 13/10/2026 bổ sung theo lời nhắn chủ tài khoản: câu 15 Khởi động riêng Đội Chủ nghĩa tư bản (warm-36) hỏi phương thức dựa trên lòng nhân, đáp án **Nhân trị**; câu 15 Đội Chủ nghĩa xã hội (warm-45) hỏi mục đích chung của Khổng Tử, Giêsu, Mác và Tôn Trung Sơn, đáp án **Hạnh phúc**. Khởi động hiện có 59 câu đã điền, 1 vị trí trống.
+
+## Cân bằng âm lượng — 13/10/2026
+
+Sáu video Về đích đã chuẩn hóa về khoảng −16 LUFS (đo lại: −16,10 đến −16,00), true peak tối đa −1,91 dBTP. Giữ nguyên luồng hình. Hiệu ứng tăng từ gain 0,30 lên 0,45; giữ âm đúng/sai hiện tại. Xem [kết quả đo](AUDIO-CHECK.md). Tải lại màn trình chiếu để nhận bản âm thanh mới.

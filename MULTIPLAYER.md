@@ -17,6 +17,14 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 
 [Google Docs của chủ tài khoản](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit): nhập 57 câu đã điền, lấy đáp án in đậm sau mũi tên/ngoặc; giữ phần nhấn mạnh in đậm nằm trong câu hỏi. Giữ nguyên nội dung/đáp án nguồn, không tự hiệu đính kiến thức. Câu 15 Đội Cầu truyền hình còn trống (warm-27); danh sách MC ghi Để trống và không mở được. Không đưa ba câu bổ sung cuối tài liệu vào. Câu chung 5 dùng ảnh JPEG nguyên bản, giữ ảnh có sẵn và đáp án riêng MC. IDs/đội/thứ tự các vị trí vẫn giữ để tương thích sao lưu.
 
+## Nguồn Về đích — cập nhật 13/10/2026
+
+[Tab Về đích của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.d565as2bnh7u): 60 câu chia đúng 20 câu/đội, giữ số câu và IDs cũ; 20 điểm/20 giây và 3 sao/đội. Nội dung/đáp án chép theo tài liệu, chưa hiệu đính kiến thức. Sáu câu tiếng Anh chỉ hiện “Xin mời các bạn trả lời câu hỏi sau bằng Tiếng Anh”, không hiện kịch bản tiếng Anh phía sau. Tám câu có ảnh, gồm hệ phương trình và bộ ba hình; câu 5 đội Chủ nghĩa xã hội giữ hai phương trình dạng chữ.
+
+Sáu video được lưu cùng ứng dụng, chuyển sang H.264/AAC để trình duyệt phát trực tiếp. Khi mở câu có video, MC có nút **Bật / phát lại video** và **Dừng video**. Chỉ màn trình chiếu phát hình/tiếng; nút video không khởi động đồng hồ. Xem xong, MC bấm **Bắt đầu** để tính 20 giây trả lời. Nếu trình duyệt chặn tự phát có tiếng, bấm nút **Nhấn để phát video có âm thanh** trên màn trình chiếu. Âm lượng video điều chỉnh bằng thanh điều khiển của video, độc lập nút hiệu ứng âm thanh.
+
+Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đồng bộ lặp không phát lại. Khi tải lại trang đang phát, màn chiếu cố tiếp tục theo thời điểm máy chủ, có thể cần bấm cho phép phát tiếng lại. Video được truyền theo từng phần (HTTP Range), không đọc toàn bộ tệp vào RAM cho mỗi lượt xem.
+
 ## Điều khiển trận
 
 - Mở URL Render → **Tạo phòng thi mới** → nhập mật khẩu. Máy này nhận vai trò MC.

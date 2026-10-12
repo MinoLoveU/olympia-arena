@@ -7,7 +7,7 @@ const play=(r,id)=>act(r,'host',{type:'preset',id});
 test('Expanded catalog: 60 speed, 60 finish at 20 points, 8 complete obstacle sets',()=>{
  const speed=builtInBank.filter(q=>q.round==='Tăng tốc'),finish=builtInBank.filter(q=>q.round==='Về đích');
  assert.equal(speed.length,60);assert.equal(new Set(speed.map(q=>q.text)).size,60);assert.ok(speed.every(q=>q.duration===25));
- assert.equal(finish.length,60);assert.equal(new Set(finish.map(q=>q.text)).size,60);assert.ok(finish.every(q=>q.points===20&&q.duration===20));
+ assert.equal(finish.length,60);assert.equal(new Set(finish.map(q=>q.id)).size,60);assert.ok(finish.every(q=>q.points===20&&q.duration===20));
  for(let i=0;i<3;i++)assert.equal(finish.filter(q=>q.players[0]===i).length,20);
  assert.equal(obstacleSets.length,8);
  for(const set of obstacleSets){const qs=builtInBank.filter(q=>q.obstacleSet===set.id);assert.equal(qs.length,10);assert.deepEqual(qs.filter(q=>q.clue!==undefined).map(q=>q.clue),[0,1,2,3,4,5,6,7,8]);assert.equal(qs.filter(q=>q.obstacleGuess).length,1);assert.ok(existsSync(new URL('..'+set.image,import.meta.url)));}
@@ -41,6 +41,6 @@ test('Switching sets, leaving round, and backup preserve independent progress wi
 test('All added visual assets are served; answer modules remain private',async()=>{
  const {createGameServer}=await import('../server.js');const {once}=await import('node:events');const {server}=createGameServer();server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${server.address().port}`;
- try{for(const path of new Set([...obstacleSets.map(s=>s.image),...builtInBank.map(q=>q.media)].filter(Boolean))){const res=await fetch(base+path);assert.equal(res.status,200,path);if(path.endsWith('.jpg'))assert.match(res.headers.get('content-type'),/^image\/jpeg/);}for(const path of ['/multiplayer/expanded-bank.js','/multiplayer/obstacle-sets.js','/multiplayer/visual-questions.js','/multiplayer/warmup-bank.js'])assert.equal((await fetch(base+path)).status,404);}
- finally{await new Promise(r=>server.close(r));}
+ try{for(const path of new Set([...obstacleSets.map(s=>s.image),...builtInBank.map(q=>q.media)].filter(Boolean))){const res=await fetch(base+path);assert.equal(res.status,200,path);await res.arrayBuffer();if(path.endsWith('.jpg'))assert.match(res.headers.get('content-type'),/^image\/jpeg/);}for(const path of ['/multiplayer/expanded-bank.js','/multiplayer/obstacle-sets.js','/multiplayer/visual-questions.js','/multiplayer/warmup-bank.js'])assert.equal((await fetch(base+path)).status,404);}
+ finally{server.closeAllConnections();await new Promise(r=>server.close(r));}
 });

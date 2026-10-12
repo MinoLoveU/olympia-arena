@@ -2,13 +2,13 @@ import {builtInBank,bankInfo,obstacleSets} from './bank.js';
 import {randomBytes} from 'node:crypto';
 const teamNames=['Đội Cầu truyền hình','Đội Chủ nghĩa tư bản','Đội Chủ nghĩa xã hội'];
 const token=()=>randomBytes(24).toString('base64url');
-export function createRoom(){return {id:randomBytes(6).toString('hex'),tokens:{host:token(),display:token(),p0:token(),p1:token(),p2:token()},revision:0,questionId:0,usedQuestions:[],hopeUsed:[0,0,0],hopeStar:null,round:'Khởi động',teams:[0,1,2].map(i=>({name:teamNames[i],score:0})),question:null,phase:'waiting',deadline:null,duration:15,answers:{},judgements:{},buzzes:[],showAnswers:false,showSolution:false,obstacleSet:'1',obstacleProgress:{},opened:[],selectedClue:null,usedClues:[],image:'/assets/obstacle-rainbow.svg',log:'Mời MC chọn câu hỏi.',connections:new Map(),updatedAt:Date.now()};}
+export function createRoom(){return {id:randomBytes(6).toString('hex'),tokens:{host:token(),display:token(),p0:token(),p1:token(),p2:token()},revision:0,questionId:0,usedQuestions:[],hopeUsed:[0,0,0],hopeStar:null,videoPlayback:null,round:'Khởi động',teams:[0,1,2].map(i=>({name:teamNames[i],score:0})),question:null,phase:'waiting',deadline:null,duration:15,answers:{},judgements:{},buzzes:[],showAnswers:false,showSolution:false,obstacleSet:'1',obstacleProgress:{},opened:[],selectedClue:null,usedClues:[],image:'/assets/obstacle-rainbow.svg',log:'Mời MC chọn câu hỏi.',connections:new Map(),updatedAt:Date.now()};}
 export function authenticate(room,secret){return Object.keys(room.tokens).find(role=>room.tokens[role]===secret)||null;}
 export function snapshot(room,role,now=Date.now()){
  const {revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,judgements,hopeUsed,hopeStar}=room;
  const question=room.question?{text:room.question.text,type:room.question.type,choices:room.question.choices,media:room.question.media,mediaType:room.question.mediaType,players:room.question.players,points:room.question.points,label:room.question.label,...(role==='host'||showSolution?{solution:room.question.solution}:{})}:null;
  const answers=Object.fromEntries(Object.entries(room.answers).map(([id,a])=>[id,{...a,text:role==='host'||showAnswers||role===`p${id}`?a.text:null}]));
- return {...(role==='host'?{catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions,obstacleSets:obstacleSets.map(({id,name})=>({id,name})),obstacleProgress:room.round==='Vượt chướng ngại vật'?{...room.obstacleProgress,[room.obstacleSet]:{opened:room.opened,usedClues:room.usedClues,image:room.image}}:room.obstacleProgress}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,hopeUsed:[...hopeUsed],hopeStar:hopeStar?{...hopeStar}:null,obstacleSet:room.obstacleSet,obstacleClueCount:8,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
+ return {...(role==='host'?{catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions,obstacleSets:obstacleSets.map(({id,name})=>({id,name})),obstacleProgress:room.round==='Vượt chướng ngại vật'?{...room.obstacleProgress,[room.obstacleSet]:{opened:room.opened,usedClues:room.usedClues,image:room.image}}:room.obstacleProgress}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,hopeUsed:[...hopeUsed],hopeStar:hopeStar?{...hopeStar}:null,obstacleSet:room.obstacleSet,obstacleClueCount:8,videoPlayback:room.question?.mediaType==='video'&&room.videoPlayback?.questionId===room.questionId?room.videoPlayback:null,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
 }
 const fail=message=>{throw Error(message);};
 const clean=(s,max=2000)=>typeof s==='string'?s.trim().slice(0,max):'';
@@ -49,7 +49,7 @@ export function act(room,role,msg,now=Date.now()){
     if(clue===8&&clues.filter(n=>n<8).length<8)fail('Chọn đủ tám gợi ý trước ô trung tâm.');
    }
    if(round!==room.round){saveObstacle(room);if(round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}}room.round=round;
-   room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
+   room.videoPlayback=null;room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
    room.selectedClue=round==='Vượt chướng ngại vật'&&!q.obstacleGuess?clue:null;if(room.selectedClue!==null)room.usedClues.push(clue);
    room.duration=round==='Tăng tốc'?25:round==='Về đích'?20:seconds;room.phase='ready';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;room.log='Câu hỏi đã mở. Chờ MC bắt đầu.';
   }else if(msg.type==='round'){
@@ -64,6 +64,11 @@ export function act(room,role,msg,now=Date.now()){
    if(room.hopeUsed[player]>=3)fail('Đội này đã dùng hết ba ngôi sao.');
    room.hopeUsed[player]++;room.hopeStar={questionId:room.questionId,player};
    room.log=`${room.teams[player].name} dùng Ngôi sao hy vọng: đúng +40, sai/không trả lời −40. Còn ${3-room.hopeUsed[player]} sao.`;
+  }else if(msg.type==='video'){
+   if(!room.question||room.question.mediaType!=='video'||msg.questionId!==room.questionId)fail('Câu hiện tại không có video hoặc đã đổi.');
+   if(!['play','stop'].includes(msg.action))fail('Lệnh video không hợp lệ.');
+   room.videoPlayback={questionId:room.questionId,sequence:room.revision+1,action:msg.action,at:now};
+   room.log=msg.action==='play'?'Đang phát video trên màn trình chiếu. MC bấm Bắt đầu khi muốn tính giờ trả lời.':'Đã dừng video.';
   }else if(msg.type==='start'){
    if(!room.question||room.phase!=='ready')fail('Cần mở câu hỏi mới trước khi bắt đầu.');room.phase='open';room.startedAt=now;room.deadline=now+room.duration*1000;room.log='Đang nhận đáp án / chuông.';
   }else if(msg.type==='close'){

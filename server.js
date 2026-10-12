@@ -1,5 +1,6 @@
 import http from 'node:http';
-import {readFile} from 'node:fs/promises';
+import {readFile,stat} from 'node:fs/promises';
+import {createReadStream} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer,WebSocket} from 'ws';
@@ -33,6 +34,23 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH,hea
   }
   if(req.method==='GET'&&path==='/health')return json(200,{ok:true});
   if(req.method!=='GET'||!allowed.has(path)){res.writeHead(404);res.end('Not found');return;}
+  if(path.endsWith('.mp4')){
+   try{
+    const file=root+allowed.get(path),{size}=await stat(file),range=req.headers.range;
+    let start=0,end=size-1,status=200;
+    if(range){
+     const match=/^bytes=(\d*)-(\d*)$/.exec(range);
+     if(!match||(!match[1]&&!match[2])){res.writeHead(416,{'Content-Range':`bytes */${size}`});res.end();return;}
+     start=match[1]?Number(match[1]):Math.max(0,size-Number(match[2]));
+     end=match[1]&&match[2]?Math.min(Number(match[2]),size-1):size-1;
+     if(!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start>end||start>=size){res.writeHead(416,{'Content-Range':`bytes */${size}`});res.end();return;}
+     status=206;
+    }
+    res.writeHead(status,{'Content-Type':'video/mp4','Content-Length':end-start+1,'Accept-Ranges':'bytes','Cache-Control':'public, max-age=3600','X-Content-Type-Options':'nosniff',...(status===206?{'Content-Range':`bytes ${start}-${end}/${size}`}:{})});
+    const stream=createReadStream(file,{start,end});stream.on('error',()=>res.destroy());res.on('close',()=>stream.destroy());stream.pipe(res);
+   }catch{res.writeHead(404);res.end('Video không tồn tại.');}
+   return;
+  }
   try{const file=allowed.get(path),data=await readFile(root+file);const ext=file.split('.').pop();res.writeHead(200,{'Content-Type':{html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',svg:'image/svg+xml',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',mp4:'video/mp4'}[ext],'Cache-Control':'no-cache','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);}catch{res.writeHead(500);res.end('Không đọc được tệp.');}
  });
  const wss=new WebSocketServer({server,maxPayload:0});

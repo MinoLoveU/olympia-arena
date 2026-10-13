@@ -205,11 +205,8 @@ export const obstacleSets=[
         "Bolshevik."
       ],
       [
-        "",
-        "",
-        {
-          "pending": true
-        }
+        "Bản “Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa của V.I. Lenin mà Nguyễn Ái Quốc đọc được vào tháng 7/1920 vốn là văn kiện được chuẩn bị để trình bày tại Đại hội lần thứ hai của tổ chức nào?",
+        "Quốc tế cộng sản"
       ],
       [
         "Sự thay thế quan hệ sản xuất tư bản chủ nghĩa bằng quan hệ sản xuất xã hội chủ nghĩa được thực hiện thông qua hình thức đấu tranh quyết liệt nào của giai cấp công nhân?",
@@ -256,11 +253,8 @@ export const obstacleSets=[
         "Giải phóng."
       ],
       [
-        "",
-        "",
-        {
-          "pending": true
-        }
+        "Khẩu hiệu nổi tiếng \"Vô sản tất cả các nước, liên hiệp lại!\" thể hiện nguyên tắc chiến lược nào trong phong trào đấu tranh của giai cấp công nhân?",
+        "Đoàn kết quốc tế."
       ],
       [
         "Giai cấp nào được xác định là lực lượng lãnh đạo và là nhân tố nòng cốt trong cuộc cách mạng xóa bỏ chế độ tư bản chủ nghĩa?",
@@ -295,11 +289,8 @@ export const obstacleSets=[
     "image": "/assets/obstacle-source-7.png",
     "clues": [
       [
-        "",
-        "",
-        {
-          "pending": true
-        }
+        "Để làm suy yếu khối đoàn kết của một dân tộc, kẻ cai trị thường áp dụng thủ đoạn chia rẽ nội bộ quần chúng thành các phe phái đối lập nhau. Hiện tượng này được gọi là gì?",
+        "Phân hóa."
       ],
       [
         "Kẻ ngoại xâm thường dùng thủ đoạn _______ các mâu thuẫn lịch sử giữa các dân tộc bản địa để biến họ thành kẻ thù của nhau",
@@ -375,11 +366,8 @@ export const obstacleSets=[
       ]
     ],
     "center": [
-      "",
-      "",
-      {
-        "pending": true
-      }
+      "Theo triết học Mác - Lênin, yếu tố nào là điều kiện tiên quyết và nguyên nhân sâu xa trực tiếp dẫn đến sự xuất hiện của hiện tượng bất bình đẳng giai cấp, mâu thuẫn đối kháng và sự ra đời của Nhà nước trong lịch sử nhân loại?",
+      "Tư hữu."
     ]
   }
 ];

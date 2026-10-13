@@ -7,7 +7,7 @@ const play=(r,id)=>act(r,'host',{type:'preset',id});
 test('Expanded catalog: 60 speed, 60 finish at 20 points, 8 complete obstacle sets',()=>{
  const speed=builtInBank.filter(q=>q.round==='Tăng tốc'),finish=builtInBank.filter(q=>q.round==='Về đích');
  assert.equal(speed.length,60);assert.equal(new Set(speed.map(q=>q.text)).size,60);assert.ok(speed.every(q=>q.duration===25));
- assert.equal(finish.length,60);assert.equal(new Set(finish.map(q=>q.id)).size,60);assert.ok(finish.every(q=>q.points===20&&q.duration===20));
+ assert.equal(finish.length,60);assert.equal(new Set(finish.map(q=>q.id)).size,60);assert.ok(finish.every(q=>q.points===20&&q.duration===15));
  for(let i=0;i<3;i++)assert.equal(finish.filter(q=>q.players[0]===i).length,20);
  assert.equal(obstacleSets.length,8);
  for(const set of obstacleSets){const qs=builtInBank.filter(q=>q.obstacleSet===set.id);assert.equal(qs.length,10);assert.deepEqual(qs.filter(q=>q.clue!==undefined).map(q=>q.clue),[0,1,2,3,4,5,6,7,8]);assert.equal(qs.filter(q=>q.obstacleGuess).length,1);assert.ok(existsSync(new URL('..'+set.image,import.meta.url)));}

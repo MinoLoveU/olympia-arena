@@ -22,7 +22,7 @@ test('MC video commands are authoritative, scoped to current question and indepe
  for(const role of ['host','display','p0','p1','p2'])assert.deepEqual(snapshot(room,role).videoPlayback,room.videoPlayback);
  const sequence=room.videoPlayback.sequence;act(room,'host',command,2000);assert.ok(room.videoPlayback.sequence>sequence);
  act(room,'host',{...command,action:'stop'},3000);assert.equal(room.videoPlayback.action,'stop');
- act(room,'host',{type:'start'},4000);assert.equal(room.deadline,24000);act(room,'host',command,5000);assert.equal(room.deadline,24000);
+ act(room,'host',{type:'start'},4000);assert.equal(room.deadline,19000);act(room,'host',command,5000);assert.equal(room.deadline,19000);
  act(room,'host',{type:'close'});act(room,'host',{type:'preset',id:'finish-1'});assert.equal(snapshot(room,'display').videoPlayback,null);assert.throws(()=>act(room,'host',command));
 });
 test('Bundled videos support byte ranges, invalid ranges fail and answers module is private',async()=>{

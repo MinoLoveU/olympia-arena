@@ -123,7 +123,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  assert.equal(display.querySelector('.cover-7').hidden,true);assert.equal(display.querySelector('.cover-0').hidden,false);
  host.querySelector('#round').value='Về đích';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelector('#publish-question').disabled,true);assert.equal(host.querySelector('#finish-picker').hidden,false);host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelectorAll('#preset-question option').length,20);assert.ok([...host.querySelectorAll('#preset-question option')].every(o=>o.textContent.includes('Đội Chủ nghĩa xã hội')));
  host.querySelector('#preset-question').value='finish-60';host.querySelector('#publish-question').click();await wait(()=>p2.querySelector('#question-title').textContent.includes('Mục tiêu tổng quát'));assert.ok(p2.querySelector('#answer-text'));
- assert.equal(p2.querySelector('#clock-text').textContent,'20 GIÂY');
+ assert.equal(p2.querySelector('#clock-text').textContent,'15 GIÂY');
  await new Promise(r=>setTimeout(r,1100));
  assert.equal(host.querySelector('#hope-star').hidden,false);assert.equal(host.querySelector('#hope-star').disabled,false);
  host.querySelector('#hope-star').click();await wait(()=>doms.every(d=>!d.window.document.querySelector('#hope-status').hidden));

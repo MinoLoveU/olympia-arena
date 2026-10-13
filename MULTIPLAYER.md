@@ -19,9 +19,9 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 
 ## Nguồn Về đích — cập nhật 13/10/2026
 
-[Tab Về đích của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.d565as2bnh7u): 60 câu chia đúng 20 câu/đội, giữ số câu và IDs cũ; 20 điểm/20 giây và 3 sao/đội. Nội dung/đáp án chép theo tài liệu, chưa hiệu đính kiến thức. Sáu câu tiếng Anh chỉ hiện “Xin mời các bạn trả lời câu hỏi sau bằng Tiếng Anh”, không hiện kịch bản tiếng Anh phía sau. Tám câu có ảnh, gồm hệ phương trình và bộ ba hình; câu 5 đội Chủ nghĩa xã hội giữ hai phương trình dạng chữ.
+[Tab Về đích của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.d565as2bnh7u): 60 câu chia đúng 20 câu/đội, giữ số câu và IDs cũ; 20 điểm/15 giây và 3 sao/đội. Nội dung/đáp án chép theo tài liệu, chưa hiệu đính kiến thức. Sáu câu tiếng Anh chỉ hiện “Xin mời các bạn trả lời câu hỏi sau bằng Tiếng Anh”, không hiện kịch bản tiếng Anh phía sau. Tám câu có ảnh, gồm hệ phương trình và bộ ba hình; câu 5 đội Chủ nghĩa xã hội giữ hai phương trình dạng chữ.
 
-Sáu video được lưu cùng ứng dụng, chuyển sang H.264/AAC để trình duyệt phát trực tiếp. Khi mở câu có video, MC có nút **Bật / phát lại video** và **Dừng video**. Chỉ màn trình chiếu phát hình/tiếng; nút video không khởi động đồng hồ. Xem xong, MC bấm **Bắt đầu** để tính 20 giây trả lời. Nếu trình duyệt chặn tự phát có tiếng, bấm nút **Nhấn để phát video có âm thanh** trên màn trình chiếu. Âm lượng video điều chỉnh bằng thanh điều khiển của video, độc lập nút hiệu ứng âm thanh.
+Sáu video được lưu cùng ứng dụng, chuyển sang H.264/AAC để trình duyệt phát trực tiếp. Khi mở câu có video, MC có nút **Bật / phát lại video** và **Dừng video**. Chỉ màn trình chiếu phát hình/tiếng; nút video không khởi động đồng hồ. Xem xong, MC bấm **Bắt đầu** để tính 15 giây trả lời. Nếu trình duyệt chặn tự phát có tiếng, bấm nút **Nhấn để phát video có âm thanh** trên màn trình chiếu. Âm lượng video điều chỉnh bằng thanh điều khiển của video, độc lập nút hiệu ứng âm thanh.
 
 Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đồng bộ lặp không phát lại. Khi tải lại trang đang phát, màn chiếu cố tiếp tục theo thời điểm máy chủ, có thể cần bấm cho phép phát tiếng lại. Video được truyền theo từng phần (HTTP Range), không đọc toàn bộ tệp vào RAM cho mỗi lượt xem.
 
@@ -39,7 +39,7 @@ Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đ
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
 - Ngoài Khởi động, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
-- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, chỉ câu 15 Đội Cầu truyền hình còn trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 20 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
+- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, chỉ câu 15 Đội Cầu truyền hình còn trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
 
 Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn hơn. MC có bố cục hai cột trên máy tính: điều khiển/chọn câu/sửa điểm bên cạnh câu đang chơi và đáp án; liên kết, sao lưu, hướng dẫn mặc định thu gọn, bấm tiêu đề để mở.
@@ -118,7 +118,7 @@ Chạy `node --expose-gc scripts/check-stability.js` để thử 10.800 lượt 
 Kết quả 12/10/2026: 63 kiểm thử đạt. Thử lượng đồng bộ đạt 10.800 phản hồi trong 120 giây, giữ đủ 5 kết nối; heap giữ lại sau GC tăng 0,53 MiB, tổng dữ liệu nhận 971.284 byte, điểm cuối đồng bộ đầy đủ. Kết quả đo cục bộ, chưa phải độ bền ba giờ thực tế trên Render.
 
 
-Cập nhật luật 12/10/2026: mỗi đội có 3 sao Về đích, mọi câu Về đích 20 giây và mọi câu Tăng tốc 25 giây. Backup giữ số sao đã dùng; bản sao cũ vẫn hợp lệ và đội có thêm lượt còn lại theo giới hạn mới. Điểm sao vẫn đúng +40, sai/không trả lời −40.
+Cập nhật luật 12/10/2026: mỗi đội có 3 sao Về đích, mọi câu Về đích 15 giây và mọi câu Tăng tốc 25 giây. Backup giữ số sao đã dùng; bản sao cũ vẫn hợp lệ và đội có thêm lượt còn lại theo giới hạn mới. Điểm sao vẫn đúng +40, sai/không trả lời −40.
 
 ## Tên đội và chọn lượt Về đích — 12/10/2026
 Ba đội mặc định: **Đội Cầu truyền hình**, **Đội Chủ nghĩa tư bản**, **Đội Chủ nghĩa xã hội**. Tên xuất hiện trên bảng điểm, màn người chơi, liên kết chia sẻ và nhãn câu hỏi. Khi khôi phục bản sao cũ, tên mặc định Đội 1/2/3 được chuyển sang tên mới; tên MC tự đặt vẫn giữ nguyên.

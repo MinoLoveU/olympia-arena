@@ -189,7 +189,7 @@ function renderCatalog(){
  if(lastObstacleSet!==state.obstacleSet){selected=state.obstacleSet||'1';lastObstacleSet=state.obstacleSet;}
  $('#obstacle-set').innerHTML=sets.map(set=>`<option value="${set.id}">Bộ ${set.id} · ${esc(set.name)}</option>`).join('');$('#obstacle-set').value=selected;
  $('#select-obstacle-set').disabled=state.phase==='open';
- const locked=q=>q.pending||used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||state.usedClues.filter(n=>n<8).length<8));
+ const locked=q=>q.pending||used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||!catalog.filter(entry=>entry.obstacleSet===state.obstacleSet&&entry.clue<8&&!entry.pending).every(entry=>state.usedClues.includes(entry.clue))));
  const items=catalog.filter(q=>q.round===round&&(round!=='Về đích'||(finishPlayer!==''&&q.players?.[0]===Number(finishPlayer)))&&(!q.obstacleSet||q.obstacleSet===(state.obstacleSet||'1'))).sort((a,b)=>a.round==='Về đích'?(a.players[0]-b.players[0]||parseInt(a.label.split('Câu ')[1])-parseInt(b.label.split('Câu ')[1])):0),previous=$('#preset-question').value;
  $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${q.pending?'Để trống · ':used.includes(q.id)?'✓ Đã chơi · ':''}${esc(questionLabel(q))}</option>`).join('');
  $('#preset-question').value=items.some(q=>q.id===previous&&!locked(q))?previous:(items.find(q=>!locked(q))?.id||'');

@@ -8,7 +8,7 @@ export const obstacleSets=[
     "image": "/assets/obstacle-source-1.png",
     "clues": [
       [
-        "Cuộc chiến tranh nào diễn ra trong giai đoạn 1914–1918, nơi nhiều người dân thuộc địa bị đưa khỏi quê hương để phục vụ quân đội Pháp. Họ bị đưa đến nơi diễn ra các hoạt động quân sự, nơi có nguy cơ trực tiếp từ bom đạn.",
+        "Cuộc chiến tranh nào diễn ra trong giai đoạn 1914–1918, nơi nhiều người dân thuộc địa bị đưa khỏi quê hương để phục vụ quân đội Pháp. Họ bị đưa đến nơi diễn ra các hoạt động quân sự, nơi có nguy cơ trực tiếp từ bom đạn?",
         "Chiến tranh thế giới thứ nhất."
       ],
       [
@@ -28,15 +28,15 @@ export const obstacleSets=[
         "Bia đỡ đạn."
       ],
       [
-        "Điền từ còn thiếu: \"Chúng ta thà ……… tất cả, chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ\"",
+        "Điền từ còn thiếu: “Chúng ta thà ……… tất cả, chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ”",
         "Hy sinh."
       ],
       [
-        "Điền từ còn thiếu: Chủ nghĩa…….. là hệ thống thống trị và khai thác các dân tộc, lãnh thổ bị lệ thuộc nhằm phục vụ lợi ích của quốc gia đi xâm chiếm.",
+        "Điền từ còn thiếu: “Chủ nghĩa…….. là hệ thống thống trị và khai thác các dân tộc, lãnh thổ bị lệ thuộc nhằm phục vụ lợi ích của quốc gia đi xâm chiếm.”",
         "Thực dân."
       ],
       [
-        "Việc phân công lao động cơ giới hóa biến con người thành một bộ phận của máy móc, đẩy họ vào một guồng quay lao động …….\" - Karl Marx",
+        "“Việc phân công lao động cơ giới hóa biến con người thành một bộ phận của máy móc, đẩy họ vào một guồng quay lao động …….” - Karl Marx",
         "Phi nhân tính."
       ]
     ],
@@ -169,7 +169,7 @@ export const obstacleSets=[
         }
       ],
       [
-        "Truyện Cho tôi một vé đi tuổi thơ gồm bao nhiêu chương?",
+        "Truyện “Cho tôi một vé đi tuổi thơ” gồm bao nhiêu chương?",
         "12 chương."
       ],
       [

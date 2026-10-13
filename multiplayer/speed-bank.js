@@ -1,5 +1,6 @@
 // Source: Google Docs 1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos, tab t.a63d1diym0ik, 2026-10-14.
 // Red answer text is private. Source question 49 has no answer supplied.
+// Video replacements: Google Docs 1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg, 2026-10-14; question 42 temporarily has no video.
 export const speedQuestions = [
   {
     "id": "speed-1",
@@ -420,7 +421,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-37.mp4",
+    "media": "/assets/speed-source-37-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -432,7 +433,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-38.mp4",
+    "media": "/assets/speed-source-38-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -477,9 +478,7 @@ export const speedQuestions = [
     "solution": "Cách mạng tháng 10 Nga năm 1917.",
     "type": "text",
     "duration": 25,
-    "choices": [],
-    "media": "/assets/speed-source-42.mp4",
-    "mediaType": "video"
+    "choices": []
   },
   {
     "id": "speed-43",
@@ -532,7 +531,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-47.mp4",
+    "media": "/assets/speed-source-47-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -544,7 +543,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-48.mp4",
+    "media": "/assets/speed-source-48-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -578,7 +577,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-51.mp4",
+    "media": "/assets/speed-source-51-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -602,7 +601,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-53.mp4",
+    "media": "/assets/speed-source-53-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -624,7 +623,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-55.mp4",
+    "media": "/assets/speed-source-55-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -658,7 +657,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-58.mp4",
+    "media": "/assets/speed-source-58-v2.mp4",
     "mediaType": "video"
   },
   {
@@ -680,7 +679,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-source-60.mp4",
+    "media": "/assets/speed-source-60-v2.mp4",
     "mediaType": "video"
   }
 ];

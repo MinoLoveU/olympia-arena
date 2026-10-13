@@ -34,3 +34,21 @@ Nguồn: tab t.a63d1diym0ik của Google Docs 1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE
 | 60 | 17.367 | Có | Không |
 
 Tổng 28 video, 20 tệp nguồn có âm thanh. Kiểm tra MP4 track handlers xác nhận chỉ có `vide`, không có `soun`. Thời lượng chênh dưới 1 giây so với nguồn (do container/frame timing); không chủ động cắt nội dung.
+
+## Thay video ngày 14/10/2026
+
+Nguồn mới: https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit. Chín video dưới đây thay bản nhập ban đầu; toàn bộ đều có tiếng trong nguồn và đã loại bỏ audio. Dùng URL -v2 để tránh cache video cũ. Câu 42 tạm gỡ media khỏi bộ đề, còn 27 câu có video.
+
+| Câu | Video mới (giây) | Audio sau chuyển |
+|---|---:|---|
+| 37 | 23.033 | Không |
+| 38 | 24.633 | Không |
+| 47 | 22.033 | Không |
+| 48 | 19.033 | Không |
+| 51 | 18.467 | Không |
+| 53 | 22.667 | Không |
+| 55 | 17.900 | Không |
+| 58 | 18.000 | Không |
+| 60 | 21.167 | Không |
+
+Đã giải mã hết cả chín video mới, không lỗi.

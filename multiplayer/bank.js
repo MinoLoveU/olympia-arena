@@ -1,10 +1,9 @@
 import {finishQuestions} from './finish-bank.js';
 import {warmupQuestions} from './warmup-bank.js';
-import {speedReasoning,speedOrders} from './expanded-bank.js';
-import {visualQuestions} from './visual-questions.js';
+import {speedQuestions} from './speed-bank.js';
 import {obstacleSets} from './obstacle-sets.js';
 export {obstacleSets};
-// Khởi động theo tài liệu của chủ tài khoản; các vòng còn lại tự biên soạn.
+// Khởi động, Tăng tốc và Về đích theo tài liệu của chủ tài khoản.
 const warm='Khởi động',obstacle='Vượt chướng ngại vật',speed='Tăng tốc',finish='Về đích',tie='Câu hỏi phụ';
 const make=(id,label,round,text,solution,extra={})=>({id,label,round,text,solution,type:'text',duration:15,choices:[],...extra});
 const originalBank=[
@@ -19,24 +18,15 @@ const originalBank=[
  make('obstacle-8','Gợi ý 8',obstacle,'Vật thể hình cầu rất nhỏ tạo nên mưa, có thể làm ánh sáng khúc xạ và phản xạ bên trong, là gì?','GIỌT NƯỚC',{clue:7,points:10}),
  make('obstacle-center','Ô trung tâm',obstacle,'Trong dải màu đỏ, da cam, vàng, lục, lam, chàm, tím, màu nào đứng trước da cam?','ĐỎ',{clue:8,points:10}),
  make('obstacle-answer','Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật gồm 7 chữ cái (không tính khoảng trắng).','CẦU VỒNG',{type:'buzz',duration:15,obstacleGuess:true}),
- make('speed-1','Câu 1 · Nhìn nhanh',speed,'Quan sát hình: có bao nhiêu hình tam giác màu vàng?','5',{duration:20,media:'/assets/speed-shapes.svg',mediaType:'image'}),
- make('speed-2','Câu 2 · Sắp xếp',speed,'Sắp xếp các số 0,8; ½; 0,75; ⅔ theo thứ tự tăng dần.','½ → ⅔ → 0,75 → 0,8',{duration:20,type:'choice',choices:['½ → ⅔ → 0,75 → 0,8','⅔ → ½ → 0,75 → 0,8','½ → 0,75 → ⅔ → 0,8','0,8 → 0,75 → ⅔ → ½']}),
- make('speed-3','Câu 3 · Suy luận',speed,'Có 3 hộp, mỗi hộp chứa 4 túi, mỗi túi có 5 viên bi. Lấy ra 2 túi từ mỗi hộp. Còn lại tổng cộng bao nhiêu viên bi?','30 viên bi: 3 × (4 − 2) × 5.',{duration:30}),
- make('speed-4','Câu 4 · Đoạn băng',speed,'Xem đoạn băng trên màn trình chiếu. Hình vuông chuyển động từ trái sang phải có màu gì?','Xanh dương',{duration:30,type:'choice',choices:['Đỏ','Vàng','Xanh dương','Trắng'],media:'/assets/speed-motion.mp4',mediaType:'video'}),
  make('tie-1','Câu phụ 1/3',tie,'17 nhân 6 bằng bao nhiêu?','102',{type:'buzz'}),
  make('tie-2','Câu phụ 2/3',tie,'Số nguyên tố lớn nhất nhỏ hơn 20 là số nào?','19',{type:'buzz'}),
  make('tie-3','Câu phụ 3/3',tie,'Điền số tiếp theo theo quy luật mỗi số bằng tổng hai số liền trước: 1, 1, 2, 3, 5, 8, …','13',{type:'buzz'})
 ];
 
-const extraSpeed=[
- ...visualQuestions.map(q=>({...q,type:'text',duration:20,mediaType:'image',kind:'Nhìn nhanh'})),
- ...speedOrders.map(([order,items])=>({text:`Sắp xếp ${order}: ${[items[2],items[0],items[3],items[1]].join(' ; ')}.`,solution:items.join(' → '),duration:20,kind:'Sắp xếp'})),
- ...speedReasoning.map(([text,solution])=>({text,solution,duration:30,kind:'Suy luận'}))
-];
 export const builtInBank=[
  ...finishQuestions,
+ ...speedQuestions,
  ...originalBank.map(q=>q.round===finish?{...q,points:20,duration:15,label:q.label.replace('30 điểm','20 điểm').replace(/Câu (\d+) ·/, 'Câu $1/20 ·')}:q.round===obstacle?{...q,obstacleSet:'1'}:q),
- ...extraSpeed.map((q,i)=>make(`speed-${i+5}`,`Câu ${i+5}/60 · ${q.kind}`,speed,q.text,q.solution,q)),
  ...obstacleSets.slice(1).flatMap(set=>[
   ...[...set.clues,set.center].map(([text,solution],i)=>make(`obstacle-${set.id}-${i===8?'center':i+1}`,i===8?'Ô trung tâm':`Gợi ý ${i+1}`,obstacle,text,solution,{clue:i,points:10,obstacleSet:set.id})),
   make(`obstacle-${set.id}-answer`,'Đoán chướng ngại vật',obstacle,'Từ các gợi ý và bức hình được hé lộ, hãy gọi tên chướng ngại vật.',set.answer,{type:'buzz',obstacleGuess:true,obstacleSet:set.id})

@@ -43,7 +43,7 @@ function connect(){
  socket.onerror=()=>{};
 }
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
-function media(q){if(!q?.media)return '';if(q.mediaType==='video')return state.role==='display'?`<video id="question-video" controls playsinline preload="auto" src="${esc(safeURL(q.media))}${q.media.startsWith('/assets/finish-')?'?audio=20261013':''}"></video><button id="video-permission" hidden>▶ Nhấn để phát video có âm thanh</button>`:'<p class="video-note">Video phát trên màn trình chiếu khi MC bấm Bật video.</p>';const src=esc(safeURL(q.media));if(q.media==='/assets/warmup-common-5.jpg')return `<svg viewBox="0 35 640 545" width="640" height="545" role="img" aria-label="Gợi ý câu hỏi" style="overflow:hidden"><defs><clipPath id="clue-crop"><rect x="0" y="35" width="640" height="545"/></clipPath></defs><image href="${src}" width="640" height="640" clip-path="url(#clue-crop)"/></svg>`;return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
+function media(q){if(!q?.media)return '';if(q.mediaType==='video')return state.role==='display'?`<video id="question-video" ${state.round==='Tăng tốc'?'muted':''} controls playsinline preload="auto" src="${esc(safeURL(q.media))}${q.media.startsWith('/assets/finish-')?'?audio=20261013':''}"></video><button id="video-permission" hidden>▶ Nhấn để phát video${state.round==='Tăng tốc'?' (không tiếng)':' có âm thanh'}</button>`:'<p class="video-note">Video phát trên màn trình chiếu khi MC bấm Bật video.</p>';const src=esc(safeURL(q.media));if(q.media==='/assets/warmup-common-5.jpg')return `<svg viewBox="0 35 640 545" width="640" height="545" role="img" aria-label="Gợi ý câu hỏi" style="overflow:hidden"><defs><clipPath id="clue-crop"><rect x="0" y="35" width="640" height="545"/></clipPath></defs><image href="${src}" width="640" height="640" clip-path="url(#clue-crop)"/></svg>`;return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
 const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không trả lời'};
 function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.round==='Tăng tốc'||state.hopeStar?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
@@ -58,6 +58,7 @@ function render(){
  $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý"><span class="picture-label"></span>${[0,1,2,3,4,5,6,7,8].map(i=>`<span class="picture-cover cover-${i}" style="--column:${[0,1,2,0,2,0,1,2,1][i]};--row:${[0,0,0,1,1,2,2,2,1][i]};--tile-x:${i===8?31:[0,1,2,0,2,0,1,2][i]*100/3}%;--tile-y:${i===8?31:[0,0,0,1,1,2,2,2][i]*100/3}%;--tile-w:${i===8?38:100/3}%;--tile-h:${i===8?38:100/3}%" aria-label="${i===8?'Ô trung tâm':'Gợi ý '+(i+1)}" ${s.opened.includes(i)?'hidden':''}>${i===8?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===8?'Ô trung tâm':`Gợi ý ${s.selectedClue+1}`}</p></div>`:'';
  $('#stage').classList.toggle('has-picture',s.round==='Vượt chướng ngại vật');
  $('#question-panel').classList.toggle('video-question',s.question?.mediaType==='video');
+ $('#question-panel').classList.toggle('speed-image',s.round==='Tăng tốc'&&s.question?.mediaType==='image'&&!!s.question.media);
  $('#question-panel').classList.toggle('large-clue-image',s.question?.media==='/assets/warmup-common-5.jpg');
  const warm=s.round==='Khởi động';
  document.body.classList.toggle('oral-round',warm);
@@ -85,6 +86,7 @@ function renderVideo(){
  const available=state.question?.mediaType==='video';
  $('#play-video').hidden=$('#stop-video').hidden=!available;
  const video=$('#question-video'),command=state.videoPlayback;
+ if(video&&state.round==='Tăng tốc')video.muted=true;
  if(!video)return;
  const permission=$('#video-permission');
  const play=()=>{

@@ -39,7 +39,7 @@ Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đ
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
 - Ngoài Khởi động, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
-- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, chỉ câu 15 Đội Cầu truyền hình còn trống) + 15 câu chung. Các vòng còn lại giữ nguyên: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
+- Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, chỉ câu 15 Đội Cầu truyền hình còn trống) + 15 câu chung. Các vòng còn lại: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.
 
 Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn hơn. MC có bố cục hai cột trên máy tính: điều khiển/chọn câu/sửa điểm bên cạnh câu đang chơi và đáp án; liên kết, sao lưu, hướng dẫn mặc định thu gọn, bấm tiêu đề để mở.
@@ -133,3 +133,13 @@ Ngày 13/10/2026 bổ sung theo lời nhắn chủ tài khoản: câu 15 Khởi 
 ## Cân bằng âm lượng — 13/10/2026
 
 Sáu video Về đích đã chuẩn hóa về khoảng −16 LUFS (đo lại: −16,10 đến −16,00), true peak tối đa −1,91 dBTP. Giữ nguyên luồng hình. Hiệu ứng tăng từ gain 0,30 lên 0,45; giữ âm đúng/sai hiện tại. Xem [kết quả đo](AUDIO-CHECK.md). Tải lại màn trình chiếu để nhận bản âm thanh mới.
+
+## Bộ Tăng tốc theo tài liệu — 14/10/2026
+
+Đã thay 60 câu theo [tab Tăng tốc của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.a63d1diym0ik), giữ thứ tự 1–60 và IDs speed-1…speed-60. Đáp án lấy từ chữ đỏ và chỉ gửi riêng MC trước khi công bố. Cả 60 câu vẫn nhập đáp án tự do, 25 giây; xếp đáp án theo thời gian nhận và tính điểm theo thứ tự MC tích Đúng như trước.
+
+Có 28 video và 17 ảnh nằm trong 6 câu có hình. Quốc kỳ ở câu 7 và bìa sách ở câu 11 được xếp thành bảng có nhãn chữ cái; giữ đủ hình nguồn. Các lựa chọn dạng danh sách ở câu 20/50 giữ nhãn A–H/A–D. Ảnh sơ đồ câu 22 hiển thị vùng sơ đồ, không bỏ thông tin. Tài liệu có câu 5 và 35 trùng nhau; giữ theo nguồn. Câu 49 chưa có đáp án nguồn: MC thấy “Tài liệu chưa điền đáp án”, câu vẫn mở và chấm thủ công được. Không tự bổ sung đáp án hoặc hiệu đính kiến thức.
+
+Tất cả video Tăng tốc đã bỏ luồng âm thanh (`-an`), đồng thời đặt thuộc tính muted trên màn chiếu. Video Về đích giữ tiếng đã cân bằng. MC dùng Bật/phát lại video và Dừng video; nút Bắt đầu tính 25 giây riêng. Video dài hơn 25 giây không bị cắt; MC có thể phát trước khi bắt đầu tính giờ.
+
+73 kiểm thử đạt: đủ 60 câu, tách/giữ kín đáp án, hình có nhãn, cả 28 tệp chỉ có luồng video, điều khiển MC/mute và năm giao diện WebSocket. Chưa kiểm tra bố cục qua trình duyệt thật.

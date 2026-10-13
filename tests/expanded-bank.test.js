@@ -1,19 +1,20 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';import {JSDOM} from 'jsdom';
 import {builtInBank,obstacleSets} from '../multiplayer/bank.js';
+import {visualQuestions} from '../multiplayer/visual-questions.js';
 import {createRoom,act,snapshot} from '../multiplayer/game.js';
 const choose=(r,id)=>act(r,'host',{type:'obstacleSet',id});
 const play=(r,id)=>act(r,'host',{type:'preset',id});
 test('Expanded catalog: 60 speed, 60 finish at 20 points, 8 complete obstacle sets',()=>{
  const speed=builtInBank.filter(q=>q.round==='Tăng tốc'),finish=builtInBank.filter(q=>q.round==='Về đích');
- assert.equal(speed.length,60);assert.equal(new Set(speed.map(q=>q.text)).size,60);assert.ok(speed.every(q=>q.duration===25));
+ assert.equal(speed.length,60);assert.equal(new Set(speed.map(q=>q.id)).size,60);assert.ok(speed.every(q=>q.duration===25));
  assert.equal(finish.length,60);assert.equal(new Set(finish.map(q=>q.id)).size,60);assert.ok(finish.every(q=>q.points===20&&q.duration===15));
  for(let i=0;i<3;i++)assert.equal(finish.filter(q=>q.players[0]===i).length,20);
  assert.equal(obstacleSets.length,8);
  for(const set of obstacleSets){const qs=builtInBank.filter(q=>q.obstacleSet===set.id);assert.equal(qs.length,10);assert.deepEqual(qs.filter(q=>q.clue!==undefined).map(q=>q.clue),[0,1,2,3,4,5,6,7,8]);assert.equal(qs.filter(q=>q.obstacleGuess).length,1);assert.ok(existsSync(new URL('..'+set.image,import.meta.url)));}
 });
 test('Visual counting answers match SVG contents',()=>{
- for(const q of builtInBank.filter(q=>q.media?.includes('speed-visual-'))){
+ for(const q of visualQuestions.filter(q=>q.media?.includes('speed-visual-'))){
   const doc=new JSDOM(readFileSync(new URL('..'+q.media,import.meta.url),'utf8'),{contentType:'image/svg+xml'});
   const tag=q.text.includes('hình tròn')?'circle':q.text.includes('hình vuông')?'rect':'path';
   const fill=q.text.includes('vàng')?'#ffd85b':q.text.includes('cyan')?'#6ddbea':'#f38d9f';

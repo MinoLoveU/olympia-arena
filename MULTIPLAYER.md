@@ -92,7 +92,7 @@ Deploy script chờ kết quả và báo lỗi nếu deploy thất bại. Xem b�
 
 Chướng ngại vật: trên máy MC chọn **Bộ chướng ngại vật** → **Đưa bộ lên màn chiếu**, sau đó chọn gợi ý. Có 8 bộ, mỗi bộ có ảnh và tiến độ mở ô riêng; đổi bộ hoặc đổi vòng rồi quay lại vẫn giữ các ô đã mở. Sao lưu giữ tiến độ cả 8 bộ. Ảnh chia 3 × 3: 8 ô gợi ý ngoài là các hình vuông bằng nhau (mỗi chiều bằng 1/3 ảnh). Ô trung tâm rộng/cao 38%, nằm chính giữa (cách mép trái/trên 31%) và đè lên cả 8 ô ngoài bằng lớp hiển thị cao hơn. MC chọn gợi ý 1–8 theo thứ tự đội yêu cầu; trung tâm chỉ chọn sau đủ 8 gợi ý. Bản sao cũ tự chuyển ô trung tâm cũ sang ô trung tâm mới.
 
-Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; tất cả các câu đều có 25 giây. Các câu ngoài Khởi động, Tăng tốc và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.
+Tăng tốc có 60 câu: nhìn nhanh, sắp xếp, suy luận và câu video có sẵn; thời gian theo từng câu: 20, 25 hoặc 30 giây. Các câu ngoài Khởi động, Tăng tốc và câu Về đích có Ngôi sao hy vọng vẫn nhập điểm thủ công.
 
 
 ## Tăng tốc — cập nhật 12/10/2026
@@ -118,7 +118,7 @@ Chạy `node --expose-gc scripts/check-stability.js` để thử 10.800 lượt 
 Kết quả 12/10/2026: 63 kiểm thử đạt. Thử lượng đồng bộ đạt 10.800 phản hồi trong 120 giây, giữ đủ 5 kết nối; heap giữ lại sau GC tăng 0,53 MiB, tổng dữ liệu nhận 971.284 byte, điểm cuối đồng bộ đầy đủ. Kết quả đo cục bộ, chưa phải độ bền ba giờ thực tế trên Render.
 
 
-Cập nhật luật 12/10/2026: mỗi đội có 3 sao Về đích, mọi câu Về đích 15 giây và mọi câu Tăng tốc 25 giây. Backup giữ số sao đã dùng; bản sao cũ vẫn hợp lệ và đội có thêm lượt còn lại theo giới hạn mới. Điểm sao vẫn đúng +40, sai/không trả lời −40.
+Cập nhật luật 12/10/2026: mỗi đội có 3 sao Về đích, mọi câu Về đích 15 giây và Tăng tốc mặc định 25 giây (các ngoại lệ mới ghi bên dưới). Backup giữ số sao đã dùng; bản sao cũ vẫn hợp lệ và đội có thêm lượt còn lại theo giới hạn mới. Điểm sao vẫn đúng +40, sai/không trả lời −40.
 
 ## Tên đội và chọn lượt Về đích — 12/10/2026
 Ba đội mặc định: **Đội Cầu truyền hình**, **Đội Chủ nghĩa tư bản**, **Đội Chủ nghĩa xã hội**. Tên xuất hiện trên bảng điểm, màn người chơi, liên kết chia sẻ và nhãn câu hỏi. Khi khôi phục bản sao cũ, tên mặc định Đội 1/2/3 được chuyển sang tên mới; tên MC tự đặt vẫn giữ nguyên.
@@ -136,10 +136,18 @@ Sáu video Về đích đã chuẩn hóa về khoảng −16 LUFS (đo lại: �
 
 ## Bộ Tăng tốc theo tài liệu — 14/10/2026
 
-Đã thay 60 câu theo [tab Tăng tốc của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.a63d1diym0ik), giữ thứ tự 1–60 và IDs speed-1…speed-60. Đáp án lấy từ chữ đỏ và chỉ gửi riêng MC trước khi công bố. Cả 60 câu vẫn nhập đáp án tự do, 25 giây; xếp đáp án theo thời gian nhận và tính điểm theo thứ tự MC tích Đúng như trước.
+Đã thay 60 câu theo [tab Tăng tốc của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.a63d1diym0ik), giữ thứ tự 1–60 và IDs speed-1…speed-60. Đáp án lấy từ chữ đỏ và chỉ gửi riêng MC trước khi công bố. Cả 60 câu vẫn nhập đáp án tự do, thời gian theo từng câu; xếp đáp án theo thời gian nhận và tính điểm theo thứ tự MC tích Đúng như trước.
 
 Có 28 video và 17 ảnh nằm trong 6 câu có hình. Quốc kỳ ở câu 7 và bìa sách ở câu 11 được xếp thành bảng có nhãn chữ cái; giữ đủ hình nguồn. Các lựa chọn dạng danh sách ở câu 20/50 giữ nhãn A–H/A–D. Ảnh sơ đồ câu 22 hiển thị vùng sơ đồ, không bỏ thông tin. Tài liệu có câu 5 và 35 trùng nhau; giữ theo nguồn. Câu 49 chưa có đáp án nguồn: MC thấy “Tài liệu chưa điền đáp án”, câu vẫn mở và chấm thủ công được. Không tự bổ sung đáp án hoặc hiệu đính kiến thức.
 
-Tất cả video Tăng tốc đã bỏ luồng âm thanh (`-an`), đồng thời đặt thuộc tính muted trên màn chiếu. Video Về đích giữ tiếng đã cân bằng. MC dùng Bật/phát lại video và Dừng video; nút Bắt đầu tính 25 giây riêng. Video dài hơn 25 giây không bị cắt; MC có thể phát trước khi bắt đầu tính giờ.
+Tất cả video Tăng tốc đã bỏ luồng âm thanh (`-an`), đồng thời đặt thuộc tính muted trên màn chiếu. Video Về đích giữ tiếng đã cân bằng. MC dùng Bật/phát lại video và Dừng video; nút Bắt đầu tính thời gian trả lời riêng. Video dài hơn 25 giây không bị cắt; MC có thể phát trước khi bắt đầu tính giờ.
 
 73 kiểm thử đạt: đủ 60 câu, tách/giữ kín đáp án, hình có nhãn, cả 28 tệp chỉ có luồng video, điều khiển MC/mute và năm giao diện WebSocket. Chưa kiểm tra bố cục qua trình duyệt thật.
+
+## Điều chỉnh Tăng tốc — 14/10/2026
+
+- **30 giây:** câu 3, 10, 21, 23, 30, 33, 39, 46.
+- **20 giây:** câu 17, 19, 27, 32, 36.
+- **25 giây:** các câu còn lại.
+
+Thời gian trong danh sách MC, đồng hồ và thời hạn máy chủ nhận đáp án khớp nhau. Câu 11 đổi thành “Cho danh sách 7 tác phẩm sau đây, các tác phẩm nào có chung một tác giả?”. Câu 14 tách hai cột dọc: 1–4 bên trái, A–D bên phải, trên MC/màn chiếu/người chơi; không vẽ sẵn các cặp đáp án. Người chơi vẫn nhập các cặp nối trong ô trả lời. 74 kiểm thử đạt, gồm hạn nhận đáp án của toàn bộ 60 câu và hai cột trên năm giao diện.

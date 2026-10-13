@@ -3,7 +3,7 @@ import {builtInBank} from '../multiplayer/bank.js';import {createRoom,act,snapsh
 const qs=builtInBank.filter(q=>q.round==='Tăng tốc');
 test('Speed source preserves 60 numbered free-text questions, images, repeated questions and private red answers',()=>{
  assert.equal(qs.length,60);assert.deepEqual(qs.map(q=>q.id),Array.from({length:60},(_,i)=>`speed-${i+1}`));
- assert.ok(qs.every(q=>q.duration===25&&q.type==='text'&&q.choices.length===0&&!q.text.includes('Đáp án:')));
+ assert.ok(qs.every(q=>[20,25,30].includes(q.duration)&&q.type==='text'&&q.choices.length===0&&!q.text.includes('Đáp án:')));
  assert.equal(qs.filter(q=>q.mediaType==='video').length,28);assert.equal(qs.filter(q=>q.mediaType==='image').length,6);
  assert.equal(qs[0].solution,'Đảng Lao động Việt Nam');assert.equal(qs[23].solution,'5/1941.');assert.equal(qs[47].solution,'Hữu nghị');assert.equal(qs[59].solution,'Hội liên hiệp thuộc địa.');
  assert.equal(qs[4].text,qs[34].text);assert.equal(qs[4].solution,qs[34].solution);

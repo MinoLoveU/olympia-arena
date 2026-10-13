@@ -25,5 +25,12 @@ test('MC starts/replays/stops display video; blocked autoplay offers explicit pl
  host.querySelector('#round').value='Tăng tốc';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='speed-3';host.querySelector('#publish-question').click();await wait(()=>display.querySelector('video')?.getAttribute('src')==='/assets/speed-source-3.mp4');
  assert.equal(display.querySelector('video').muted,true);assert.equal(display.querySelector('video').hasAttribute('muted'),true);assert.match(display.querySelector('#video-permission').textContent,/không tiếng/);
  host.querySelector('#play-video').click();await wait(()=>plays===4);assert.equal(display.querySelector('video').muted,true);for(const d of [host,...players])assert.equal(d.querySelector('video'),null);
+ host.querySelector('#preset-question').value='speed-14';host.querySelector('#publish-question').click();await wait(()=>doms.every(d=>!d.window.document.querySelector('#question-matching').hidden));
+ for(const d of [host,display,...players]){
+  const columns=[...d.querySelectorAll('#question-matching ol')];assert.equal(columns.length,2);
+  assert.deepEqual([...columns[0].children].map(el=>el.textContent[0]),['1','2','3','4']);assert.deepEqual([...columns[1].children].map(el=>el.textContent[0]),['A','B','C','D']);
+  assert.match(columns[0].lastChild.textContent,/chống đế quốc xâm lược/);assert.match(columns[1].lastChild.textContent,/Việt - Lào - Campuchia/);assert.equal(d.querySelector('#question-matching').textContent.includes('1-B'),false);
+ }
+ host.querySelector('#preset-question').value='speed-11';host.querySelector('#publish-question').click();await wait(()=>players[0].querySelector('#question-title').textContent.includes('7 tác phẩm'));assert.equal(display.querySelector('#question-matching').hidden,true);
  }finally{for(const socket of sockets){socket.onclose=null;socket.onmessage=null;socket.terminate();}for(const dom of doms)dom.window.close();for(const socket of wss.clients)socket.terminate();server.closeAllConnections();await new Promise(r=>server.close(r));}
 });

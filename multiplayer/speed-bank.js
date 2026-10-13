@@ -28,7 +28,7 @@ export const speedQuestions = [
     "text": "Đây là nguyên tắc nào?",
     "solution": "Cầu đồng tồn dị",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-3.mp4",
     "mediaType": "video"
@@ -106,7 +106,7 @@ export const speedQuestions = [
     "text": "Đây là tác phẩm nào?",
     "solution": "Dân vận",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-10.mp4",
     "mediaType": "video"
@@ -115,7 +115,7 @@ export const speedQuestions = [
     "id": "speed-11",
     "label": "Câu 11/60",
     "round": "Tăng tốc",
-    "text": "Cho danh sách 6 tác phẩm sau đây, các tác phẩm nào có chung một tác giả?",
+    "text": "Cho danh sách 7 tác phẩm sau đây, các tác phẩm nào có chung một tác giả?",
     "solution": "ADF",
     "type": "text",
     "duration": 25,
@@ -147,11 +147,25 @@ export const speedQuestions = [
     "id": "speed-14",
     "label": "Câu 14/60",
     "round": "Tăng tốc",
-    "text": "Điền các từ sau vào chỗ trống để hoàn thành tên các Mặt trận:\n1.Mặt trận đại đoàn kết…….\nA. Thế Giới\n2.Mặt trận đoàn kết……\nB. Dân tộc(Toàn dân tộc)\n3.Mặt trận nhân dân…..đoàn kết với Việt Nam\nC. Á - Phi\n4.Mặt trận nhân dân…..đoàn kết với Việt Nam chống đế quốc xâm lược\nD. Việt - Lào - Campuchia",
+    "text": "Điền các từ sau vào chỗ trống để hoàn thành tên các Mặt trận:",
     "solution": "1-B      2-D      3-C      4-A",
     "type": "text",
     "duration": 25,
-    "choices": []
+    "choices": [],
+    "matchingColumns": [
+      [
+        "1.Mặt trận đại đoàn kết…….",
+        "2.Mặt trận đoàn kết……",
+        "3.Mặt trận nhân dân…..đoàn kết với Việt Nam",
+        "4.Mặt trận nhân dân…..đoàn kết với Việt Nam chống đế quốc xâm lược"
+      ],
+      [
+        "A. Thế Giới",
+        "B. Dân tộc(Toàn dân tộc)",
+        "C. Á - Phi",
+        "D. Việt - Lào - Campuchia"
+      ]
+    ]
   },
   {
     "id": "speed-15",
@@ -180,7 +194,7 @@ export const speedQuestions = [
     "text": "Đây là tác phẩm nào của Hồ Chí Minh?",
     "solution": "Nên học sử ta.",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-17.mp4",
     "mediaType": "video"
@@ -202,7 +216,7 @@ export const speedQuestions = [
     "text": "Đây là lực lượng nào?",
     "solution": "Liên minh Công – Nông – Trí",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-19.mp4",
     "mediaType": "video"
@@ -226,7 +240,7 @@ export const speedQuestions = [
     "text": "Đây là hình thức tổ chức nào?",
     "solution": "Hội Liên hiệp các dân tộc bị áp bức",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-21.mp4",
     "mediaType": "video"
@@ -250,7 +264,7 @@ export const speedQuestions = [
     "text": "Đây là từ khoá gì?",
     "solution": "Nền gốc",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-23.mp4",
     "mediaType": "video"
@@ -292,7 +306,7 @@ export const speedQuestions = [
     "text": "Đây là sự kiện lịch sử nào?",
     "solution": "Cách mạng Tháng Mười Nga 1917",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-27.mp4",
     "mediaType": "video"
@@ -326,7 +340,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Bàn tay",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-30.mp4",
     "mediaType": "video"
@@ -348,7 +362,7 @@ export const speedQuestions = [
     "text": "Đây là khối Mặt trận đoàn kết quốc tế nào?",
     "solution": "Mặt trận đoàn kết Việt - Lào - Campuchia (hoặc Mặt trận đoàn kết nhân dân ba nước Đông Dương)",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-32.mp4",
     "mediaType": "video"
@@ -360,7 +374,7 @@ export const speedQuestions = [
     "text": "Đây là tổ chức nào?",
     "solution": "Quốc tế cộng sản",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-33.mp4",
     "mediaType": "video"
@@ -392,7 +406,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Báo Le Paria (Người cùng khổ)",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-36.mp4",
     "mediaType": "video"
@@ -428,7 +442,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Chiêng",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-39.mp4",
     "mediaType": "video"
@@ -504,7 +518,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Hạt nhân",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-source-46.mp4",
     "mediaType": "video"

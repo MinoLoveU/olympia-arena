@@ -44,6 +44,7 @@ function connect(){
 }
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
 function media(q){if(!q?.media)return '';if(q.mediaType==='video')return state.role==='display'?`<video id="question-video" ${state.round==='Tăng tốc'?'muted':''} controls playsinline preload="auto" src="${esc(safeURL(q.media))}${q.media.startsWith('/assets/finish-')?'?audio=20261013':''}"></video><button id="video-permission" hidden>▶ Nhấn để phát video${state.round==='Tăng tốc'?' (không tiếng)':' có âm thanh'}</button>`:'<p class="video-note">Video phát trên màn trình chiếu khi MC bấm Bật video.</p>';const src=esc(safeURL(q.media));if(q.media==='/assets/warmup-common-5.jpg')return `<svg viewBox="0 35 640 545" width="640" height="545" role="img" aria-label="Gợi ý câu hỏi" style="overflow:hidden"><defs><clipPath id="clue-crop"><rect x="0" y="35" width="640" height="545"/></clipPath></defs><image href="${src}" width="640" height="640" clip-path="url(#clue-crop)"/></svg>`;return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
+function matching(q){return q?.matchingColumns?.length===2?`<div class="matching-columns">${q.matchingColumns.map((column,i)=>`<ol aria-label="${i?'Cột A đến D':'Cột 1 đến 4'}">${column.map(item=>`<li>${esc(item)}</li>`).join('')}</ol>`).join('')}</div>`:'';}
 const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không trả lời'};
 function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.round==='Tăng tốc'||state.hopeStar?` · ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
 function render(){
@@ -52,6 +53,8 @@ function render(){
  const winner=s.round==='Khởi động'&&s.question?.type==='buzz'?s.buzzes[0]?.player:undefined;
  $('#scoreboard').innerHTML=s.teams.map((t,i)=>`<div class="score-card${winner===i?' buzz-winner':''}"><span>${winner===i?'<b class="winner-label">⚑ GIÀNH QUYỀN</b>':''}${esc(t.name)}${s.round==='Về đích'?`<em class="hope-count">★ Còn ${3-(s.hopeUsed?.[i]||0)}/3 sao</em>`:''}<small>${s.online[`p${i}`]?'● Đã kết nối':'○ Chưa kết nối'}</small></span><strong>${t.score}</strong></div>`).join('');
  $('#question-title').textContent=s.question?.text||(s.round==='Vượt chướng ngại vật'?'Mời đội chơi chọn câu hỏi':'Chờ MC mở câu hỏi');
+ $('#question-matching').innerHTML=matching(s.question);$('#question-matching').hidden=!s.question?.matchingColumns;
+ $('#question-panel').classList.toggle('matching-question',!!s.question?.matchingColumns);
  $('#phase-label').textContent=({waiting:'CHƯA MỞ CÂU HỎI',ready:'CÂU HỎI ĐÃ MỞ · CHỜ HIỆU LỆNH',open:'ĐANG NHẬN ĐÁP ÁN',closed:'ĐÃ KHÓA NHẬN ĐÁP ÁN'})[s.phase];
  if(lastQuestion!==s.questionId||!s.question){lastVideoCommand=null;$('#question-media').innerHTML=media(s.question);lastQuestion=s.questionId;}
  $('#solution').hidden=!s.showSolution||!s.question;$('#solution').textContent=`Đáp án: ${s.question?.solution||''}`;
@@ -194,7 +197,7 @@ function renderCatalog(){
 }
 function previewPreset(){
  const q=state?.catalog?.find(q=>q.id===$('#preset-question').value);
- $('#preset-preview').innerHTML=q?`<b>${esc(questionLabel(q))}</b><p>${esc(q.text)}</p><p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${q.round==='Khởi động'?(q.type==='buzz'?'Bấm chuông · trả lời miệng':'Trả lời miệng'):{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:$('#round').value==='Về đích'&&$('#finish-team').value===''?'<p>Chọn đội chơi Về đích, rồi mở câu hỏi của đội đó.</p>':'<p>Đã chơi hết các câu trong lựa chọn này. Chọn đội hoặc vòng khác để tiếp tục.</p>';
+ $('#preset-preview').innerHTML=q?`<b>${esc(questionLabel(q))}</b><p>${esc(q.text)}</p>${matching(q)}<p class="private-solution">Đáp án riêng MC: ${esc(q.solution)}</p><small>${q.duration} giây · ${q.round==='Khởi động'?(q.type==='buzz'?'Bấm chuông · trả lời miệng':'Trả lời miệng'):{text:'Điền đáp án',choice:'Trắc nghiệm',buzz:'Tranh chuông'}[q.type]}${q.points?` · ${q.points} điểm`:''}</small>`:$('#round').value==='Về đích'&&$('#finish-team').value===''?'<p>Chọn đội chơi Về đích, rồi mở câu hỏi của đội đó.</p>':'<p>Đã chơi hết các câu trong lựa chọn này. Chọn đội hoặc vòng khác để tiếp tục.</p>';
  $('#publish-question').disabled=!q||!!q.pending||state.phase==='open';
 }
 $('#select-obstacle-set').onclick=()=>send({type:'obstacleSet',id:$('#obstacle-set').value});
@@ -226,10 +229,10 @@ function scheduleDisplayFit(){
   document.body.style.setProperty('--screen-height',height+'px');
   document.body.style.setProperty('--u',height/100+'px');
   const panel=$('#question-panel'),title=$('#question-title'),solution=$('#solution');
-  title.style.fontSize='';solution.style.fontSize='';
+  title.style.fontSize='';solution.style.fontSize='';$('#question-matching').style.fontSize='';
   if(panel.clientHeight>0){
    for(let step=0;step<100&&panel.scrollHeight>panel.clientHeight+1;step++){
-    for(const el of [title,solution]){const size=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.max(1,size-1)+'px';}
+    for(const el of [title,solution,$('#question-matching')]){const size=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.max(1,size-1)+'px';}
    }
   }
   if(/^p[0-2]$/.test(state?.role)&&window.innerWidth>=761){

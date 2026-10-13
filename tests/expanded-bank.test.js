@@ -7,7 +7,7 @@ const choose=(r,id)=>act(r,'host',{type:'obstacleSet',id});
 const play=(r,id)=>act(r,'host',{type:'preset',id});
 test('Expanded catalog: 60 speed, 60 finish at 20 points, 8 complete obstacle sets',()=>{
  const speed=builtInBank.filter(q=>q.round==='Tăng tốc'),finish=builtInBank.filter(q=>q.round==='Về đích');
- assert.equal(speed.length,60);assert.equal(new Set(speed.map(q=>q.id)).size,60);assert.ok(speed.every(q=>q.duration===25));
+ assert.equal(speed.length,60);assert.equal(new Set(speed.map(q=>q.id)).size,60);assert.ok(speed.every(q=>[20,25,30].includes(q.duration)));
  assert.equal(finish.length,60);assert.equal(new Set(finish.map(q=>q.id)).size,60);assert.ok(finish.every(q=>q.points===20&&q.duration===15));
  for(let i=0;i<3;i++)assert.equal(finish.filter(q=>q.players[0]===i).length,20);
  assert.equal(obstacleSets.length,8);

@@ -32,11 +32,24 @@ test('Speed judging rejects missing answer, open phase and non-host; deadline re
  act(r,'host',{type:'close'});assert.throws(()=>judge(r,1,'correct'));judge(r,1,'no-answer');assert.equal(r.teams[1].score,0);
 });
 
-test('Round-wide clocks enforce 25 seconds for speed and 15 seconds for finish, including older custom durations',()=>{
+test('Round-wide clocks enforce 25-second default for custom speed questions and 15 seconds for finish',()=>{
  for(const [round,seconds] of [['Tăng tốc',25],['Về đích',15]]){
   const r=createRoom();act(r,'host',{type:'question',round,duration:20,question:{text:'Kiểm tra thời gian',type:'text',players:[0],points:20}});assert.equal(r.duration,seconds);
   act(r,'host',{type:'start'},1000);assert.equal(r.deadline,1000+seconds*1000);
   act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1);
   const late=createRoom();act(late,'host',{type:'preset',id:round==='Tăng tốc'?'speed-1':'finish-1'});act(late,'host',{type:'start'},1000);assert.throws(()=>act(late,'p0',{type:'answer',questionId:late.questionId,text:'Đúng hạn'},1000+seconds*1000));
+ }
+});
+
+
+test('Every speed preset uses its requested duration and rejects answers at the exact deadline',()=>{
+ const longer=[3,10,21,23,30,33,39,46],shorter=[17,19,27,32,36];
+ for(let n=1;n<=60;n++){
+  const r=createRoom(),seconds=longer.includes(n)?30:shorter.includes(n)?20:25;
+  act(r,'host',{type:'preset',id:`speed-${n}`});assert.equal(r.duration,seconds,`question ${n}`);
+  assert.equal(builtInBank.find(q=>q.id===`speed-${n}`).duration,seconds);
+  act(r,'host',{type:'start'},1000);assert.equal(r.deadline,1000+seconds*1000);
+  act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1);
+  assert.throws(()=>act(r,'p1',{type:'answer',questionId:r.questionId,text:'Hết hạn'},r.deadline));
  }
 });

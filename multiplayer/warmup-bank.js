@@ -203,16 +203,15 @@ export const warmupQuestions=[
     "id": "warm-27",
     "label": "Đội 1 · Câu 15/15",
     "round": "Khởi động",
-    "text": "",
-    "solution": "",
+    "text": "Trong truyền thuyết về thời Hùng Vương thứ sáu, hoàng tử Lang Liêu đã dùng gạo nếp làm hai loại lễ vật dâng lên vua cha, một loại hình vuông tượng trưng cho đất, một loại hình tròn tượng trưng cho trời. Đó là hai loại bánh nào?",
+    "solution": "Bánh chưng và bánh dày.",
     "type": "text",
     "duration": 3,
     "choices": [],
     "players": [
       0
     ],
-    "points": 10,
-    "pending": true
+    "points": 10
   },
   {
     "id": "warm-7",

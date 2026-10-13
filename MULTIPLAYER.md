@@ -15,7 +15,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 
 ## Nguồn Khởi động — cập nhật 11/10/2026
 
-[Google Docs của chủ tài khoản](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit): nhập 57 câu đã điền, lấy đáp án in đậm sau mũi tên/ngoặc; giữ phần nhấn mạnh in đậm nằm trong câu hỏi. Giữ nguyên nội dung/đáp án nguồn, không tự hiệu đính kiến thức. Câu 15 Đội Cầu truyền hình còn trống (warm-27); danh sách MC ghi Để trống và không mở được. Không đưa ba câu bổ sung cuối tài liệu vào. Câu chung 5 dùng ảnh JPEG nguyên bản, giữ ảnh có sẵn và đáp án riêng MC. IDs/đội/thứ tự các vị trí vẫn giữ để tương thích sao lưu.
+[Google Docs của chủ tài khoản](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit): nhập 57 câu đã điền, lấy đáp án in đậm sau mũi tên/ngoặc; giữ phần nhấn mạnh in đậm nằm trong câu hỏi. Giữ nguyên nội dung/đáp án nguồn, không tự hiệu đính kiến thức. Câu 15 Đội Cầu truyền hình (warm-27) đã bổ sung theo Hazei ngày 14/10: Lang Liêu dâng lễ vật → Bánh chưng và bánh dày. Không đưa ba câu bổ sung cuối tài liệu vào. Câu chung 5 dùng ảnh JPEG nguyên bản, giữ ảnh có sẵn và đáp án riêng MC. IDs/đội/thứ tự các vị trí vẫn giữ để tương thích sao lưu.
 
 ## Nguồn Về đích — cập nhật 13/10/2026
 
@@ -31,7 +31,7 @@ Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đ
 - Chỉ màn MC yêu cầu nhập lại mật khẩu mỗi lần tải lại trang. Màn trình chiếu và người chơi chỉ cần link riêng, không nhập mật khẩu. Máy chủ kiểm tra mật khẩu trước khi gửi trạng thái hoặc link vai trò, kể cả kết nối WebSocket trực tiếp. Không lưu mật khẩu vào cookie/localStorage/sessionStorage; mất mạng tạm thời có thể kết nối lại trong cùng lần mở trang.
 - Trong **Liên kết cho 5 thiết bị**, sao chép link trình chiếu và ba link người chơi. Mỗi link mang quyền riêng; giữ kín link MC. MC cũng có thể mở link của mình trên máy khác, các link vai trò được máy chủ gửi lại cho MC.
 - Chọn vòng và bấm **Hiện tên vòng**. Với Chướng ngại vật, lúc này chỉ có ảnh che, chưa có câu hỏi.
-- **Bộ đề 01 có sẵn 263 vị trí (262 câu đã điền, 1 vị trí trống)**, không có form nhập câu hỏi, nhập JSON bộ đề hay URL media. Chọn vòng và câu trong danh sách; xem trước chỉ MC thấy. **Mở câu đã chọn** đưa câu lên năm máy, **Bắt đầu** chạy đồng hồ. Câu đã mở được đánh dấu và khóa để tránh lặp. Khởi động riêng trả lời miệng, không có ô nhập hoặc chuông. Khởi động chung chỉ bấm chuông, đội đầu trả lời miệng. Về đích chỉ đội được chỉ định gửi đáp án.
+- **Bộ đề 01 có sẵn 263 câu đã điền**, không có form nhập câu hỏi, nhập JSON bộ đề hay URL media. Chọn vòng và câu trong danh sách; xem trước chỉ MC thấy. **Mở câu đã chọn** đưa câu lên năm máy, **Bắt đầu** chạy đồng hồ. Câu đã mở được đánh dấu và khóa để tránh lặp. Khởi động riêng trả lời miệng, không có ô nhập hoặc chuông. Khởi động chung chỉ bấm chuông, đội đầu trả lời miệng. Về đích chỉ đội được chỉ định gửi đáp án.
 - Chỉ đáp án đầu tiên của mỗi đội được nhận; hết giờ hoặc MC khóa thì máy chủ từ chối gửi thêm. Form hiện ngay khi mở câu, nhưng chưa được nhập/gửi trước hiệu lệnh.
 - Chuông: máy chủ gán thứ tự xử lý, luôn có duy nhất một đội đầu tiên. Cả ba đội đều thấy thứ tự; ở Khởi động chung đội đầu trả lời miệng, các vòng khác chỉ đội đầu được gửi đáp án. Không dùng thời gian do người chơi gửi. Độ trễ mạng vẫn ảnh hưởng khi bấm sát nhau.
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
@@ -72,7 +72,7 @@ Cả ba vai trò người chơi dùng toàn bộ cửa sổ từ 761px ngang: c�
 
 Máy chủ cần `OLYMPIA_ACCESS_HASH` chứa verifier scrypt do `hashPassword` trong `multiplayer/access.js` tạo. Không đưa mật khẩu hoặc verifier vào Git. Thiếu cấu hình thì tạo phòng và truy cập MC bị từ chối. Render hiện cấu hình biến này qua lệnh khởi động riêng của service; giữ cấu hình đó khi cập nhật triển khai. Giới hạn 10 lần nhập sai/phút theo phòng/vai trò; tạo phòng giới hạn theo địa chỉ kết nối máy chủ.
 
-`npm ci && npm test`. Có kiểm thử bằng năm kết nối WebSocket độc lập và năm giao diện jsdom: câu hỏi mở đồng thời, nhập/trắc nghiệm, đổi 8 bộ và khôi phục tiến độ độc lập, kiểm tra 263 vị trí/262 câu đã điền, chặn một vị trí trống, hình JPEG và đếm hình SVG, không mất nội dung đang soạn khi đội khác gửi, ẩn/công bố đáp án, sửa điểm, thứ tự chuông, phân quyền, timeout, chống gửi lặp/câu cũ, kết nối lại và khôi phục sao lưu. Chưa có browser kết nối trong phiên để xác minh hình thức bằng screenshot.
+`npm ci && npm test`. Có kiểm thử bằng năm kết nối WebSocket độc lập và năm giao diện jsdom: câu hỏi mở đồng thời, nhập/trắc nghiệm, đổi 8 bộ và khôi phục tiến độ độc lập, kiểm tra đủ 263 câu đã điền, hình JPEG và đếm hình SVG, không mất nội dung đang soạn khi đội khác gửi, ẩn/công bố đáp án, sửa điểm, thứ tự chuông, phân quyền, timeout, chống gửi lặp/câu cũ, kết nối lại và khôi phục sao lưu. Chưa có browser kết nối trong phiên để xác minh hình thức bằng screenshot.
 
 Nguồn nền tảng: [Render WebSockets](https://render.com/docs/websocket), [Blueprint](https://render.com/docs/blueprint-spec), [giới hạn Free](https://render.com/docs/free).
 

@@ -541,7 +541,7 @@ export const speedQuestions = [
     "text": "Đây là cụm từ gì?",
     "solution": "Hữu nghị",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-48-v2.mp4",
     "mediaType": "video"
@@ -575,7 +575,7 @@ export const speedQuestions = [
     "text": "Đây là tổ chức gì?",
     "solution": "Công thương cứu quốc đoàn.",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-51-v2.mp4",
     "mediaType": "video"
@@ -621,7 +621,7 @@ export const speedQuestions = [
     "text": "Đây là mặt trận nào?",
     "solution": "Mặt trận dân tộc giải phóng miền Nam Việt Nam.",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-55-v2.mp4",
     "mediaType": "video"
@@ -655,7 +655,7 @@ export const speedQuestions = [
     "text": "Đây là tổ chức gì?",
     "solution": "Hội Phản đế đồng minh",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-58-v2.mp4",
     "mediaType": "video"
@@ -677,7 +677,7 @@ export const speedQuestions = [
     "text": "Đây là tổ chức nào?",
     "solution": "Hội liên hiệp thuộc địa.",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-source-60-v2.mp4",
     "mediaType": "video"

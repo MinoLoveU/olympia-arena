@@ -43,7 +43,7 @@ test('Round-wide clocks enforce 25-second default for custom speed questions and
 
 
 test('Every speed preset uses its requested duration and rejects answers at the exact deadline',()=>{
- const longer=[3,10,21,23,30,33,39,46],shorter=[17,19,27,32,36];
+ const longer=[3,10,21,23,30,33,39,46],shorter=[17,19,27,32,36,48,51,55,58,60];
  for(let n=1;n<=60;n++){
   const r=createRoom(),seconds=longer.includes(n)?30:shorter.includes(n)?20:25;
   act(r,'host',{type:'preset',id:`speed-${n}`});assert.equal(r.duration,seconds,`question ${n}`);

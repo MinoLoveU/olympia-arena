@@ -147,7 +147,7 @@ Tất cả video Tăng tốc đã bỏ luồng âm thanh (`-an`), đồng thời
 ## Điều chỉnh Tăng tốc — 14/10/2026
 
 - **30 giây:** câu 3, 10, 21, 23, 30, 33, 39, 46.
-- **20 giây:** câu 17, 19, 27, 32, 36.
+- **20 giây:** câu 17, 19, 27, 32, 36, 48, 51, 55, 58, 60.
 - **25 giây:** các câu còn lại.
 
 Thời gian trong danh sách MC, đồng hồ và thời hạn máy chủ nhận đáp án khớp nhau. Câu 11 đổi thành “Cho danh sách 7 tác phẩm sau đây, các tác phẩm nào có chung một tác giả?”. Câu 14 tách hai cột dọc: 1–4 bên trái, A–D bên phải, trên MC/màn chiếu/người chơi; không vẽ sẵn các cặp đáp án. Người chơi vẫn nhập các cặp nối trong ô trả lời. 74 kiểm thử đạt, gồm hạn nhận đáp án của toàn bộ 60 câu và hai cột trên năm giao diện.

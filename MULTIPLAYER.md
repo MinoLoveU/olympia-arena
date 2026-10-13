@@ -21,7 +21,7 @@ Repo/Blueprint đã sẵn sàng; chỉ đăng nhập GitHub không cấp quyền
 
 [Tab Về đích của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.d565as2bnh7u): 60 câu chia đúng 20 câu/đội, giữ số câu và IDs cũ; 20 điểm/15 giây và 3 sao/đội. Nội dung/đáp án chép theo tài liệu, chưa hiệu đính kiến thức. Sáu câu tiếng Anh chỉ hiện “Xin mời các bạn trả lời câu hỏi sau bằng Tiếng Anh”, không hiện kịch bản tiếng Anh phía sau. Tám câu có ảnh, gồm hệ phương trình và bộ ba hình; câu 5 đội Chủ nghĩa xã hội giữ hai phương trình dạng chữ.
 
-Sáu video được lưu cùng ứng dụng, chuyển sang H.264/AAC để trình duyệt phát trực tiếp. Khi mở câu có video, MC có nút **Bật / phát lại video** và **Dừng video**. Chỉ màn trình chiếu phát hình/tiếng; nút video không khởi động đồng hồ. Xem xong, MC bấm **Bắt đầu** để tính 15 giây trả lời. Nếu trình duyệt chặn tự phát có tiếng, bấm nút **Nhấn để phát video có âm thanh** trên màn trình chiếu. Âm lượng video điều chỉnh bằng thanh điều khiển của video, độc lập nút hiệu ứng âm thanh.
+Sáu video được lưu cùng ứng dụng, chuyển sang H.264/AAC để trình duyệt phát trực tiếp. Khi mở câu có video, MC có nút **Bật / phát lại video** và **Dừng video**. Màn trình chiếu và ba màn đội chơi phát hình/tiếng; nút video không khởi động đồng hồ. Xem xong, MC bấm **Bắt đầu** để tính 15 giây trả lời. Nếu trình duyệt chặn tự phát có tiếng, bấm biểu tượng **▶** trên video. Âm lượng video điều chỉnh bằng thanh điều khiển của video, độc lập nút hiệu ứng âm thanh.
 
 Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đồng bộ lặp không phát lại. Khi tải lại trang đang phát, màn chiếu cố tiếp tục theo thời điểm máy chủ, có thể cần bấm cho phép phát tiếng lại. Video được truyền theo từng phần (HTTP Range), không đọc toàn bộ tệp vào RAM cho mỗi lượt xem.
 
@@ -155,3 +155,6 @@ Thời gian trong danh sách MC, đồng hồ và thời hạn máy chủ nhận
 ## Thay video Tăng tốc — 14/10/2026
 
 Theo danh sách video mới, đã thay video câu **37, 38, 47, 48, 51, 53, 55, 58, 60**. Cả chín video mới đều không tiếng. **Câu 42 tạm thời không có video**: MC không có nút phát video ở câu này; giữ câu hỏi, đáp án và thời gian. Tổng hiện có 27 câu Tăng tốc gắn video. Dùng tên tệp mới để trình duyệt không lấy bản cũ từ cache. Thời gian riêng từng câu, câu 11 và hai cột câu 14 giữ nguyên.
+
+## Hiển thị media ở đội chơi — 14/10/2026
+Ảnh và video hiển thị trên cả ba màn đội chơi. Video đồng bộ lệnh phát/phát lại/dừng từ MC với màn chiếu; Tăng tốc tiếp tục không tiếng. Bỏ dòng “Nhấn để phát video”; nếu trình duyệt chặn tự phát, dùng biểu tượng ▶ hoặc điều khiển video. Nhãn chấm điểm dùng dấu chấm câu cùng hàng: “Đúng. +40 điểm”, “Sai. 0 điểm”.

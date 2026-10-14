@@ -56,7 +56,7 @@ test('Audio requires an explicit enable, creates finite tones, and mutes immedia
  assert.equal(tones.length-before,22);assert.ok(tones.every(t=>t.endTime>t.startTime&&t.endTime<1));
  assert.ok(tones.some(t=>t.type==='square'));assert.ok(tones.some(t=>t.type==='triangle'));
  assert.equal(tones.filter(t=>t.frequency.end<t.frequency.value).length,0);
- assert.equal(gains[0].value,.45);
+ assert.equal(gains[0].value,.65);
  assert.ok(wrongTones.every(t=>t.type!=='sawtooth'&&t.type!=='square'));
  assert.equal(await audio.toggle(),false);assert.equal(gains[0].value,0);const muted=tones.length;audio.play('correct');assert.equal(tones.length,muted);
  await assert.rejects(()=>setup().toggle(),/hỗ trợ/);

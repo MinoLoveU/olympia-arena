@@ -321,7 +321,7 @@ export const speedQuestions = [
     "text": "Đây là tổ chức gì?",
     "solution": "Hội Phản đế đồng minh",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-compact-28-v2.mp4",
     "mediaType": "video"

@@ -95,6 +95,7 @@ function render(){
 function renderVideo(){
  const available=state.question?.mediaType==='video';
  $('#play-video').hidden=$('#stop-video').hidden=!available;
+ $('#play-video').textContent=state.round==='Tăng tốc'&&state.phase==='ready'?'▶ Phát video + bắt đầu':'▶ Bật / phát lại video';
  const video=$('#question-video'),command=state.videoPlayback;
  if(video&&state.round==='Tăng tốc')video.muted=true;
  if(!video)return;

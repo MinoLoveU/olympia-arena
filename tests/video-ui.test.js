@@ -27,6 +27,7 @@ test('MC synchronizes display and player videos; blocked autoplay uses an icon w
  host.querySelector('#round').value='Tăng tốc';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='speed-3';host.querySelector('#publish-question').click();await wait(()=>display.querySelector('video')?.getAttribute('src')==='/assets/speed-source-3.mp4');
  checkMedia();assert.equal(display.querySelector('video').muted,true);assert.equal(display.querySelector('video').hasAttribute('muted'),true);for(const d of players)assert.equal(d.querySelector('video').muted,true);
  host.querySelector('#play-video').click();await wait(()=>plays===16);assert.equal(display.querySelector('video').muted,true);assert.equal(host.querySelector('video'),null);for(const d of players)assert.ok(d.querySelector('video'));
+ assert.equal(rooms.get(room.id).phase,'open');assert.ok(rooms.get(room.id).deadline);host.querySelector('#stop').click();await wait(()=>rooms.get(room.id).phase==='closed');
  host.querySelector('#preset-question').value='speed-14';host.querySelector('#publish-question').click();await wait(()=>doms.every(d=>!d.window.document.querySelector('#question-matching').hidden));
  for(const d of [host,display,...players]){
   const columns=[...d.querySelectorAll('#question-matching ol')];assert.equal(columns.length,2);

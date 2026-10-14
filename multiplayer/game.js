@@ -84,7 +84,10 @@ export function act(room,role,msg,now=Date.now()){
    if(!room.question||room.question.mediaType!=='video'||msg.questionId!==room.questionId)fail('Câu hiện tại không có video hoặc đã đổi.');
    if(!['play','stop'].includes(msg.action))fail('Lệnh video không hợp lệ.');
    room.videoPlayback={questionId:room.questionId,sequence:room.revision+1,action:msg.action,at:now};
-   room.log=msg.action==='play'?'Đang phát video trên màn trình chiếu. MC bấm Bắt đầu khi muốn tính giờ trả lời.':'Đã dừng video.';
+   if(msg.action==='play'&&room.round==='Tăng tốc'&&room.phase==='ready'){
+    room.phase='open';room.startedAt=now;room.deadline=now+room.duration*1000;
+   }
+   room.log=msg.action==='stop'?'Đã dừng video.':room.round==='Tăng tốc'?(room.phase==='open'?'Đang phát video và nhận đáp án. Phát lại video không đặt lại thời gian.':'Đang phát lại video. Đã khóa nhận đáp án.'):'Đang phát video trên màn trình chiếu. MC bấm Bắt đầu khi muốn tính giờ trả lời.';
   }else if(msg.type==='start'){
    if(!room.question||room.phase!=='ready')fail('Cần mở câu hỏi mới trước khi bắt đầu.');room.phase='open';room.startedAt=now;room.deadline=now+room.duration*1000;room.log='Đang nhận đáp án / chuông.';
   }else if(msg.type==='close'){

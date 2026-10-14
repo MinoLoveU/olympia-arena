@@ -8,7 +8,7 @@ window.OlympiaSounds=class {
   if(!this.context){this.context=new Audio();this.master=this.context.createGain();this.master.connect(this.context.destination);}
   await this.context.resume();
   if(this.context.state!=='running')throw Error('Chưa bật được âm thanh. Bấm lại nút Bật âm thanh.');
-  this.master.gain.value=.45;this.enabled=true;this.play('enable');return true;
+  this.master.gain.value=.65;this.enabled=true;this.play('enable');return true;
  }
  reset(){this.previous=null;this.lastTick=null;}
  observe(s){

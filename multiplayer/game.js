@@ -16,7 +16,7 @@ const fail=message=>{throw Error(message);};
 const clean=(s,max=2000)=>typeof s==='string'?s.trim().slice(0,max):'';
 function restoredObstacleImage(id,url,obstacleSets){
  const fallback=obstacleSets.find(s=>s.id===id).image;
- if(/^\/assets\/obstacle-(?:rainbow|[2-8])\.svg$/.test(url||''))return fallback;
+ if(/^\/assets\/obstacle-(?:rainbow|awaiting|[2-8])\.svg$/.test(url||''))return fallback;
  return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:fallback;
 }
 function saveObstacle(room){

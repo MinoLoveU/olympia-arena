@@ -13,12 +13,22 @@ test('Current five-screen UI shows pending slots and still opens unchanged warmu
  const [host,display,...players]=doms.map(d=>d.window.document);
  await wait(()=>!host.querySelector('#access-gate').hidden);host.querySelector('#access-password').value='test-only-password';host.querySelector('#access-form').dispatchEvent(new doms[0].window.Event('submit',{cancelable:true}));
  await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
- for(const round of ['Vượt chướng ngại vật','Tăng tốc','Về đích']){
+ for(const round of ['Tăng tốc','Về đích']){
  host.querySelector('#round').value=round;host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
  if(round==='Về đích'){host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.match(host.querySelector('#finish-team').textContent,/4\/4 câu/);}
  const options=[...host.querySelector('#preset-question').options];assert.equal(options.length,round==='Tăng tốc'?20:round==='Về đích'?4:10);assert.ok(options.every(o=>o.disabled));assert.equal(host.querySelector('#publish-question').disabled,true);assert.match(host.querySelector('#preset-preview').textContent,/chờ bộ đề mới/);
  }
  assert.equal(host.querySelector('#obstacle-set').options.length,2);
+ host.querySelector('#round').value='Vượt chướng ngại vật';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
+ host.querySelector('#preset-question').value='compact-obstacle-1-1';host.querySelector('#publish-question').click();await wait(()=>players.every(d=>d.querySelector('.tiles img')));
+ host.querySelector('#open-tile').click();await wait(()=>players.every(d=>d.querySelector('.cover-0').hidden));
+ for(const dom of doms.slice(1)){
+  const d=dom.window.document,style=d.createElement('style');style.textContent=readFileSync(new URL('../multiplayer/style.css',import.meta.url),'utf8');d.head.append(style);
+  const img=d.querySelector('.tiles img');assert.equal(img.draggable,false);assert.equal(dom.window.getComputedStyle(img).objectFit,'cover');assert.equal(dom.window.getComputedStyle(img).pointerEvents,'none');
+  const drag=new dom.window.Event('dragstart',{bubbles:true,cancelable:true});img.dispatchEvent(drag);assert.equal(drag.defaultPrevented,true);
+  assert.equal(d.querySelectorAll('.picture-cover:not([hidden])').length,8);
+ }
+
  host.querySelector('#round').value='Khởi động';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='warm-27';host.querySelector('#publish-question').click();await wait(()=>[display,...players].every(d=>d.querySelector('#question-title').textContent.includes('Lang Liêu')));
  }finally{for(const socket of sockets){socket.onclose=null;socket.onmessage=null;socket.terminate();}for(const dom of doms)dom.window.close();for(const socket of wss.clients)socket.terminate();server.closeAllConnections();await new Promise(r=>server.close(r));}
 });

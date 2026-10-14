@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';import {JSDOM} from 'jsdom';
-import {builtInBank,obstacleSets} from '../multiplayer/bank.js';
+import {builtInBank,obstacleSets} from '../multiplayer/archive-bank.js';
 import {visualQuestions} from '../multiplayer/visual-questions.js';
-import {createRoom,act,snapshot} from '../multiplayer/game.js';
+import {createRoom,act,snapshot} from './fixtures/full-pack.js';
 const choose=(r,id)=>act(r,'host',{type:'obstacleSet',id});
 const play=(r,id)=>act(r,'host',{type:'preset',id});
 test('Expanded catalog: 60 speed, 60 finish at 20 points, 8 complete obstacle sets',()=>{
@@ -40,7 +40,7 @@ test('Switching sets, leaving round, and backup preserve independent progress wi
 });
 
 test('All added visual assets are served; answer modules remain private',async()=>{
- const {createGameServer}=await import('../server.js');const {once}=await import('node:events');const {server}=createGameServer();server.listen(0,'127.0.0.1');await once(server,'listening');
+ const {createGameServer}=await import('./fixtures/full-pack.js');const {once}=await import('node:events');const {server}=createGameServer();server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${server.address().port}`;
  try{for(const path of new Set([...obstacleSets.map(s=>s.image),...builtInBank.map(q=>q.media)].filter(Boolean))){const res=await fetch(base+path);assert.equal(res.status,200,path);await res.arrayBuffer();if(path.endsWith('.jpg'))assert.match(res.headers.get('content-type'),/^image\/jpeg/);}for(const path of ['/multiplayer/expanded-bank.js','/multiplayer/obstacle-sets.js','/multiplayer/visual-questions.js','/multiplayer/warmup-bank.js'])assert.equal((await fetch(base+path)).status,404);}
  finally{server.closeAllConnections();await new Promise(r=>server.close(r));}

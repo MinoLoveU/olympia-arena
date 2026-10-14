@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRoom,act,snapshot} from '../multiplayer/game.js';
-import {builtInBank} from '../multiplayer/bank.js';
+import {createRoom,act,snapshot} from './fixtures/full-pack.js';
+import {builtInBank} from '../multiplayer/archive-bank.js';
 const setup=()=>{const r=createRoom();act(r,'host',{type:'preset',id:'speed-2'});act(r,'host',{type:'start'},1000);return r;};
 const answer=(r,p,text='đáp án',now=1234)=>act(r,`p${p}`,{type:'answer',questionId:r.questionId,text},now);
 const judge=(r,p,result)=>act(r,'host',{type:'judge',questionId:r.questionId,player:p,result,version:r.judgements[p]?.version||0});

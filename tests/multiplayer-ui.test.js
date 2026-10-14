@@ -1,5 +1,5 @@
 import {hashPassword} from '../multiplayer/access.js';
-import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import {WebSocket} from 'ws';import {once} from 'node:events';import {createGameServer} from '../server.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import {WebSocket} from 'ws';import {once} from 'node:events';import {createGameServer} from './fixtures/full-pack.js';
 const wait=async(fn)=>{const end=Date.now()+3500;while(Date.now()<end){if(fn())return;await new Promise(r=>setTimeout(r,15));}throw Error('UI sync timeout');};
 test('Five clients: oral judging adjusts warm-up scores; later rounds keep manual scoring',async()=>{
  const {server,wss}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json();const doms=[],sockets=[];

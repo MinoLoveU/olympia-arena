@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {once} from 'node:events';
 import {WebSocket} from 'ws';
-import {createGameServer} from '../server.js';
+import {createGameServer} from './fixtures/full-pack.js';
 import {hashPassword} from '../multiplayer/access.js';
 const wait=async fn=>{const end=Date.now()+3000;while(Date.now()<end){if(fn())return;await new Promise(r=>setTimeout(r,10));}throw Error('Timeout');};
 async function setup(heartbeatMs=30000){const app=createGameServer({accessHash:hashPassword('test-only-password'),heartbeatMs});app.server.listen(0,'127.0.0.1');await once(app.server,'listening');const base=`http://127.0.0.1:${app.server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json();const clients=[];

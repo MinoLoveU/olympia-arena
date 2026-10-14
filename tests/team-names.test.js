@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createRoom,act,snapshot} from '../multiplayer/game.js';
-import {builtInBank} from '../multiplayer/bank.js';
+import {createRoom,act,snapshot} from './fixtures/full-pack.js';
+import {builtInBank} from '../multiplayer/archive-bank.js';
 const names=['Đội Cầu truyền hình','Đội Chủ nghĩa tư bản','Đội Chủ nghĩa xã hội'];
 test('Named teams preserve custom backup names and migrate old generic names',()=>{
  const r=createRoom();assert.deepEqual(r.teams.map(t=>t.name),names);

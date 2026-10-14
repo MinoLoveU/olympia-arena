@@ -2,6 +2,12 @@
 
 Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động, Tăng tốc và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
 
+## Cấu hình hiện tại — 14/10/2026
+
+Khởi động giữ nguyên 60 câu. Ba phần chờ bộ đề mới: **2 chướng ngại vật** (mỗi bộ 8 gợi ý ngoài và 1 trung tâm), **20 câu Tăng tốc**, **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 3 sao/đội. Sao nhân đôi mức điểm: câu 20 đúng/sai ±40, câu 30 ±60; câu không sao vẫn chấm điểm thủ công.
+
+Bộ nguồn đầy đủ trước đây được giữ tại `multiplayer/archive-bank.js` và các module nguồn; các mục nguồn bên dưới ghi lịch sử, không phải danh mục đang mở chơi. Kiểm thử hồi quy dùng bộ lưu trữ; kiểm thử `current-format*` dùng cấu hình sản xuất. Khôi phục bản sao cũ giữ điểm và tiến độ Khởi động/câu phụ, bỏ tiến độ ba vòng đã thay cấu hình.
+
 ## Triển khai Render
 
 [Deploy lên Render](https://render.com/deploy?repo=https://github.com/MinoLoveU/olympia-arena)

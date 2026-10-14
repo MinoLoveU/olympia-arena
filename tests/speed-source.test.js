@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {JSDOM} from 'jsdom';
-import {builtInBank} from '../multiplayer/bank.js';import {createRoom,act,snapshot} from '../multiplayer/game.js';
+import {builtInBank} from '../multiplayer/archive-bank.js';import {createRoom,act,snapshot} from './fixtures/full-pack.js';
 const qs=builtInBank.filter(q=>q.round==='Tăng tốc');
 test('Speed source preserves 60 numbered free-text questions, images, owner corrections and private answers',()=>{
  assert.equal(qs.length,60);assert.deepEqual(qs.map(q=>q.id),Array.from({length:60},(_,i)=>`speed-${i+1}`));

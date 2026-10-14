@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createRoom,act,snapshot} from '../multiplayer/game.js';import {builtInBank} from '../multiplayer/bank.js';
+import {createRoom,act,snapshot} from './fixtures/full-pack.js';import {builtInBank} from '../multiplayer/archive-bank.js';
 const select=(r,player,index=0)=>act(r,'host',{type:'preset',id:builtInBank.filter(q=>q.round==='Về đích'&&q.players[0]===player)[index].id});
 const star=r=>act(r,'host',{type:'hopeStar',questionId:r.questionId});
 const judge=(r,player,result)=>act(r,'host',{type:'judge',questionId:r.questionId,player,result,version:r.judgements[player]?.version||0});

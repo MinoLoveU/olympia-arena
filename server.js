@@ -4,12 +4,12 @@ import {createReadStream} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {networkInterfaces} from 'node:os';
 import {WebSocketServer,WebSocket} from 'ws';
-import {builtInBank,obstacleSets} from './multiplayer/bank.js';
+import {builtInBank,obstacleSets,bankInfo} from './multiplayer/bank.js';
 import {createRoom,authenticate,snapshot,act,expire} from './multiplayer/game.js';
 import {verifyPassword} from './multiplayer/access.js';
 const root=fileURLToPath(new URL('.',import.meta.url));
 function sameOrigin(origin,host){try{return !origin||new URL(origin).host===host;}catch{return false;}}
-export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH,heartbeatMs=30000}={}){
+export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH,heartbeatMs=30000,questionBank={builtInBank,obstacleSets,bankInfo}}={}){
  const rooms=new Map();
  const attempts=new Map();
  function checkPassword(password,key){
@@ -20,7 +20,7 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH,hea
   return 'Mật khẩu chưa đúng. Vui lòng nhập lại.';
  }
  const allowed=new Map([['/','multiplayer/index.html'],['/app.js','multiplayer/client.js'],['/sounds.js','multiplayer/sounds.js'],['/style.css','style.css'],['/multiplayer.css','multiplayer/style.css'],['/assets/library.svg','assets/library.svg'],['/assets/obstacle-rainbow.svg','assets/obstacle-rainbow.svg'],['/assets/speed-shapes.svg','assets/speed-shapes.svg'],['/assets/speed-motion.mp4','assets/speed-motion.mp4'],['/assets/olympia-title.webp','assets/olympia-title.webp']]);
- for(const url of [...builtInBank.map(q=>q.media),...obstacleSets.map(s=>s.image)].filter(Boolean)){if(url.startsWith('/assets/'))allowed.set(url,url.slice(1));}
+ for(const url of [...questionBank.builtInBank.map(q=>q.media),...questionBank.obstacleSets.map(s=>s.image)].filter(Boolean)){if(url.startsWith('/assets/'))allowed.set(url,url.slice(1));}
  const server=http.createServer(async(req,res)=>{
   const path=new URL(req.url,'http://local').pathname;
   const json=(status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
@@ -30,7 +30,7 @@ export function createGameServer({accessHash=process.env.OLYMPIA_ACCESS_HASH,hea
    const denied=checkPassword(req.headers['x-olympia-password'],'create:'+req.socket.remoteAddress);
    if(denied)return json(401,{error:denied});
    if(rooms.size>=100)return json(429,{error:'Máy chủ đã đủ phòng.'});
-   const room=createRoom();rooms.set(room.id,room);return json(201,{id:room.id,tokens:room.tokens});
+   const room=createRoom({questionBank});rooms.set(room.id,room);return json(201,{id:room.id,tokens:room.tokens});
   }
   if(req.method==='GET'&&path==='/health')return json(200,{ok:true});
   if(req.method!=='GET'||!allowed.has(path)){res.writeHead(404);res.end('Not found');return;}

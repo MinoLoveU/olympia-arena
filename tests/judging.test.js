@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRoom,act,snapshot,expire} from '../multiplayer/game.js';
+import {createRoom,act,snapshot,expire} from './fixtures/full-pack.js';
 function prepare(id){const r=createRoom();act(r,'host',{type:'preset',id});act(r,'host',{type:'start'},100);return r;}
 function judge(r,player,result,extra={}){return act(r,'host',{type:'judge',questionId:r.questionId,player,result,version:r.judgements[player]?.version||0,...extra});}
 test('Private warm-up awards once, wrong/absent costs zero; corrections preserve manual adjustments',()=>{

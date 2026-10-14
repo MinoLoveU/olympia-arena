@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {builtInBank} from '../multiplayer/bank.js';import {createRoom,act,snapshot} from '../multiplayer/game.js';
+import {builtInBank} from '../multiplayer/archive-bank.js';import {createRoom,act,snapshot} from './fixtures/full-pack.js';
 const question=id=>builtInBank.find(q=>q.id===id);
 test('Source warm-up preserves numbering and owner additions and separates bold answers from bold prompt emphasis',()=>{
  const qs=builtInBank.filter(q=>q.round==='Khởi động');assert.equal(qs.length,60);assert.equal(qs.filter(q=>!q.pending).length,60);

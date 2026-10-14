@@ -4,7 +4,7 @@ import {once} from 'node:events';
 import {readFileSync} from 'node:fs';
 import {WebSocket} from 'ws';
 import {JSDOM} from 'jsdom';
-import {createGameServer} from '../server.js';
+import {createGameServer} from './fixtures/full-pack.js';
 import {hashPassword} from '../multiplayer/access.js';
 const password='test-only-password';
 const wait=async(fn)=>{for(let i=0;i<150;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Timeout');};

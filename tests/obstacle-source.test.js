@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {builtInBank,obstacleSets} from '../multiplayer/bank.js';
-import {createRoom,act,snapshot} from '../multiplayer/game.js';
+import {builtInBank,obstacleSets} from '../multiplayer/archive-bank.js';
+import {createRoom,act,snapshot} from './fixtures/full-pack.js';
 test('Obstacle source keeps eight answers, all four red questions and four clue images private until publication',()=>{
  assert.deepEqual(obstacleSets.map(s=>s.answer),['Thuế máu','Cách mạng tháng 10','Bảo hộ','Quốc tế Cộng Sản','Thuộc địa','Chia để trị','Bản án chế độ thực dân Pháp','Chủ nghĩa tư bản']);
  const qs=builtInBank.filter(q=>q.obstacleSet);assert.equal(qs.length,80);assert.equal(qs.filter(q=>!q.pending).length,80);

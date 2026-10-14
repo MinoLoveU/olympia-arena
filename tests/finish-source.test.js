@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {once} from 'node:events';
-import {builtInBank} from '../multiplayer/bank.js';
-import {createRoom,act,snapshot} from '../multiplayer/game.js';
-import {createGameServer} from '../server.js';
+import {builtInBank} from '../multiplayer/archive-bank.js';
+import {createRoom,act,snapshot} from './fixtures/full-pack.js';
+import {createGameServer} from './fixtures/full-pack.js';
 const finish=builtInBank.filter(q=>q.round==='Về đích');
 test('Finish source: 20 per team, six videos, six English prompts, source images and matching exercise',()=>{
  for(let team=0;team<3;team++)assert.deepEqual(finish.filter(q=>q.players[0]===team).map(q=>q.label),Array.from({length:20},(_,i)=>`Đội ${team+1} · Câu ${i+1}/20 · 20 điểm`));

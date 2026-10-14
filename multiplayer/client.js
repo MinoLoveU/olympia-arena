@@ -48,7 +48,7 @@ function connect(){
  socket.onerror=()=>{};
 }
 function safeURL(url){return /^(https?:\/\/|\/assets\/)/.test(url||'')?url:'';}
-function media(q){if(!q?.media)return '';if(q.mediaType==='video')return (state.role==='display'||/^p[0-2]$/.test(state.role))?`<video id="question-video" ${state.round==='Tăng tốc'?'muted':''} controls playsinline preload="auto" src="${esc(safeURL(q.media))}${q.media.startsWith('/assets/finish-')?'?audio=20261013':''}"></video><button id="video-permission" aria-label="Phát video" hidden>▶</button>`:'<p class="video-note">Video phát trên màn trình chiếu khi MC bấm Bật video.</p>';const src=esc(safeURL(q.media));if(q.media==='/assets/warmup-common-5.jpg')return `<svg viewBox="0 35 640 545" width="640" height="545" role="img" aria-label="Gợi ý câu hỏi" style="overflow:hidden"><defs><clipPath id="clue-crop"><rect x="0" y="35" width="640" height="545"/></clipPath></defs><image href="${src}" width="640" height="640" clip-path="url(#clue-crop)"/></svg>`;return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
+function media(q){if(q?.cheer&&state.role!=='display')return '';if(!q?.media)return '';if(q.mediaType==='video')return (state.role==='display'||/^p[0-2]$/.test(state.role))?`<video id="question-video" ${state.round==='Tăng tốc'?'muted':''} controls playsinline preload="auto" src="${esc(safeURL(q.media))}${q.media.startsWith('/assets/finish-')?'?audio=20261013':''}"></video><button id="video-permission" aria-label="Phát video" hidden>▶</button>`:'<p class="video-note">Video phát trên màn trình chiếu khi MC bấm Bật video.</p>';const src=esc(safeURL(q.media));if(q.media==='/assets/warmup-common-5.jpg')return `<svg viewBox="0 35 640 545" width="640" height="545" role="img" aria-label="Gợi ý câu hỏi" style="overflow:hidden"><defs><clipPath id="clue-crop"><rect x="0" y="35" width="640" height="545"/></clipPath></defs><image href="${src}" width="640" height="640" clip-path="url(#clue-crop)"/></svg>`;return q.mediaType==='audio'?`<audio controls src="${src}"></audio>`:q.mediaType==='video'?`<video controls src="${src}"></video>`:`<img src="${src}" alt="Gợi ý câu hỏi">`;}
 function matching(q){return q?.matchingColumns?.length===2?`<div class="matching-columns">${q.matchingColumns.map((column,i)=>`<ol aria-label="${i?'Cột A đến D':'Cột 1 đến 4'}">${column.map(item=>`<li>${esc(item)}</li>`).join('')}</ol>`).join('')}</div>`:'';}
 const judgementLabels={correct:'✓ Đúng',wrong:'✕ Sai','no-answer':'Không trả lời'};
 function judgementBadge(i){const j=state.judgements?.[i];return j?.result?`<span class="judgement-badge ${j.result}">${judgementLabels[j.result]}${state.round==='Khởi động'||state.round==='Vượt chướng ngại vật'||state.round==='Tăng tốc'||state.round==='Về đích'?`. ${j.points>0?'+':''}${j.points} điểm`:''}</span>`:'';}
@@ -72,6 +72,8 @@ function render(){
  document.body.classList.toggle('media-answers',!!s.showAnswers);
  $('#question-panel').classList.toggle('speed-image',s.round==='Tăng tốc'&&s.question?.mediaType==='image'&&!!s.question.media);
  $('#question-panel').classList.toggle('large-clue-image',s.question?.media==='/assets/warmup-common-5.jpg');
+ const cheering=s.round.startsWith('Cổ vũ · ');document.body.classList.toggle('cheer-mode',cheering);
+ if(cheering){$('#question-title').textContent=player?'Chờ phần thi tiếp theo':s.question?.text||'Cùng cổ vũ ba đội thi';$('#phase-label').textContent=player?'':s.question?.media?'VIDEO CỔ VŨ':'CHỜ VIDEO CỔ VŨ';}
  const warm=s.round==='Khởi động';
  document.body.classList.toggle('oral-round',warm);
  document.body.classList.toggle('finish-round',s.round==='Về đích');
@@ -98,7 +100,7 @@ function render(){
  renderVideo();renderHope();renderObstacle();updateClock();scheduleDisplayFit();
 }
 function renderVideo(){
- const available=state.question?.mediaType==='video';
+ const available=state.question?.mediaType==='video'&&!!state.question.media;
  $('#play-video').hidden=$('#stop-video').hidden=!available;
  $('#play-video').textContent=state.round==='Tăng tốc'&&state.phase==='ready'?'▶ Phát video + bắt đầu':'▶ Bật / phát lại video';
  const video=$('#question-video'),command=state.videoPlayback;
@@ -241,10 +243,14 @@ function renderCatalog(){
  if(lastObstacleSet!==state.obstacleSet){selected=state.obstacleSet||'1';lastObstacleSet=state.obstacleSet;}
  $('#obstacle-set').innerHTML=sets.map(set=>`<option value="${set.id}">Bộ ${set.id} · ${esc(set.name)}</option>`).join('');$('#obstacle-set').value=selected;
  $('#select-obstacle-set').disabled=state.phase==='open';
- const locked=q=>q.pending||q.obstacleGuess||used.includes(q.id)||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||!catalog.filter(entry=>entry.obstacleSet===state.obstacleSet&&entry.clue<8&&!entry.pending).every(entry=>state.usedClues.includes(entry.clue))));
+ const locked=q=>q.pending||q.obstacleGuess||(!q.cheer&&used.includes(q.id))||(q.obstacleSet&&q.obstacleSet!==state.obstacleSet)||(q.clue===8&&(state.round!=='Vượt chướng ngại vật'||!catalog.filter(entry=>entry.obstacleSet===state.obstacleSet&&entry.clue<8&&!entry.pending).every(entry=>state.usedClues.includes(entry.clue))));
  const items=catalog.filter(q=>q.round===round&&(round!=='Về đích'||(finishPlayer!==''&&q.players?.[0]===Number(finishPlayer)))&&(!q.obstacleSet||q.obstacleSet===(state.obstacleSet||'1'))).sort((a,b)=>a.round==='Về đích'?(a.players[0]-b.players[0]||parseInt(a.label.split('Câu ')[1])-parseInt(b.label.split('Câu ')[1])):0),previous=$('#preset-question').value;
  $('#preset-question').innerHTML=items.map(q=>`<option value="${q.id}" ${locked(q)?'disabled':''}>${q.pending?'Chờ đề · ':used.includes(q.id)?'✓ Đã chơi · ':''}${esc(questionLabel(q))}</option>`).join('');
  $('#preset-question').value=items.some(q=>q.id===previous&&!locked(q))?previous:(items.find(q=>!locked(q))?.id||'');
+ const cheering=round.startsWith('Cổ vũ · ');
+ $('#cheer-picker').hidden=!cheering;$('#preset-question').parentElement.hidden=cheering;$('#preset-preview').hidden=cheering;$('#publish-question').hidden=cheering;
+ $('#cheer-picker').innerHTML=cheering?'<p>Chọn đội để đưa lên màn trình chiếu. Video chỉ phát ở màn chiếu.</p>'+items.map(q=>`<button class="cheer-choice" data-cheer="${q.id}" ${state.phase==='open'?'disabled':''}><strong>${esc(state.teams[q.cheerTeam].name)}</strong><small>${q.media?'Chọn video':'Chờ video'}</small></button>`).join(''):'';
+ $('#cheer-picker').querySelectorAll('[data-cheer]').forEach(b=>b.onclick=()=>send({type:'preset',id:b.dataset.cheer}));
  previewPreset();
 }
 function catalogPendingMessage(){return state?.catalog?.some(q=>q.round===$('#round').value&&q.pending)?'<p>Đang chờ bộ đề mới. Các vị trí đã được chuẩn bị và sẽ mở sau khi cập nhật câu hỏi.</p>':'<p>Đã chơi hết các câu trong lựa chọn này. Chọn đội hoặc vòng khác để tiếp tục.</p>';}

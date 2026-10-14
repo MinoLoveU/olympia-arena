@@ -5,7 +5,7 @@ import {warmupQuestions} from '../multiplayer/warmup-bank.js';
 import {createRoom,act,snapshot} from '../multiplayer/game.js';
 test('Current pack preserves warmup and fills all requested slots',()=>{
  assert.deepEqual(builtInBank.filter(q=>q.round==='Khởi động'),warmupQuestions);
- assert.equal(builtInBank.length,125);assert.equal(obstacleSets.length,2);
+ assert.equal(builtInBank.length,128);assert.equal(obstacleSets.length,2);
  assert.equal(builtInBank.filter(q=>q.pending).length,0);
  assert.equal(builtInBank.filter(q=>q.round==='Tăng tốc').length,30);
  for(let p=0;p<3;p++){const qs=builtInBank.filter(q=>q.round==='Về đích'&&q.players[0]===p);assert.deepEqual(qs.map(q=>q.points),[20,20,30,30]);assert.ok(qs.every(q=>q.duration===15));}

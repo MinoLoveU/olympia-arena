@@ -4,7 +4,7 @@ Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao 
 
 ## Cấu hình hiện tại — 14/10/2026
 
-Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, mặc định 25 giây, có thời gian riêng theo câu. Đã nhập **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 1 sao/đội. Về đích tính điểm theo luật ngày 15/10 bên dưới.
+Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, mặc định 25 giây, có thời gian riêng theo câu. Đã nhập **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Đã bỏ Câu hỏi phụ; thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 1 sao/đội. Về đích tính điểm theo luật ngày 15/10 bên dưới.
 
 Bộ nguồn đầy đủ trước đây được giữ tại `multiplayer/archive-bank.js` và các module nguồn; các mục nguồn bên dưới ghi lịch sử, không phải danh mục đang mở chơi. Kiểm thử hồi quy dùng bộ lưu trữ; kiểm thử `current-format*` dùng cấu hình sản xuất. Khôi phục bản sao cũ giữ điểm và tiến độ Khởi động/câu phụ, bỏ tiến độ ba vòng đã thay cấu hình.
 
@@ -207,4 +207,13 @@ Nguồn: [tab Về đích](https://docs.google.com/document/d/1G6_FyhlkHjh543TJq
 
 Ba ảnh gồm hệ phương trình câu 4 Cầu truyền hình, địa điểm câu 1 Chủ nghĩa tư bản, chương trình câu 2 Chủ nghĩa xã hội. Câu 4 Chủ nghĩa xã hội giữ hai phương trình dạng chữ. Ba video phóng viên: đội 1 câu 3, đội 2 câu 3, đội 3 câu 1; chuyển H.264/yuv420p/AAC, giữ tiếng và chuẩn hóa về khoảng −16 LUFS. MC phát/dừng trên màn chiếu và ba đội; Về đích vẫn bấm Bắt đầu riêng. Không có link video cho ba câu tiếng Anh trong nguồn hiện tại.
 
-Bộ mới nằm ở multiplayer/compact-finish-bank.js. Danh mục có đủ 125 mục, không còn vị trí chờ đề; giữ IDs compact-v1 và luật giành quyền/sao ngày 15/10.
+Bộ mới nằm ở multiplayer/compact-finish-bank.js. Danh mục có 122 mục thi và 6 mục Cổ vũ chờ video, tổng 128 mục; giữ IDs compact-v1 và luật giành quyền/sao ngày 15/10.
+
+
+## Hai phần Cổ vũ — 15/10/2026
+
+Thứ tự danh sách MC: **Cổ vũ · trước Khởi động → Khởi động → Vượt chướng ngại vật → Tăng tốc → Cổ vũ · trước Về đích → Về đích**. Câu hỏi phụ đã bỏ khỏi danh mục đang dùng; bộ lưu trữ cũ vẫn giữ.
+
+Mỗi phần Cổ vũ có ba nút theo tên đội. MC chọn đội để đưa tên lên màn chiếu, rồi dùng Phát/Dừng video khi đã có media. Hiện cả sáu mục ghi Chờ video; Hazei sẽ gửi link sau, không dùng clip thay thế. Có thể chọn lại bất kỳ đội nào; không chạy đồng hồ, không nhận đáp án và không tính điểm.
+
+Video chỉ được gửi tới màn trình chiếu và bàn điều khiển (MC không phát tại chỗ). Ba màn đội chơi không nhận URL/lệnh video, chỉ hiện Chờ phần thi tiếp theo. Màn chiếu ẩn bảng điểm/đáp án và dùng khung rộng giữ tỷ lệ video. Chuyển sang vòng thi trả lại bố cục bình thường. Media cần điền trong cheerVideos ở multiplayer/bank.js khi nhận nguồn, mỗi mục có ID cheer-{1|2}-{1|2|3}.

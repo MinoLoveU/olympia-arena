@@ -10,9 +10,10 @@ export function authenticate(room,secret){return Object.keys(room.tokens).find(r
 export function snapshot(room,role,now=Date.now()){
  const {builtInBank,bankInfo,obstacleSets}=room.questionBank;
  const {revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,judgements,hopeUsed,hopeStar}=room;
- const question=room.question?{text:room.question.text,type:room.question.type,choices:room.question.choices,media:room.question.media,mediaType:room.question.mediaType,matchingColumns:room.question.matchingColumns,players:room.question.players,obstacleGuess:!!room.question.obstacleGuess,points:room.question.points,label:room.question.label,...(role==='host'||showSolution?{solution:room.question.solution}:{})}:null;
+ const cheer=room.question?.cheer;
+ const question=room.question&&!(cheer&&/^p[0-2]$/.test(role))?{cheer:!!room.question.cheer,text:room.question.text,type:room.question.type,choices:room.question.choices,media:room.question.media,mediaType:room.question.mediaType,matchingColumns:room.question.matchingColumns,players:room.question.players,obstacleGuess:!!room.question.obstacleGuess,points:room.question.points,label:room.question.label,...(role==='host'||showSolution?{solution:room.question.solution}:{})}:null;
  const answers=Object.fromEntries(Object.entries(room.answers).map(([id,a])=>[id,{...a,text:role==='host'||showAnswers||role===`p${id}`?a.text:null}]));
- return {finish:finishView(room),obstacle:obstacleView(room,role),...(role==='host'?{obstacleGames:obstacleBackup(room),catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions,obstacleSets:obstacleSets.map(({id,name})=>({id,name})),obstacleProgress:room.round==='Vượt chướng ngại vật'?{...room.obstacleProgress,[room.obstacleSet]:{opened:room.opened,usedClues:room.usedClues,image:room.image}}:room.obstacleProgress}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,hopeUsed:[...hopeUsed],hopeStar:hopeStar?{...hopeStar}:null,obstacleSet:room.obstacleSet,obstacleAnswerLength:obstacleSets.find(s=>s.id===room.obstacleSet).answerLength,obstacleClueCount:8,obstacleBankVersion:2,questionBankVersion:bankInfo.version,videoPlayback:room.question?.mediaType==='video'&&room.videoPlayback?.questionId===room.questionId?room.videoPlayback:null,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
+ return {finish:finishView(room),obstacle:obstacleView(room,role),...(role==='host'?{obstacleGames:obstacleBackup(room),catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions,obstacleSets:obstacleSets.map(({id,name})=>({id,name})),obstacleProgress:room.round==='Vượt chướng ngại vật'?{...room.obstacleProgress,[room.obstacleSet]:{opened:room.opened,usedClues:room.usedClues,image:room.image}}:room.obstacleProgress}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,hopeUsed:[...hopeUsed],hopeStar:hopeStar?{...hopeStar}:null,obstacleSet:room.obstacleSet,obstacleAnswerLength:obstacleSets.find(s=>s.id===room.obstacleSet).answerLength,obstacleClueCount:8,obstacleBankVersion:2,questionBankVersion:bankInfo.version,videoPlayback:!(cheer&&/^p[0-2]$/.test(role))&&room.question?.mediaType==='video'&&room.videoPlayback?.questionId===room.questionId?room.videoPlayback:null,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
 }
 const fail=message=>{throw Error(message);};
 const clean=(s,max=2000)=>typeof s==='string'?s.trim().slice(0,max):'';
@@ -47,9 +48,9 @@ export function act(room,role,msg,now=Date.now()){
    const entry=builtInBank.find(q=>q.id===msg.id);if(!entry)fail('Câu hỏi không tồn tại trong bộ đề.');
    if(entry.pending)fail('Câu này đang để trống trong tài liệu, chưa thể mở.');
    if(entry.obstacleSet&&entry.obstacleSet!==room.obstacleSet)fail('Chọn đúng bộ chướng ngại vật trước khi mở gợi ý.');
-   if(room.usedQuestions.includes(entry.id))fail('Câu này đã được mở. Hãy chọn câu chưa chơi.');
+   if(!entry.cheer&&room.usedQuestions.includes(entry.id))fail('Câu này đã được mở. Hãy chọn câu chưa chơi.');
    act(room,'host',{type:'question',question:entry,round:entry.round,clue:entry.clue,duration:entry.duration,hopeStar:msg.hopeStar},now);
-   room.usedQuestions.push(entry.id);return snapshot(room,role,now);
+   if(!entry.cheer)room.usedQuestions.push(entry.id);return snapshot(room,role,now);
   }else if(msg.type==='question'){
    if(room.phase==='open')fail('Đóng nhận đáp án trước khi đổi câu.');
    const q=msg.question;if(!q||!clean(q.text)||!['text','choice','buzz'].includes(q.type))fail('Câu hỏi không hợp lệ.');
@@ -68,10 +69,11 @@ export function act(room,role,msg,now=Date.now()){
    if(round===FINISH&&(q.players?.length!==1||!Number.isInteger(q.players[0])||q.players[0]<0||q.players[0]>2||![20,30].includes(q.points)))fail('Câu Về đích cần một đội chính và mức 20 hoặc 30 điểm.');
    if(msg.hopeStar&&(round!==FINISH||room.hopeUsed[q.players[0]]>=1))fail('Mỗi đội chỉ có một Ngôi sao hy vọng, chọn trước khi mở câu.');
    if(round!==room.round){saveObstacle(room);if(round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}}room.round=round;
-   room.videoPlayback=null;room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],obstacleGuess:!!q.obstacleGuess,points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
+   room.videoPlayback=null;room.questionId++;room.question={cheer:!!q.cheer,text:q.cheer?room.teams[q.cheerTeam]?.name||clean(q.text):clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],obstacleGuess:!!q.obstacleGuess,points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
    if(Array.isArray(q.matchingColumns)&&q.matchingColumns.length===2&&q.matchingColumns.every(col=>Array.isArray(col)&&col.length===4&&col.every(x=>typeof x==='string')))room.question.matchingColumns=q.matchingColumns.map(col=>col.map(x=>clean(x,400)));
    room.selectedClue=round==='Vượt chướng ngại vật'&&!q.obstacleGuess?clue:null;if(room.selectedClue!==null)room.usedClues.push(clue);
    room.duration=round==='Tăng tốc'?(builtInBank.find(entry=>entry.id===q.id&&entry.round===round)?.duration??25):round==='Về đích'?15:seconds;room.phase='ready';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;room.log='Câu hỏi đã mở. Chờ MC bắt đầu.';
+   if(q.cheer){room.phase='closed';room.log=q.media?'Video cổ vũ đã chọn. MC bấm Phát video; chỉ màn trình chiếu phát.':'Đã chọn đội cổ vũ. Chờ cập nhật video.';}
    room.finish=round===FINISH?{questionId:room.questionId,owner:q.players[0],winner:null,stage:'main'}:null;
    if(msg.hopeStar){room.hopeUsed[q.players[0]]++;room.hopeStar={questionId:room.questionId,player:q.players[0]};}
 
@@ -81,7 +83,7 @@ export function act(room,role,msg,now=Date.now()){
   }else if(msg.type==='hopeStar'){
    fail('Chọn Ngôi sao hy vọng trước khi mở câu hỏi.');
   }else if(msg.type==='video'){
-   if(!room.question||room.question.mediaType!=='video'||msg.questionId!==room.questionId)fail('Câu hiện tại không có video hoặc đã đổi.');
+   if(!room.question||room.question.mediaType!=='video'||!room.question.media||msg.questionId!==room.questionId)fail('Câu hiện tại không có video hoặc đã đổi.');
    if(!['play','stop'].includes(msg.action))fail('Lệnh video không hợp lệ.');
    room.videoPlayback={questionId:room.questionId,sequence:room.revision+1,action:msg.action,at:now};
    if(msg.action==='play'&&room.round==='Tăng tốc'&&room.phase==='ready'){

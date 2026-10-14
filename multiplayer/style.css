@@ -309,3 +309,35 @@ body[data-role="host"] #question-matching, #preset-preview .matching-columns { f
 #obstacle-buzz{background:linear-gradient(#c88c22,#805109);border-color:#ffdc87;white-space:normal;min-height:45px}
 .eliminated-label{display:block;color:#ff9da6;font-size:.65em;font-style:normal}
 @media(min-width:761px){body[data-role^="p"].obstacle-round #player-panel{grid-template-rows:minmax(0,1fr) auto auto}body[data-role^="p"] #obstacle-buzz{font-size:calc(2 * var(--u));padding:calc(1.4 * var(--u)) 1vw}}
+
+/* The projection and players share the same media frame, independent of round. */
+body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media{gap:calc(1.2 * var(--u,1vh))}
+body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-title{font-size:min(3 * var(--u,1vh),3vw);line-height:1.3;margin:0}
+body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-media{position:relative;display:flex;flex:1 1 45%;min-height:35%;width:100%;align-items:center;justify-content:center}
+body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-media :is(img,video,svg){position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;max-width:100%;max-height:100%;object-fit:contain;object-position:center}
+@media(min-width:761px){
+ body[data-role^="p"].media-layout{grid-template-rows:minmax(0,4fr) minmax(0,96fr)}
+ body[data-role^="p"].media-layout main{padding:calc(.7 * var(--u)) 1.2vw}
+ body[data-role^="p"].media-layout #game{grid-template-columns:minmax(0,16fr) minmax(0,84fr);grid-template-rows:minmax(0,7fr) minmax(0,75fr) minmax(0,18fr);grid-template-areas:"heading heading" "scores stage" "scores response"}
+ body[data-role^="p"].media-layout #scoreboard{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}
+ body[data-role^="p"].media-layout .score-card{flex-direction:column;justify-content:center;text-align:center;font-size:min(2.3 * var(--u),2.5vw)}
+ body[data-role^="p"].media-layout #stage{padding:calc(1.8 * var(--u)) 2vw;gap:2vw}
+ body[data-role^="p"].media-layout #stage.has-picture{grid-template-columns:minmax(0,48%) minmax(0,1fr)}
+ body[data-role^="p"].media-layout .obstacle-picture{width:min(100%,60 * var(--u));max-height:100%;display:flex;flex-direction:column;gap:calc(.5 * var(--u))}
+ body[data-role^="p"].media-layout .tiles{min-height:0;flex:none;aspect-ratio:1}
+ body[data-role^="p"].media-layout .picture-label{margin:0;font-size:min(1.5 * var(--u),1.8vw);line-height:1.2}
+ body[data-role^="p"].media-layout #phase-label{font-size:min(1.6 * var(--u),2vw);line-height:1.3}
+ body[data-role^="p"].media-layout #player-panel{display:flex;align-items:stretch;gap:1vw}
+ body[data-role^="p"].media-layout #response{flex:1;flex-direction:row;align-items:stretch;padding:calc(.7 * var(--u));gap:.6vw}
+ body[data-role^="p"].media-layout #response textarea{width:0;min-width:0;flex:1}
+ body[data-role^="p"].media-layout #send-answer{width:auto;max-width:25%;font-size:calc(1.7 * var(--u))}
+ body[data-role^="p"].media-layout #receipt{flex:0 1 18%;font-size:calc(1.5 * var(--u));align-content:center}
+ body[data-role^="p"].media-layout #obstacle-buzz{flex:0 1 25%;min-height:0;font-size:calc(1.8 * var(--u))}
+ body[data-role^="p"].media-layout #results{display:none}
+ body[data-role^="p"].media-layout.media-answers #player-panel{display:none}
+ body[data-role^="p"].media-layout.media-answers #results{display:grid;grid-area:response}
+}
+@media(max-width:760px){
+ body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-media{flex:none;aspect-ratio:16/9;min-height:0;max-height:55vh}
+ body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-title{font-size:clamp(16px,3vw,24px)}
+}

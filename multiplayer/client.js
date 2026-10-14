@@ -64,6 +64,10 @@ function render(){
  $('#picture').innerHTML=s.round==='Vượt chướng ngại vật'?`<div class="obstacle-picture"><div class="tiles"><img src="${esc(safeURL(s.image))}" alt="Hình gợi ý" draggable="false"><span class="picture-label"></span>${[0,1,2,3,4,5,6,7,8].map(i=>`<span class="picture-cover cover-${i}" style="--column:${[0,1,2,0,2,0,1,2,1][i]};--row:${[0,0,0,1,1,2,2,2,1][i]};--tile-x:${i===8?31:[0,1,2,0,2,0,1,2][i]*100/3}%;--tile-y:${i===8?31:[0,0,0,1,1,2,2,2][i]*100/3}%;--tile-w:${i===8?38:100/3}%;--tile-h:${i===8?38:100/3}%" aria-label="${i===8?'Ô trung tâm':'Gợi ý '+(i+1)}" ${s.opened.includes(i)?'hidden':''}>${i===8?'★':i+1}</span>`).join('')}</div><p class="picture-label">${s.obstacleAnswerLength?`CNV: ${s.obstacleAnswerLength} kí tự · `:''}${s.selectedClue===null?'Đội chọn hàng, MC mở câu hỏi':s.selectedClue===8?'Ô trung tâm':`Gợi ý ${s.selectedClue+1}`}</p></div>`:'';
  $('#stage').classList.toggle('has-picture',s.round==='Vượt chướng ngại vật');
  $('#question-panel').classList.toggle('video-question',s.question?.mediaType==='video');
+ const visual=!!s.question?.media&&['image','video'].includes(s.question.mediaType);
+ $('#question-panel').classList.toggle('has-visual-media',visual);
+ document.body.classList.toggle('media-layout',visual||s.round==='Vượt chướng ngại vật');
+ document.body.classList.toggle('media-answers',!!s.showAnswers);
  $('#question-panel').classList.toggle('speed-image',s.round==='Tăng tốc'&&s.question?.mediaType==='image'&&!!s.question.media);
  $('#question-panel').classList.toggle('large-clue-image',s.question?.media==='/assets/warmup-common-5.jpg');
  const warm=s.round==='Khởi động';

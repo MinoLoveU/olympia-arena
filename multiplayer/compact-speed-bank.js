@@ -28,7 +28,7 @@ export const speedQuestions = [
     "text": "Đây là nguyên tắc hoạt động nào của Mặt trận dân tộc thống nhất?",
     "solution": "Nguyên tắc hiệp thương dân chủ",
     "type": "text",
-    "duration": 25,
+    "duration": 23,
     "choices": [],
     "media": "/assets/speed-compact-3.mp4",
     "mediaType": "video"
@@ -86,7 +86,7 @@ export const speedQuestions = [
     "text": "Đây là tác phẩm nào?",
     "solution": "Dân vận",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-compact-8.mp4",
     "mediaType": "video"
@@ -140,7 +140,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Báo Le Paria (Người cùng khổ)",
     "type": "text",
-    "duration": 25,
+    "duration": 20,
     "choices": [],
     "media": "/assets/speed-compact-13.mp4",
     "mediaType": "video"
@@ -176,7 +176,7 @@ export const speedQuestions = [
     "text": "Đây là hình thức tổ chức nào?",
     "solution": "Hội Liên hiệp các dân tộc bị áp bức",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-compact-15.mp4",
     "mediaType": "video"
@@ -200,7 +200,7 @@ export const speedQuestions = [
     "text": "Đây là từ khoá gì?",
     "solution": "Nền gốc",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-compact-17.mp4",
     "mediaType": "video"
@@ -232,7 +232,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Bàn tay",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-compact-20.mp4",
     "mediaType": "video"
@@ -264,7 +264,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Chiêng",
     "type": "text",
-    "duration": 25,
+    "duration": 30,
     "choices": [],
     "media": "/assets/speed-compact-23.mp4",
     "mediaType": "video"
@@ -286,7 +286,7 @@ export const speedQuestions = [
     "text": "Đây là gì?",
     "solution": "Hạt nhân",
     "type": "text",
-    "duration": 25,
+    "duration": 29,
     "choices": [],
     "media": "/assets/speed-compact-25.mp4",
     "mediaType": "video"
@@ -342,7 +342,7 @@ export const speedQuestions = [
     "text": "Đây là sự kiện lịch sử nào?",
     "solution": "Cách mạng Tháng Mười Nga 1917",
     "type": "text",
-    "duration": 25,
+    "duration": 17,
     "choices": [],
     "media": "/assets/speed-compact-30.mp4",
     "mediaType": "video"

@@ -189,3 +189,9 @@ Có đủ **8 ảnh chính và 4 ảnh gợi ý**. Ảnh chính hiển thị tr�
 Bộ 1 câu 2 đã có [video bài hát](https://drive.google.com/file/d/1cAjxGY5hZacseY9aH9uhLWxKt2djCgPQ/view). Video H.264/AAC, khoảng 14,5 giây, giữ tiếng và cân âm lượng với mục tiêu −16 LUFS. MC dùng Bật/phát lại video và Dừng video; màn chiếu và ba đội cùng nhận lệnh. Phát video không tự chạy đồng hồ câu hỏi. Không cần tệp m4a cũ nữa.
 
 Sao lưu từ lần nhập nguồn trước được chuyển bộ và số gợi ý theo đúng nội dung, đồng thời đổi ảnh mới; giữ điểm và tiến độ các vòng khác. Bản sao mới có obstacleBankVersion=2 để không chuyển hai lần. 78 kiểm thử đạt; đối chiếu 72 gợi ý/câu trung tâm và 8 đáp án/ảnh chính với nguồn. Chưa kiểm tra bố cục bằng trình duyệt thật.
+
+## Đồng nhất khung media và thời gian — 15/10/2026
+
+Câu có ảnh/video dùng chung khung co giãn, width/height100%, object-fit:contain ở màn chiếu và3đội. Trên máy tính, màn đội có media dùng bố cục16/84 giống màn chiếu,75% vùng chơi cho câu hỏi,ô trả lời phía dưới; khi công bố thay ô trả lời bằng kết quả. ẢnhCNV vẫncover kínvuông/chặn kéo. Màn nhỏ dùng khung16:9. Cỡ vật lý vẫn tùy kích thước thiết bị.
+
+Tăng tốc: câu3=23s;8,15,17,20,23=30s;13=20s;25=29s;30=17s;còn lại25s. Máy chủ dùng cùng thời gian cho đồng hồ và hạn nhận đáp án.

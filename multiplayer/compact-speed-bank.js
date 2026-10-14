@@ -1,6 +1,6 @@
 // Source: Google Docs 1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos, tab t.a63d1diym0ik, 2026-10-15.
 // Red answer text is private. 30 source questions; Q11 retains owner correction to 7 books; Q27 retains the same A-D list from the prior source.
-// Videos 4 and 28 refreshed from owner document 1Ol5m, 2026-10-15; audio removed.
+// Owner correction 2026-10-15: restore image 4; updated silent videos are 6 and 28.
 export const speedQuestions = [
   {
     "id": "compact-speed-1",
@@ -43,8 +43,8 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-compact-4-v2.mp4",
-    "mediaType": "video"
+    "media": "/assets/speed-compact-4-1.png",
+    "mediaType": "image"
   },
   {
     "id": "compact-speed-5",
@@ -65,7 +65,7 @@ export const speedQuestions = [
     "type": "text",
     "duration": 25,
     "choices": [],
-    "media": "/assets/speed-compact-6.mp4",
+    "media": "/assets/speed-compact-6-v2.mp4",
     "mediaType": "video"
   },
   {

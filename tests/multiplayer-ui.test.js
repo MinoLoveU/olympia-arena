@@ -113,7 +113,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  assert.equal(host.querySelectorAll('#obstacle-set option').length,8);
  host.querySelector('#obstacle-set').value='2';host.querySelector('#select-obstacle-set').click();
  await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 2'));
- assert.equal(display.querySelector('#picture img').getAttribute('src'),'/assets/obstacle-source-2.png');
+ assert.equal(display.querySelector('#picture img').getAttribute('src'),'/assets/obstacle-source-2-r2.jpg');
  assert.equal(display.querySelectorAll('.picture-cover[hidden]').length,0);
  assert.equal(host.querySelectorAll('#preset-question option').length,10);
  assert.equal(host.querySelector('option[value="obstacle-2-center"]').disabled,true);

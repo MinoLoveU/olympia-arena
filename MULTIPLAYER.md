@@ -159,11 +159,13 @@ Theo danh sách video mới, đã thay video câu **37, 38, 47, 48, 51, 53, 55, 
 ## Hiển thị media ở đội chơi — 14/10/2026
 Ảnh và video hiển thị trên cả ba màn đội chơi. Video đồng bộ lệnh phát/phát lại/dừng từ MC với màn chiếu; Tăng tốc tiếp tục không tiếng. Bỏ dòng “Nhấn để phát video”; nếu trình duyệt chặn tự phát, dùng biểu tượng ▶ hoặc điều khiển video. Nhãn chấm điểm dùng dấu chấm câu cùng hàng: “Đúng. +40 điểm”, “Sai. 0 điểm”.
 
-## Bộ Vượt chướng ngại vật theo tài liệu — 14/10/2026
-Nguồn: [Google Docs, tab Vượt chướng ngại vật](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.kovd9clnlkxe). Đáp án lấy từ chữ in đậm sau mũi tên; giữ nguyên câu chữ nguồn, chưa hiệu đính kiến thức. Tám bộ: Thuế máu; Bảo hộ; Thuộc địa; Bản án chế độ thực dân Pháp; Cách mạng tháng 10; Quốc tế Cộng Sản; Chia để trị; Chủ nghĩa tư bản.
+## Bộ Vượt chướng ngại vật — nhập lại 14/10/2026
+Nguồn: [Google Docs, tab Vượt chướng ngại vật](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.kovd9clnlkxe). Nhập đủ 72 gợi ý/câu trung tâm, lấy chữ in đậm sau mũi tên làm đáp án; không bỏ câu theo màu. Giữ câu chữ bản mới, thống nhất cặp ngoặc kép câu Karl Marx.
 
-Đã nhập cả bốn câu màu đỏ theo xác nhận của Hazei: bộ 5 câu 2, bộ 6 câu 3, bộ 7 câu 1 và bộ 8 câu trung tâm. Đủ 64 gợi ý ngoài, 8 câu trung tâm và 8 lượt đoán; không còn vị trí trống trong phần này. Mọi bộ đều cần chọn đủ 8 gợi ý trước câu trung tâm. Chấm và mở/che ô vẫn do MC thao tác.
+Thứ tự tám bộ mới: **Thuế máu → Cách mạng tháng 10 → Bảo hộ → Quốc tế Cộng Sản → Thuộc địa → Chia để trị → Bản án chế độ thực dân Pháp → Chủ nghĩa tư bản**. Các câu trung tâm lần lượt có đáp án: Lính tình nguyện; Quốc tế cộng sản; Dùng người Việt trị người Việt; Đoàn kết quốc tế; Cai trị trực tiếp; Phân hóa; Nguyễn Ái Quốc; Tư hữu. Mỗi bộ vẫn 8 gợi ý ngoài và 1 trung tâm; chỉ chọn trung tâm sau đủ tám gợi ý. MC tự mở/che ô.
 
-Có 7 ảnh chính và 4 ảnh gợi ý (bộ 2 câu 7; bộ 3 câu 3 và trung tâm; bộ 4 câu 3). Ảnh chính giữ tỷ lệ, hiển thị toàn bộ trong khung vuông; ảnh ngang có khoảng nền trên/dưới. Tám ô ngoài bằng nhau, ô trung tâm 38% vẫn đè lên giữa. Bộ 3 chưa có ảnh chính trong tài liệu nên dùng khung “Ảnh chờ bổ sung”. Bộ 1 câu 2 nhắc “Cô gái mở đường” nhưng nguồn chưa có tệp/link nhạc; MC cần xử lý nhạc ngoài web hoặc bổ sung sau.
+Có đủ **8 ảnh chính và 4 ảnh gợi ý**. Ảnh chính hiển thị trọn trong khung vuông, giữ tỷ lệ; ảnh ngang/dọc có khoảng nền để không cắt thông tin. Giữ tám ô ngoài bằng nhau, trung tâm 38% nằm đè lên giữa. Tên tệp -r2 tránh cache bản cũ. Ảnh bộ “Thuộc địa” đã bổ sung theo tài liệu.
 
-77 kiểm thử đạt; đối chiếu đủ 72 gợi ý và 8 đáp án CNV với nguồn in đậm. Sao lưu cũ tự đổi đường dẫn ảnh mẫu cũ sang ảnh nguồn mới, giữ tiến độ. Chưa kiểm tra bố cục bằng trình duyệt thật.
+Bộ 1 câu 2 có liên kết [Cnv thuế máu.m4a](https://drive.google.com/file/d/1mpL5H_Jj5I4UBqxl2_vfEmIte_4HOKLq/view), nhưng Drive đang yêu cầu đăng nhập khi tải. Chưa gắn audio vào web; cần chủ tài khoản mở quyền “Bất kỳ ai có đường liên kết – Người xem”. Câu hỏi/đáp án vẫn có sẵn.
+
+Sao lưu từ lần nhập nguồn trước được chuyển bộ và số gợi ý theo đúng nội dung, đồng thời đổi ảnh mới; giữ điểm và tiến độ các vòng khác. Bản sao mới có obstacleBankVersion=2 để không chuyển hai lần. 78 kiểm thử đạt; đối chiếu 72 gợi ý/câu trung tâm và 8 đáp án/ảnh chính với nguồn. Chưa kiểm tra bố cục bằng trình duyệt thật.

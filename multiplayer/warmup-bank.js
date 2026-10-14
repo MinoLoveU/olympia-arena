@@ -1,7 +1,5 @@
-// Owner-provided questions. Bold answers separated from prompts; numbered blanks retained.
-// Source: https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit
-// Imported 2026-10-11; the three trailing supplementary questions are excluded.
-// Team 2 and 3 question 15 supplied directly by owner on 2026-10-13.
+// Owner source: https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.u2lfrqe2rva9
+// Imported 2026-10-14. Answers after arrows are private to MC until revealed.
 export const warmupQuestions=[
   {
     "id": "warm-1",
@@ -21,7 +19,7 @@ export const warmupQuestions=[
     "id": "warm-2",
     "label": "Đội 1 · Câu 2/15",
     "round": "Khởi động",
-    "text": "While still in primary school, Ho Chi Minh was interested in the slogan of the French Revolution of 1789. What was this famous slogan?",
+    "text": "Cho ba từ tiếng Anh: LIBERTY - EQUALITY - FRATERNITY. Đây là những giá trị của văn hóa phương Tây mà Hồ Chí Minh đã tiếp cận. Hãy trả lời bằng tiếng Việt.",
     "solution": "Tự do - Bình đẳng - Bác ái.",
     "type": "text",
     "duration": 3,
@@ -189,7 +187,7 @@ export const warmupQuestions=[
     "id": "warm-26",
     "label": "Đội 1 · Câu 14/15",
     "round": "Khởi động",
-    "text": "Tư tưởng đấu tranh vì độc lập, tự do và hạnh phúc của nhân dân ở Hồ Chí Minh có sự kế thừa và phát triển từ học thuyết nổi tiếng của Tôn Trung Sơn. Các nội dung nào trong học thuyết này đã được Người tiếp thu và phát triển.",
+    "text": "Tư tưởng đấu tranh vì độc lập, tự do và hạnh phúc của nhân dân ở Hồ Chí Minh có sự kế thừa và phát triển từ học thuyết nổi tiếng của Tôn Trung Sơn. Các nội dung nào trong học thuyết này đã được Người tiếp thu và phát triển?",
     "solution": "Dân tộc - dân quyền - dân sinh.",
     "type": "text",
     "duration": 3,
@@ -217,7 +215,7 @@ export const warmupQuestions=[
     "id": "warm-7",
     "label": "Đội 2 · Câu 1/15",
     "round": "Khởi động",
-    "text": "Tác phẩm nào thường được xem là một trong những bản tuyên ngôn độc lập sớm của dân tộc Việt Nam?",
+    "text": "Tư tưởng khẳng định chủ quyền quốc gia là thiêng liêng, bất khả xâm phạm và gắn liền với ý chí tự chủ của dân tộc được thể hiện rõ trong bài thơ nào ra đời vào thế kỷ XI?",
     "solution": "Nam quốc sơn hà.",
     "type": "text",
     "duration": 3,
@@ -670,7 +668,7 @@ export const warmupQuestions=[
     "id": "common-4",
     "label": "Khởi động chung · Câu 4/15",
     "round": "Khởi động",
-    "text": "\"Trải qua bốn nghìn năm lịch sử, nhân dân Việt Nam lao động cần cù… \" lời nói đầu này được ghi trong bản Hiến pháp năm bao nhiêu của Việt Nam",
+    "text": "\"Trải qua bốn nghìn năm lịch sử, nhân dân Việt Nam lao động cần cù… \" lời nói đầu này được ghi trong bản Hiến pháp năm bao nhiêu của Việt Nam?",
     "solution": "Hiến pháp 1980.",
     "type": "buzz",
     "duration": 3,
@@ -682,7 +680,7 @@ export const warmupQuestions=[
     "label": "Khởi động chung · Câu 5/15",
     "round": "Khởi động",
     "text": "Hình ảnh này nói lên truyền thống tốt đẹp nào của dân tộc ta?",
-    "solution": "Đoàn kết dân tộc",
+    "solution": "Đoàn kết dân tộc.",
     "type": "buzz",
     "duration": 3,
     "choices": [],
@@ -750,7 +748,7 @@ export const warmupQuestions=[
     "label": "Khởi động chung · Câu 11/15",
     "round": "Khởi động",
     "text": "When writing the Declaration of Independence in 1945, how many landmark Western documents did Ho Chi Minh draw upon and develop?",
-    "solution": "2",
+    "solution": "2.",
     "type": "buzz",
     "duration": 3,
     "choices": [],

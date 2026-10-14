@@ -144,9 +144,14 @@ function renderPlayer(){
  const warm=s.round==='Khởi động';
  const mode=`${s.round}:${s.questionId}:${s.question?.type}:${canAnswer}:${!!a}:${!!s.question}`;
  if(mode!==lastResponseMode){lastResponseMode=mode;const q=s.question;
-  $('#response').innerHTML=!q?'<p>Chờ MC mở câu hỏi.</p>':warm?(q.type==='buzz'?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':'<p>Khởi động riêng: trả lời miệng khi MC gọi đội của bạn.</p>'):a?'<p>✓ Máy chủ đã nhận đáp án. Không thể thay đổi.</p>':q.type==='buzz'&&!canAnswer?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':`${q.type==='choice'?`<div class="choices">${q.choices.map(c=>`<label><input type="radio" name="choice" value="${esc(c)}"> ${esc(c)}</label>`).join('')}</div>`:`<textarea id="answer-text" ${s.round==='Tăng tốc'?'':'maxlength="1000"'} placeholder="Nhập đáp án của bạn…" aria-label="Đáp án"></textarea>`}<button id="send-answer" class="primary">Gửi đáp án cuối cùng</button>`;
+  $('#response').innerHTML=!q?'<p>Chờ MC mở câu hỏi.</p>':warm?(q.type==='buzz'?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':'<p>Khởi động riêng: trả lời miệng khi MC gọi đội của bạn.</p>'):a?'<p>✓ Máy chủ đã nhận đáp án. Không thể thay đổi.</p>':q.type==='buzz'&&!canAnswer?'<button id="buzz" class="buzz-button">BẤM CHUÔNG</button>':`${q.type==='choice'?`<div class="choices">${q.choices.map(c=>`<label><input type="radio" name="choice" value="${esc(c)}"> ${esc(c)}</label>`).join('')}</div>`:`<textarea id="answer-text" ${s.round==='Tăng tốc'?'':'maxlength="1000"'} placeholder="Nhập đáp án… Enter để gửi, Shift+Enter để xuống dòng" aria-label="Đáp án"></textarea>`}<button id="send-answer" class="primary">Gửi đáp án cuối cùng</button>`;
   $('#buzz')?.addEventListener('click',()=>send({type:'buzz',questionId:state.questionId}));
   $('#send-answer')?.addEventListener('click',()=>{const text=$('#answer-text')?.value||document.querySelector('input[name="choice"]:checked')?.value||'';if(!text.trim()){error('Hãy điền hoặc chọn đáp án.');return;}send({type:'answer',questionId:state.questionId,text});});
+  $('#answer-text')?.addEventListener('keydown',event=>{
+   if(event.key!=='Enter'||event.shiftKey||event.isComposing||event.keyCode===229)return;
+   event.preventDefault();
+   if(!event.repeat)$('#send-answer')?.click();
+  });
  }
  const eligible=!s.question?.players||s.question.players.includes(i);const active=eligible&&s.phase==='open'&&socket?.readyState===WebSocket.OPEN;
  $('#response').querySelectorAll('button,input,textarea').forEach(el=>el.disabled=!active);

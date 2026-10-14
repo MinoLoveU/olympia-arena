@@ -138,7 +138,7 @@ Sáu video Về đích đã chuẩn hóa về khoảng −16 LUFS (đo lại: �
 
 Đã thay 60 câu theo [tab Tăng tốc của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.a63d1diym0ik), giữ thứ tự 1–60 và IDs speed-1…speed-60. Đáp án lấy từ chữ đỏ và chỉ gửi riêng MC trước khi công bố. Cả 60 câu vẫn nhập đáp án tự do, thời gian theo từng câu; xếp đáp án theo thời gian nhận và tính điểm theo thứ tự MC tích Đúng như trước.
 
-Có 28 video và 17 ảnh nằm trong 6 câu có hình. Quốc kỳ ở câu 7 và bìa sách ở câu 11 được xếp thành bảng có nhãn chữ cái; giữ đủ hình nguồn. Các lựa chọn dạng danh sách ở câu 20/50 giữ nhãn A–H/A–D. Ảnh sơ đồ câu 22 hiển thị vùng sơ đồ, không bỏ thông tin. Tài liệu có câu 5 và 35 trùng nhau; giữ theo nguồn. Câu 49 chưa có đáp án nguồn: MC thấy “Tài liệu chưa điền đáp án”, câu vẫn mở và chấm thủ công được. Không tự bổ sung đáp án hoặc hiệu đính kiến thức.
+Có 28 video và 17 ảnh nằm trong 6 câu có hình. Quốc kỳ ở câu 7 và bìa sách ở câu 11 được xếp thành bảng có nhãn chữ cái; giữ đủ hình nguồn. Các lựa chọn dạng danh sách ở câu 20/50 giữ nhãn A–H/A–D. Ảnh sơ đồ câu 22 hiển thị vùng sơ đồ, không bỏ thông tin. Hazei đã thay câu 35 bằng câu hỏi số điều kiện xây dựng khối đại đoàn kết toàn dân tộc, đáp án 4; câu 49 có đáp án B.
 
 Tất cả video Tăng tốc đã bỏ luồng âm thanh (`-an`), đồng thời đặt thuộc tính muted trên màn chiếu. Video Về đích giữ tiếng đã cân bằng. MC dùng Bật/phát lại video và Dừng video; nút Bắt đầu tính thời gian trả lời riêng. Video dài hơn 25 giây không bị cắt; MC có thể phát trước khi bắt đầu tính giờ.
 
@@ -154,7 +154,7 @@ Thời gian trong danh sách MC, đồng hồ và thời hạn máy chủ nhận
 
 ## Thay video Tăng tốc — 14/10/2026
 
-Theo danh sách video mới, đã thay video câu **37, 38, 47, 48, 51, 53, 55, 58, 60**. Cả chín video mới đều không tiếng. **Câu 42 tạm thời không có video**: MC không có nút phát video ở câu này; giữ câu hỏi, đáp án và thời gian. Tổng hiện có 27 câu Tăng tốc gắn video. Dùng tên tệp mới để trình duyệt không lấy bản cũ từ cache. Thời gian riêng từng câu, câu 11 và hai cột câu 14 giữ nguyên.
+Theo danh sách video mới, đã thay video câu **37, 38, 47, 48, 51, 53, 55, 58, 60**. Cả chín video mới đều không tiếng. **Câu 42 đã có video mới** từ Drive do Hazei bổ sung, không tiếng; giữ câu hỏi, đáp án và thời gian 25 giây. Tổng hiện có 28 câu Tăng tốc gắn video. Dùng tên tệp mới để trình duyệt không lấy bản cũ từ cache. Thời gian riêng từng câu, câu 11 và hai cột câu 14 giữ nguyên.
 
 ## Hiển thị media ở đội chơi — 14/10/2026
 Ảnh và video hiển thị trên cả ba màn đội chơi. Video đồng bộ lệnh phát/phát lại/dừng từ MC với màn chiếu; Tăng tốc tiếp tục không tiếng. Bỏ dòng “Nhấn để phát video”; nếu trình duyệt chặn tự phát, dùng biểu tượng ▶ hoặc điều khiển video. Nhãn chấm điểm dùng dấu chấm câu cùng hàng: “Đúng. +40 điểm”, “Sai. 0 điểm”.

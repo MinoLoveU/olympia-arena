@@ -1,6 +1,6 @@
 // Source: Google Docs 1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos, tab t.a63d1diym0ik, 2026-10-14.
-// Red answer text is private. Source question 49 has no answer supplied.
-// Video replacements: Google Docs 1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg, 2026-10-14; question 42 temporarily has no video.
+// Red answer text is private. Owner supplied answer B for question 49 and replaced question 35.
+// Video replacements: Google Docs 1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg, 2026-10-14; question 42 added from owner Drive 1VYmt00bSnwZLmDxO290QYzAspTwsV4gD.
 export const speedQuestions = [
   {
     "id": "speed-1",
@@ -394,8 +394,8 @@ export const speedQuestions = [
     "id": "speed-35",
     "label": "Câu 35/60",
     "round": "Tăng tốc",
-    "text": "Sắp xếp thời điểm ra đời của 4 tổ chức Mặt trận dân tộc thống nhất sau đây theo trình tự từ xưa nhất đến gần đây nhất:\nA. Liên minh các lực lượng dân tộc, dân chủ và hòa bình Việt Nam\nB. Mặt trận Dân chủ Đông Dương\nC. Hội Liên hiệp quốc dân Việt Nam (Hội Liên Việt)\nD. Mặt trận Dân tộc giải phóng miền Nam Việt Nam",
-    "solution": "B (Tháng 3/1938)  → C (Tháng 5/1946)  → D (Tháng 12/1960) → A (Tháng 4/1968)",
+    "text": "Cần phải đảm bảo tất cả bao nhiêu điều kiện để xây dựng khối đại đoàn kết toàn dân tộc?",
+    "solution": "4",
     "type": "text",
     "duration": 25,
     "choices": []
@@ -478,7 +478,9 @@ export const speedQuestions = [
     "solution": "Cách mạng tháng 10 Nga năm 1917.",
     "type": "text",
     "duration": 25,
-    "choices": []
+    "choices": [],
+    "media": "/assets/speed-source-42-v2.mp4",
+    "mediaType": "video"
   },
   {
     "id": "speed-43",
@@ -551,7 +553,7 @@ export const speedQuestions = [
     "label": "Câu 49/60",
     "round": "Tăng tốc",
     "text": "Trong Lời kết thúc buổi ra mắt Đảng Lao động Việt Nam (ngày 3/3/1951), Chủ tịch Hồ Chí Minh đã tuyên bố đúc kết mục đích của Đảng trong 8 chữ: \"ĐOÀN KẾT TOÀN DÂN, PHỤNG SỰ TỔ QUỐC\". Khẳng định này thể hiện bản chất nào sau đây của khối Đại đoàn kết toàn dân tộc?\nA. Đại đoàn kết toàn dân tộc là một sách lược tình thế tạm thời được Đảng áp dụng riêng cho giai đoạn kháng chiến chống Pháp.\nB. Đại đoàn kết toàn dân tộc là mục tiêu, nhiệm vụ hàng đầu của Đảng và của cả dân tộc, xuyên suốt mọi giai đoạn cách mạng.\nC. Đại đoàn kết toàn dân tộc đòi hỏi các giai tầng nhân dân phải hòa tan hoàn toàn lợi ích riêng vào lợi ích giai cấp.\nD. Đại đoàn kết toàn dân tộc là công việc tự phát của quần chúng nhân dân mà không cần sự định hướng của Đảng.",
-    "solution": "(Tài liệu chưa điền đáp án)",
+    "solution": "B",
     "type": "text",
     "duration": 25,
     "choices": []

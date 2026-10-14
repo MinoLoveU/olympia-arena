@@ -52,3 +52,6 @@ Nguồn mới: https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJA
 | 60 | 21.167 | Không |
 
 Đã giải mã hết cả chín video mới, không lỗi.
+
+## Bổ sung video câu 42 — 14/10/2026
+Nguồn Drive: 1VYmt00bSnwZLmDxO290QYzAspTwsV4gD. Tệp speed-source-42-v2.mp4: H.264/yuv420p, 23,167 giây, 895.136 byte; nguồn có audio, bản dùng trong web bỏ audio. Giữ nguyên thời lượng, faststart; bộ đề hiện có 28 video không tiếng.

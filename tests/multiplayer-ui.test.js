@@ -141,7 +141,7 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  assert.match(host.querySelector('#hope-star').textContent,/2\/3/);
  host.querySelector('#finish-team').value='0';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.ok([...host.querySelectorAll('#preset-question option')].every(o=>o.textContent.includes('Đội Cầu truyền hình')));host.querySelector('#publish-question').click();await wait(()=>p0.querySelector('#question-title').textContent.includes('Xin mời các bạn trả lời câu hỏi sau bằng Tiếng Anh'));assert.equal(host.querySelector('#finish-team').value,'0');assert.equal(host.querySelector('#finish-team option[value="2"]').textContent.includes('18/20'),true);
  host.querySelector('#round').value='Khởi động';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
- for(const id of ['warm-27']){const option=host.querySelector(`option[value="${id}"]`);assert.equal(option.disabled,true);assert.match(option.textContent,/Để trống/);}
+ for(const id of ['warm-27']){const option=host.querySelector(`option[value="${id}"]`);assert.equal(option.disabled,false);assert.ok(!option.textContent.includes('Để trống'));}
  for(const id of ['warm-36','warm-45'])assert.equal(host.querySelector(`option[value="${id}"]`).disabled,false);
  host.querySelector('#preset-question').value='common-5';host.querySelector('#publish-question').click();
  await wait(()=>[host,display,p0,p1,p2].every(d=>d.querySelector('#question-media svg image')?.getAttribute('href')==='/assets/warmup-common-5.jpg'));

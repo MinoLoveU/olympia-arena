@@ -13,7 +13,11 @@ export const obstacleSets=[
       ],
       [
         "Điền từ còn thiếu trong bài hát sau: (Cô gái mở đường)",
-        "Chiến trường."
+        "Chiến trường.",
+        {
+          "media": "/assets/obstacle-song-1-v2.mp4",
+          "mediaType": "video"
+        }
       ],
       [
         "Điền vào chỗ trống sau:\n“Nước Việt Nam cần kiến thiết, nước Việt Nam không muốn là nơi chôn vùi hàng bao nhiêu …….”\n– Hồ Chí Minh, Lời tuyên bố với phóng viên báo “Pari – Sài Gòn”, đăng trên báo Cứu quốc, số 434, ngày 13/12/1946.",

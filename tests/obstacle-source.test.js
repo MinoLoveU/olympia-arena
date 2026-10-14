@@ -6,7 +6,7 @@ test('Obstacle source keeps eight answers, all four red questions and four clue 
  const qs=builtInBank.filter(q=>q.obstacleSet);assert.equal(qs.length,80);assert.equal(qs.filter(q=>!q.pending).length,80);
  assert.equal(qs.filter(q=>q.pending).length,0);
  assert.deepEqual(['obstacle-2-center','obstacle-4-center','obstacle-6-center','obstacle-8-center'].map(id=>qs.find(q=>q.id===id).solution),['Quốc tế cộng sản','Đoàn kết quốc tế.','Phân hóa.','Tư hữu.']);
- assert.deepEqual(qs.filter(q=>q.media).map(q=>q.id),['obstacle-3-6','obstacle-5-3','obstacle-5-8','obstacle-7-2']);
+ assert.deepEqual(qs.filter(q=>q.mediaType==='image').map(q=>q.id),['obstacle-3-6','obstacle-5-3','obstacle-5-8','obstacle-7-2']);
  assert.ok(obstacleSets.every(s=>s.image&&!s.imagePending));
  for(const set of obstacleSets){const room=createRoom();act(room,'host',{type:'obstacleSet',id:set.id});assert.equal(room.question,null);
   for(const q of qs.filter(q=>q.obstacleSet===set.id)){

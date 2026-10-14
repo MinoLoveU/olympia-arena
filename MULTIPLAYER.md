@@ -166,6 +166,6 @@ Thứ tự tám bộ mới: **Thuế máu → Cách mạng tháng 10 → Bảo h
 
 Có đủ **8 ảnh chính và 4 ảnh gợi ý**. Ảnh chính hiển thị trọn trong khung vuông, giữ tỷ lệ; ảnh ngang/dọc có khoảng nền để không cắt thông tin. Giữ tám ô ngoài bằng nhau, trung tâm 38% nằm đè lên giữa. Tên tệp -r2 tránh cache bản cũ. Ảnh bộ “Thuộc địa” đã bổ sung theo tài liệu.
 
-Bộ 1 câu 2 có liên kết [Cnv thuế máu.m4a](https://drive.google.com/file/d/1mpL5H_Jj5I4UBqxl2_vfEmIte_4HOKLq/view), nhưng Drive đang yêu cầu đăng nhập khi tải. Chưa gắn audio vào web; cần chủ tài khoản mở quyền “Bất kỳ ai có đường liên kết – Người xem”. Câu hỏi/đáp án vẫn có sẵn.
+Bộ 1 câu 2 đã có [video bài hát](https://drive.google.com/file/d/1cAjxGY5hZacseY9aH9uhLWxKt2djCgPQ/view). Video H.264/AAC, khoảng 14,5 giây, giữ tiếng và cân âm lượng với mục tiêu −16 LUFS. MC dùng Bật/phát lại video và Dừng video; màn chiếu và ba đội cùng nhận lệnh. Phát video không tự chạy đồng hồ câu hỏi. Không cần tệp m4a cũ nữa.
 
 Sao lưu từ lần nhập nguồn trước được chuyển bộ và số gợi ý theo đúng nội dung, đồng thời đổi ảnh mới; giữ điểm và tiến độ các vòng khác. Bản sao mới có obstacleBankVersion=2 để không chuyển hai lần. 78 kiểm thử đạt; đối chiếu 72 gợi ý/câu trung tâm và 8 đáp án/ảnh chính với nguồn. Chưa kiểm tra bố cục bằng trình duyệt thật.

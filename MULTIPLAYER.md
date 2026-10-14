@@ -1,10 +1,10 @@
 # Olympia trực tuyến — 5 thiết bị
 
-Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động, Vượt chướng ngại vật, Tăng tốc và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
+Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động, Vượt chướng ngại vật, Tăng tốc và Về đích tự tính điểm khi MC chấm; câu phụ vẫn nhập điểm thủ công.
 
 ## Cấu hình hiện tại — 14/10/2026
 
-Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, đều 25 giây. Còn chờ **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 3 sao/đội. Sao nhân đôi mức điểm: câu 20 đúng/sai ±40, câu 30 ±60; câu không sao vẫn chấm điểm thủ công.
+Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, mặc định 25 giây, có thời gian riêng theo câu. Còn chờ **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 1 sao/đội. Về đích tính điểm theo luật ngày 15/10 bên dưới.
 
 Bộ nguồn đầy đủ trước đây được giữ tại `multiplayer/archive-bank.js` và các module nguồn; các mục nguồn bên dưới ghi lịch sử, không phải danh mục đang mở chơi. Kiểm thử hồi quy dùng bộ lưu trữ; kiểm thử `current-format*` dùng cấu hình sản xuất. Khôi phục bản sao cũ giữ điểm và tiến độ Khởi động/câu phụ, bỏ tiến độ ba vòng đã thay cấu hình.
 
@@ -72,15 +72,19 @@ Màn chiếu dùng bảng điểm dọc bên trái và tiêu đề vòng lớn h
 - Sau khi máy chủ mất phòng: tạo phòng mới, nhập bản sao để khôi phục tên, điểm, ô hình và hàng đã chọn. Bắt đầu ở trạng thái chờ câu mới; đáp án/chuông cũ chỉ để đối chiếu trong tệp, không tự diễn lại. Gửi lại năm link của phòng mới.
 - Không gửi dữ liệu nhạy cảm vào câu hỏi/đáp án. Các link vai trò là quyền truy cập; không đăng công khai link MC.
 
-## Ngôi sao hy vọng — Về đích
+## Về đích — luật cập nhật 15/10/2026
 
-Mỗi đội có 20 câu Về đích (20 điểm/câu) và 3 ngôi sao trong toàn trận. MC mở câu của đội đó, bấm **★ Ngôi sao hy vọng** trước **Bắt đầu**. Dùng sao tiêu hao ngay một lượt; mỗi câu tối đa một sao, không hoàn lượt khi bỏ câu hoặc bỏ chấm. Bảng điểm hiện số sao còn lại của cả ba đội.
+Theo [luật chủ tài khoản cung cấp](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit?tab=t.0), đội chính đúng nhận điểm gốc, sai/không trả lời được 0. Mỗi đội có **1 sao**: chọn đội/câu, chọn **Dùng Ngôi sao hy vọng cho câu sắp mở**, rồi **Mở câu đã chọn**. Sao chỉ tiêu hao khi mở câu thành công, đúng nhân đôi, sai/không trả lời trừ điểm gốc. Câu 20: +40/−20; câu 30: +60/−30. Không thể đặt sao sau khi câu đã hiện.
 
-Màn trình chiếu có sao vàng lướt qua và giai điệu riêng (cần bật âm thanh). Nhãn sao ở câu hiện tại đồng bộ cả năm thiết bị; hiệu ứng không phát lại khi sync/tải lại/kết nối lại. MC khóa trả lời rồi chấm: đúng **+40**, sai hoặc không trả lời **−40**. Sửa kết quả áp dụng chênh lệch; bỏ chấm hoàn điểm câu, không hoàn sao. Câu không dùng sao vẫn nhập điểm thủ công. Backup giữ số sao đã dùng, không phát lại hiệu ứng hay lần chấm khi khôi phục; backup cũ mặc định chưa dùng sao.
+MC khóa trả lời rồi chấm đội chính. Chấm Sai/Không trả lời tự mở **5 giây giành quyền** cho hai đội còn lại. Cả ba màn có nút Giành quyền trả lời; đội chính bị khóa. Máy chủ chốt đội bấm đầu, phát chuông và làm nổi bật khung tên trên năm màn; đội đó trả lời miệng, MC ghi nhận đáp án đầu tiên và chấm. Đúng cộng điểm gốc, sai/không trả lời trừ nửa điểm (20→−10; 30→−15). Không chuyển điểm từ đội chính sang đội giành quyền. Không có lượt tranh chuông thứ hai.
+
+Hết 5 giây không ai bấm thì kết thúc. Phải chấm xong câu mới công bố đáp án. Sửa/bỏ chấm áp chênh lệch điểm; sửa kết quả đội chính hủy kết quả giành quyền phụ thuộc và hoàn riêng phần điểm ấy. Trong 5 giây, MC có thể Khóa trả lời rồi sửa kết quả. Bỏ chấm không hoàn sao; backup giữ số sao đã dùng và điểm, không khôi phục lượt chuông đang chạy. Backup cũ đã dùng 1–3 sao được coi là hết sao theo hạn mức mới.
+
+Sao vàng và âm thanh vẫn xuất hiện trên màn trình chiếu khi mở câu có sao; không phát lại khi nối lại. Phần Về đích hiện vẫn có 12 vị trí chờ đề, chưa mở câu cũ thay thế.
 
 ## Âm thanh và đội giành quyền
 
-Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ, giai điệu khi MC chấm đúng và ba nốt mềm đi xuống khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai gồm ba nốt sin 494–392–294 Hz đi xuống. Mức khuếch đại chung hiện là 0,45 (+3,52 dB so với 0,30 trước đây). Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
+Trên **màn trình chiếu**, bấm **Bật âm thanh** một lần sau khi mở trang. Có chuông cho đội giành quyền đầu tiên (theo máy chủ), tick đếm ngược từng giây (ba giây cuối cao hơn), âm hết giờ, giai điệu khi MC chấm đúng và ba nốt mềm đi xuống khi MC chấm sai ở mọi vòng. Âm đúng giữ giai điệu sáng đi lên; âm sai gồm ba nốt sin 494–392–294 Hz đi xuống. Mức khuếch đại chung hiện là 0,65 (+3,2 dB so với 0,45 trước đây). Chỉ nút Sai phát âm sai; Không trả lời/Bỏ chấm không phát. Bấm lại để tắt. Chỉ màn trình chiếu phát; nếu mở nhiều màn chiếu, chỉ bật một máy. Không phát lại chuông/kết quả cũ khi tải trang hoặc nối lại mạng. Hiệu ứng tổng hợp riêng bằng Web Audio, không cần tải file nhạc.
 
 Khởi động chung: thẻ điểm đội bấm đầu tiên đổi nền/viền vàng, hiện nhãn **GIÀNH QUYỀN** ở cả năm vai trò; giữ đến khi đổi câu hoặc về màn chờ.
 

@@ -1,3 +1,4 @@
+import {FINISH,finishView,finishCommand,expireFinish} from './finish-game.js';
 import {OBSTACLE,obstacleGame,obstacleView,obstacleBackup,restoreObstacleGames,obstacleCommand,expireObstacle} from './obstacle-game.js';
 import {migrateObstacleBackup} from './obstacle-migration.js';
 import {builtInBank,bankInfo,obstacleSets} from './bank.js';
@@ -11,7 +12,7 @@ export function snapshot(room,role,now=Date.now()){
  const {revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,judgements,hopeUsed,hopeStar}=room;
  const question=room.question?{text:room.question.text,type:room.question.type,choices:room.question.choices,media:room.question.media,mediaType:room.question.mediaType,matchingColumns:room.question.matchingColumns,players:room.question.players,obstacleGuess:!!room.question.obstacleGuess,points:room.question.points,label:room.question.label,...(role==='host'||showSolution?{solution:room.question.solution}:{})}:null;
  const answers=Object.fromEntries(Object.entries(room.answers).map(([id,a])=>[id,{...a,text:role==='host'||showAnswers||role===`p${id}`?a.text:null}]));
- return {obstacle:obstacleView(room,role),...(role==='host'?{obstacleGames:obstacleBackup(room),catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions,obstacleSets:obstacleSets.map(({id,name})=>({id,name})),obstacleProgress:room.round==='Vượt chướng ngại vật'?{...room.obstacleProgress,[room.obstacleSet]:{opened:room.opened,usedClues:room.usedClues,image:room.image}}:room.obstacleProgress}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,hopeUsed:[...hopeUsed],hopeStar:hopeStar?{...hopeStar}:null,obstacleSet:room.obstacleSet,obstacleAnswerLength:obstacleSets.find(s=>s.id===room.obstacleSet).answerLength,obstacleClueCount:8,obstacleBankVersion:2,questionBankVersion:bankInfo.version,videoPlayback:room.question?.mediaType==='video'&&room.videoPlayback?.questionId===room.questionId?room.videoPlayback:null,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
+ return {finish:finishView(room),obstacle:obstacleView(room,role),...(role==='host'?{obstacleGames:obstacleBackup(room),catalog:builtInBank,bankInfo,usedQuestions:room.usedQuestions,obstacleSets:obstacleSets.map(({id,name})=>({id,name})),obstacleProgress:room.round==='Vượt chướng ngại vật'?{...room.obstacleProgress,[room.obstacleSet]:{opened:room.opened,usedClues:room.usedClues,image:room.image}}:room.obstacleProgress}:{}),revision,questionId,round,teams,phase,deadline,duration,buzzes,showAnswers,showSolution,opened,selectedClue,usedClues,image,log,question,answers,judgements,hopeUsed:[...hopeUsed],hopeStar:hopeStar?{...hopeStar}:null,obstacleSet:room.obstacleSet,obstacleAnswerLength:obstacleSets.find(s=>s.id===room.obstacleSet).answerLength,obstacleClueCount:8,obstacleBankVersion:2,questionBankVersion:bankInfo.version,videoPlayback:room.question?.mediaType==='video'&&room.videoPlayback?.questionId===room.questionId?room.videoPlayback:null,serverNow:now,role,online:Object.fromEntries(['host','display','p0','p1','p2'].map(r=>[r,[...room.connections.values()].includes(r)]))};
 }
 const fail=message=>{throw Error(message);};
 const clean=(s,max=2000)=>typeof s==='string'?s.trim().slice(0,max):'';
@@ -31,6 +32,7 @@ function loadObstacle(room,id){
 export function act(room,role,msg,now=Date.now()){
  const {builtInBank,bankInfo,obstacleSets}=room.questionBank;
  if(!msg||typeof msg.type!=='string')fail('Lệnh không hợp lệ.');
+ if(finishCommand(room,role,msg,now)){room.updatedAt=now;room.revision++;return snapshot(room,role,now);}
  if(obstacleCommand(room,role,msg,now)){saveObstacle(room);room.updatedAt=now;room.revision++;return snapshot(room,role,now);}
  const og=obstacleGame(room);
  if(room.round===OBSTACLE&&role==='host'&&['preset','question','round','obstacleSet','waiting','start','restore'].includes(msg.type)&&(og.pending||og.paused&&!og.solved&&!og.ended||og.finalDeadline!==null))fail('Chấm lượt đoán và tiếp tục hoặc khóa trước khi đổi câu.');
@@ -46,7 +48,7 @@ export function act(room,role,msg,now=Date.now()){
    if(entry.pending)fail('Câu này đang để trống trong tài liệu, chưa thể mở.');
    if(entry.obstacleSet&&entry.obstacleSet!==room.obstacleSet)fail('Chọn đúng bộ chướng ngại vật trước khi mở gợi ý.');
    if(room.usedQuestions.includes(entry.id))fail('Câu này đã được mở. Hãy chọn câu chưa chơi.');
-   act(room,'host',{type:'question',question:entry,round:entry.round,clue:entry.clue,duration:entry.duration},now);
+   act(room,'host',{type:'question',question:entry,round:entry.round,clue:entry.clue,duration:entry.duration,hopeStar:msg.hopeStar},now);
    room.usedQuestions.push(entry.id);return snapshot(room,role,now);
   }else if(msg.type==='question'){
    if(room.phase==='open')fail('Đóng nhận đáp án trước khi đổi câu.');
@@ -63,23 +65,21 @@ export function act(room,role,msg,now=Date.now()){
     const required=builtInBank.filter(entry=>entry.obstacleSet===room.obstacleSet&&entry.clue<8&&!entry.pending);
     if(clue===8&&!required.every(entry=>clues.includes(entry.clue)))fail('Chọn hết các gợi ý có câu hỏi trước ô trung tâm.');
    }
+   if(round===FINISH&&(q.players?.length!==1||!Number.isInteger(q.players[0])||q.players[0]<0||q.players[0]>2||![20,30].includes(q.points)))fail('Câu Về đích cần một đội chính và mức 20 hoặc 30 điểm.');
+   if(msg.hopeStar&&(round!==FINISH||room.hopeUsed[q.players[0]]>=1))fail('Mỗi đội chỉ có một Ngôi sao hy vọng, chọn trước khi mở câu.');
    if(round!==room.round){saveObstacle(room);if(round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}}room.round=round;
    room.videoPlayback=null;room.questionId++;room.question={text:clean(q.text),solution:clean(q.solution),type:round==='Tăng tốc'?'text':q.type,choices:round==='Tăng tốc'?[]:choices,media:clean(q.media,2000),mediaType:['image','audio','video'].includes(q.mediaType)?q.mediaType:'image',players:q.players||[0,1,2],obstacleGuess:!!q.obstacleGuess,points:q.points,label:q.label||'',buzzAnswerSeconds:q.buzzAnswerSeconds};
    if(Array.isArray(q.matchingColumns)&&q.matchingColumns.length===2&&q.matchingColumns.every(col=>Array.isArray(col)&&col.length===4&&col.every(x=>typeof x==='string')))room.question.matchingColumns=q.matchingColumns.map(col=>col.map(x=>clean(x,400)));
    room.selectedClue=round==='Vượt chướng ngại vật'&&!q.obstacleGuess?clue:null;if(room.selectedClue!==null)room.usedClues.push(clue);
    room.duration=round==='Tăng tốc'?(builtInBank.find(entry=>entry.id===q.id&&entry.round===round)?.duration??25):round==='Về đích'?15:seconds;room.phase='ready';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;room.log='Câu hỏi đã mở. Chờ MC bắt đầu.';
+   room.finish=round===FINISH?{questionId:room.questionId,owner:q.players[0],winner:null,stage:'main'}:null;
+   if(msg.hopeStar){room.hopeUsed[q.players[0]]++;room.hopeStar={questionId:room.questionId,player:q.players[0]};}
+
   }else if(msg.type==='round'){
    if(room.phase==='open')fail('Đóng nhận đáp án trước khi đổi vòng.');
    saveObstacle(room);room.round=clean(msg.round,80);room.question=null;room.selectedClue=null;if(room.round==='Vượt chướng ngại vật')loadObstacle(room,room.obstacleSet);else{room.opened=[];room.usedClues=[];}room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.phase='waiting';room.deadline=null;room.showAnswers=false;room.showSolution=false;room.log='Mời đội chơi chọn câu hỏi.';
   }else if(msg.type==='hopeStar'){
-   if(msg.questionId!==room.questionId)fail('Câu hỏi đã đổi. Kiểm tra lại câu đang mở.');
-   if(room.round!=='Về đích'||room.phase!=='ready'||![20,30].includes(room.question?.points)||room.question.players.length!==1)fail('Chọn câu Về đích 20 hoặc 30 điểm và dùng sao trước khi bắt đầu.');
-   const player=room.question.players[0];
-   if(!Number.isInteger(player)||player<0||player>2)fail('Đội không hợp lệ.');
-   if(room.hopeStar)fail('Câu này đã dùng Ngôi sao hy vọng.');
-   if(room.hopeUsed[player]>=3)fail('Đội này đã dùng hết ba ngôi sao.');
-   room.hopeUsed[player]++;room.hopeStar={questionId:room.questionId,player};
-   room.log=`${room.teams[player].name} dùng Ngôi sao hy vọng: đúng +${room.question.points*2}, sai/không trả lời −${room.question.points*2}. Còn ${3-room.hopeUsed[player]} sao.`;
+   fail('Chọn Ngôi sao hy vọng trước khi mở câu hỏi.');
   }else if(msg.type==='video'){
    if(!room.question||room.question.mediaType!=='video'||msg.questionId!==room.questionId)fail('Câu hiện tại không có video hoặc đã đổi.');
    if(!['play','stop'].includes(msg.action))fail('Lệnh video không hợp lệ.');
@@ -163,7 +163,7 @@ export function act(room,role,msg,now=Date.now()){
      progress[id]={opened:[...new Set(p.opened)],usedClues:[...new Set(p.usedClues)],image:restoredObstacleImage(id,p.image,obstacleSets)};
     }
    }
-   room.obstacleGames=games;room.hopeUsed=[...hopeUsed];room.obstacleSet=setId;room.obstacleProgress=progress;
+   room.obstacleGames=games;room.hopeUsed=hopeUsed.map(n=>Math.min(1,n));room.obstacleSet=setId;room.obstacleProgress=progress;
    room.usedQuestions=Array.isArray(b.usedQuestions)?b.usedQuestions.filter(id=>builtInBank.some(q=>q.id===id)):[];
    room.teams=b.teams.map((t,i)=>({name:clean(t.name,40)===`Đội ${i+1}`?teamNames[i]:clean(t.name,40),score:t.score}));room.round=clean(b.round,80);room.opened=[...new Set(b.opened.map(i=>legacy&&i===4?8:i))];room.usedClues=[...new Set(b.usedClues.map(i=>legacy&&i===4?8:i))];
    room.question=null;room.questionId++;room.selectedClue=null;room.phase='waiting';room.deadline=null;room.answers={};room.judgements={};room.hopeStar=null;room.buzzes=[];room.showAnswers=false;room.showSolution=false;
@@ -190,4 +190,4 @@ export function act(room,role,msg,now=Date.now()){
  }else fail('Màn trình chiếu chỉ được xem.');
  saveObstacle(room);room.updatedAt=now;room.revision++;return snapshot(room,role,now);
 }
-export function expire(room,now=Date.now()){if(expireObstacle(room,now)){room.revision++;return true;}if(room.phase==='open'&&room.deadline!==null&&now>=room.deadline){room.phase='closed';room.log='Hết giờ. Đã khóa nhận đáp án.';room.revision++;return true;}return false;}
+export function expire(room,now=Date.now()){if(expireFinish(room,now)){room.revision++;return true;}if(expireObstacle(room,now)){room.revision++;return true;}if(room.phase==='open'&&room.deadline!==null&&now>=room.deadline){room.phase='closed';room.log='Hết giờ. Đã khóa nhận đáp án.';room.revision++;return true;}return false;}

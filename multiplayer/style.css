@@ -341,3 +341,9 @@ body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media
  body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-media{flex:none;aspect-ratio:16/9;min-height:0;max-height:55vh}
  body:is([data-role="display"],[data-role^="p"]) #question-panel.has-visual-media #question-title{font-size:clamp(16px,3vw,24px)}
 }
+
+/* Keep the finish buzzer alongside the existing response controls. */
+@media(min-width:761px){
+ body[data-role^="p"].finish-round #response #finish-buzz{flex:0 1 auto;font-size:calc(2.5 * var(--u));min-height:0}
+ body[data-role^="p"].finish-round.media-layout #response #finish-buzz{width:22%;margin:0}
+}

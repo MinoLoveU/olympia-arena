@@ -13,7 +13,7 @@ window.OlympiaSounds=class {
  reset(){this.previous=null;this.lastTick=null;}
  observe(s){
   const previous=this.previous;this.previous=s;
-  if(!previous||previous.questionId!==s.questionId){this.lastTick=null;return;}
+  if(!previous||previous.questionId!==s.questionId){this.lastTick=null;if(previous&&s.role==='display'&&s.hopeStar)this.play('hope');return;}
   if(s.role!=='display')return;
   if(s.round==='Vượt chướng ngại vật'&&previous.obstacleSet===s.obstacleSet){
    if(s.obstacle?.pending&&previous.obstacle?.pending?.id!==s.obstacle.pending.id)this.play('buzz');

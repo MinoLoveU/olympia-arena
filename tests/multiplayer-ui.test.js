@@ -1,7 +1,7 @@
 import {hashPassword} from '../multiplayer/access.js';
 import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import {WebSocket} from 'ws';import {once} from 'node:events';import {createGameServer} from './fixtures/full-pack.js';
 const wait=async(fn)=>{const end=Date.now()+3500;while(Date.now()<end){if(fn())return;await new Promise(r=>setTimeout(r,15));}throw Error('UI sync timeout');};
-test('Five clients: oral judging adjusts warm-up scores; later rounds keep manual scoring',async()=>{
+test('Five clients: warm-up, obstacle scoring and finish stealing synchronize',async()=>{
  const {server,wss}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json();const doms=[],sockets=[];
  try{
  for(const role of ['host','display','p0','p1','p2']){const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};dom.window.eval(readFileSync(new URL('../multiplayer/sounds.js',import.meta.url),'utf8'));dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));}
@@ -124,12 +124,12 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('#obstacle-set').value='1';host.querySelector('#select-obstacle-set').click();await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 1')).catch(e=>{throw Error(host.querySelector('#error').textContent||e.message);});
  assert.equal(display.querySelector('.cover-7').hidden,true);assert.equal(display.querySelector('.cover-0').hidden,false);
  host.querySelector('#round').value='Về đích';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelector('#publish-question').disabled,true);assert.equal(host.querySelector('#finish-picker').hidden,false);host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.equal(host.querySelectorAll('#preset-question option').length,20);assert.ok([...host.querySelectorAll('#preset-question option')].every(o=>o.textContent.includes('Đội Chủ nghĩa xã hội')));
- host.querySelector('#preset-question').value='finish-60';host.querySelector('#publish-question').click();await wait(()=>p2.querySelector('#question-title').textContent.includes('Mục tiêu tổng quát'));assert.ok(p2.querySelector('#answer-text'));
+ host.querySelector('#preset-question').value='finish-60';host.querySelector('#preset-question').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#hope-star').click();host.querySelector('#publish-question').click();await wait(()=>p2.querySelector('#question-title').textContent.includes('Mục tiêu tổng quát'));assert.ok(p2.querySelector('#answer-text'));
  assert.equal(p2.querySelector('#clock-text').textContent,'15 GIÂY');
  await new Promise(r=>setTimeout(r,1100));
- assert.equal(host.querySelector('#hope-star').hidden,false);assert.equal(host.querySelector('#hope-star').disabled,false);
- host.querySelector('#hope-star').click();await wait(()=>doms.every(d=>!d.window.document.querySelector('#hope-status').hidden));
- for(const d of [host,display,p0,p1,p2])assert.match(d.querySelectorAll('.hope-count')[2].textContent,/2\/3/);
+ assert.equal(host.querySelector('#hope-star').hidden,false);assert.equal(host.querySelector('#hope-star').disabled,true);
+ await wait(()=>doms.every(d=>!d.window.document.querySelector('#hope-status').hidden));
+ for(const d of [host,display,p0,p1,p2])assert.match(d.querySelectorAll('.hope-count')[2].textContent,/0\/1/);
  assert.ok(display.querySelector('.hope-flight'));assert.equal(p2.querySelector('.hope-flight'),null);
  const flight=display.querySelector('.hope-flight');assert.equal(host.querySelector('#hope-star').disabled,true);
  host.querySelector('#start').click();await wait(()=>!host.querySelector('#stop').disabled);assert.equal(host.querySelector('#finish-team').disabled,true);
@@ -137,10 +137,16 @@ test('Five clients: oral judging adjusts warm-up scores; later rounds keep manua
  host.querySelector('[data-judge="correct"][data-player="2"]').click();
  await wait(()=>[host,display,p0,p1,p2].every(d=>d.querySelectorAll('#scoreboard strong')[2].textContent==='40'));
  assert.equal(display.querySelector('.hope-flight'),flight);
- host.querySelector('[data-judge="wrong"][data-player="2"]').click();await wait(()=>display.querySelectorAll('#scoreboard strong')[2].textContent==='-40');
+ host.querySelector('[data-judge="wrong"][data-player="2"]').click();await wait(()=>display.querySelectorAll('#scoreboard strong')[2].textContent==='-20');
+ await wait(()=>!p0.querySelector('#finish-buzz').disabled&&!p1.querySelector('#finish-buzz').disabled);
+ assert.equal(p2.querySelector('#finish-buzz').disabled,true);
+ p1.querySelector('#finish-buzz').click();
+ await wait(()=>doms.every(d=>d.window.document.querySelectorAll('.score-card')[1].classList.contains('buzz-winner')));
+ assert.equal(p0.querySelector('#finish-buzz').disabled,true);assert.equal(p1.querySelector('#finish-buzz').disabled,true);
+ const beforeSteal=Number(display.querySelectorAll('#scoreboard strong')[1].textContent);host.querySelector('[data-judge="correct"][data-player="1"]').click();await wait(()=>Number(display.querySelectorAll('#scoreboard strong')[1].textContent)===beforeSteal+20);
  host.querySelector('#preset-question').value='finish-59';host.querySelector('#publish-question').click();
  await wait(()=>display.querySelector('#hope-status').hidden);assert.equal(display.querySelector('.hope-flight'),null);
- assert.match(host.querySelector('#hope-star').textContent,/2\/3/);
+ assert.equal(host.querySelector('#hope-star').disabled,true);
  host.querySelector('#finish-team').value='0';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.ok([...host.querySelectorAll('#preset-question option')].every(o=>o.textContent.includes('Đội Cầu truyền hình')));host.querySelector('#publish-question').click();await wait(()=>p0.querySelector('#question-title').textContent.includes('Xin mời các bạn trả lời câu hỏi sau bằng Tiếng Anh'));assert.equal(host.querySelector('#finish-team').value,'0');assert.equal(host.querySelector('#finish-team option[value="2"]').textContent.includes('18/20'),true);
  host.querySelector('#round').value='Khởi động';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
  for(const id of ['warm-27']){const option=host.querySelector(`option[value="${id}"]`);assert.equal(option.disabled,false);assert.ok(!option.textContent.includes('Để trống'));}

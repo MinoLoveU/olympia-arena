@@ -75,3 +75,12 @@ test('Independent obstacle buzzer and verdict sound once even on waiting screen'
  const wrong={...s,obstacle:{pending:null,last:{id:10,result:'wrong'}}};audio.observe(wrong);audio.observe(wrong);assert.deepEqual(events,['buzz','wrong']);audio.reset();audio.observe(wrong);assert.equal(events.length,2);
  audio.observe({...wrong,obstacle:{pending:null,last:{id:10,result:'correct'}}});assert.deepEqual(events,['buzz','wrong','correct']);
 });
+
+test('Preselected star sounds on question publication; finish winner sounds once across sync/reconnect',()=>{
+ const audio=setup(),events=[];audio.play=kind=>events.push(kind);
+ audio.observe(snapshot({question:null,questionId:0,phase:'waiting'}));
+ const ready=snapshot({round:'Về đích',phase:'ready',hopeStar:{questionId:1,player:0}});
+ audio.observe(ready);audio.observe(ready);assert.deepEqual(events,['hope']);
+ const buzz={...ready,phase:'closed',buzzes:[{player:1,rank:1}]};audio.observe(buzz);audio.observe(buzz);assert.deepEqual(events,['hope','buzz']);
+ audio.reset();audio.observe(buzz);assert.deepEqual(events,['hope','buzz']);
+});

@@ -16,9 +16,9 @@ test('Current pack preserves warmup and reserves exactly the requested empty slo
 test('30-point hope star awards and corrects 60 points without duplicating awards',()=>{
  const bank=builtInBank.map(q=>q.id==='compact-finish-1-3'?{...q,pending:false,text:'Test',solution:'4'}:q);
  const r=createRoom({questionBank:{builtInBank:bank,obstacleSets,bankInfo}});
- act(r,'host',{type:'preset',id:'compact-finish-1-3'});act(r,'host',{type:'hopeStar',questionId:r.questionId});act(r,'host',{type:'close'});
+ act(r,'host',{type:'preset',id:'compact-finish-1-3',hopeStar:true});act(r,'host',{type:'close'});
  const judge=result=>act(r,'host',{type:'judge',questionId:r.questionId,player:0,result,version:r.judgements[0]?.version||0});
- judge('correct');assert.equal(r.teams[0].score,60);judge('correct');assert.equal(r.teams[0].score,60);judge('wrong');assert.equal(r.teams[0].score,-60);judge('clear');assert.equal(r.teams[0].score,0);assert.equal(r.hopeUsed[0],1);
+ judge('correct');assert.equal(r.teams[0].score,60);judge('correct');assert.equal(r.teams[0].score,60);judge('wrong');assert.equal(r.teams[0].score,-30);act(r,'host',{type:'close'});judge('clear');assert.equal(r.teams[0].score,0);assert.equal(r.hopeUsed[0],1);
 });
 test('Old backups retain scores and warmup progress without restoring obsolete rounds',()=>{
  const r=createRoom(),b={...snapshot(r,'host'),questionBankVersion:undefined,obstacleSet:'8',opened:[1],usedClues:[1],usedQuestions:['warm-1','speed-1','finish-1','obstacle-8-1']};b.teams[0].score=80;

@@ -4,9 +4,13 @@ Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao 
 
 ## Cấu hình hiện tại — 14/10/2026
 
-Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Còn chờ **20 câu Tăng tốc**, **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 3 sao/đội. Sao nhân đôi mức điểm: câu 20 đúng/sai ±40, câu 30 ±60; câu không sao vẫn chấm điểm thủ công.
+Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, đều 25 giây. Còn chờ **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 3 sao/đội. Sao nhân đôi mức điểm: câu 20 đúng/sai ±40, câu 30 ±60; câu không sao vẫn chấm điểm thủ công.
 
 Bộ nguồn đầy đủ trước đây được giữ tại `multiplayer/archive-bank.js` và các module nguồn; các mục nguồn bên dưới ghi lịch sử, không phải danh mục đang mở chơi. Kiểm thử hồi quy dùng bộ lưu trữ; kiểm thử `current-format*` dùng cấu hình sản xuất. Khôi phục bản sao cũ giữ điểm và tiến độ Khởi động/câu phụ, bỏ tiến độ ba vòng đã thay cấu hình.
+
+## Tăng tốc 30 câu — 15/10/2026
+
+`compact-speed-bank.js` lấy đáp án đỏ từ tab `t.a63d1diym0ik`; 30 câu nhập đáp án tự do/Enter gửi, thời gian 25 giây. Có 11 video H.264/yuv420p, đã bỏ audio và giải mã toàn bộ; 16 ảnh trong 5 câu dùng hình (4,7,11,16,27). Câu7/11 có nhãn ảnh A–F/A–G;16 dùng khung SVG bỏ khoảng trắng quanh sơ đồ;14 giữ hai cột nối1–4/A–D. Câu11 giữ sửa7tácphẩm của Hazei vì có7ảnh. Câu27 nguồn mới thiếu A–D: giữ đúng danh sách của cùng câu trong bộ cũ (speed-50), đáp án DBCA không đổi. Bộ60cũ vẫn lưu trữ, không phục vụ trận mới. Tổng125vịtrí:113đãđiền,12Vềđích chờđề.
 
 ## Chấm điểm và giành quyền đoán CNV — 15/10/2026
 

@@ -13,7 +13,7 @@ test('Current five-screen UI shows pending slots and still opens unchanged warmu
  const [host,display,...players]=doms.map(d=>d.window.document);
  await wait(()=>!host.querySelector('#access-gate').hidden);host.querySelector('#access-password').value='test-only-password';host.querySelector('#access-form').dispatchEvent(new doms[0].window.Event('submit',{cancelable:true}));
  await wait(()=>doms.every(d=>d.window.document.querySelector('#connection').className==='online'));
- for(const round of ['Tăng tốc','Về đích']){
+ for(const round of ['Về đích']){
  host.querySelector('#round').value=round;host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
  if(round==='Về đích'){host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.match(host.querySelector('#finish-team').textContent,/4\/4 câu/);}
  const options=[...host.querySelector('#preset-question').options];assert.equal(options.length,round==='Tăng tốc'?20:round==='Về đích'?4:10);assert.ok(options.every(o=>o.disabled));assert.equal(host.querySelector('#publish-question').disabled,true);assert.match(host.querySelector('#preset-preview').textContent,/chờ bộ đề mới/);

@@ -14,7 +14,13 @@ window.OlympiaSounds=class {
  observe(s){
   const previous=this.previous;this.previous=s;
   if(!previous||previous.questionId!==s.questionId){this.lastTick=null;return;}
-  if(!s.question||s.role!=='display')return;
+  if(s.role!=='display')return;
+  if(s.round==='Vượt chướng ngại vật'&&previous.obstacleSet===s.obstacleSet){
+   if(s.obstacle?.pending&&previous.obstacle?.pending?.id!==s.obstacle.pending.id)this.play('buzz');
+   const last=s.obstacle?.last,old=previous.obstacle?.last;
+   if(last&&(last.id!==old?.id||last.result!==old?.result)&&['correct','wrong'].includes(last.result))this.play(last.result);
+  }
+  if(!s.question)return;
   if(!previous.buzzes.length&&s.buzzes.length)this.play('buzz');
   if(s.hopeStar&&!previous.hopeStar)this.play('hope');
   if(Object.entries(s.judgements||{}).some(([i,j])=>j.result==='correct'&&previous.judgements?.[i]?.result!=='correct'))this.play('correct');

@@ -1,12 +1,22 @@
 # Olympia trực tuyến — 5 thiết bị
 
-Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động, Tăng tốc và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
+Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao diện theo ảnh mẫu Olympia: nền cyan–xanh dương, bảng navy, viền cyan/bạc, nút nổi bóng và ô hình Chướng ngại vật, tách quyền cho **1 MC, 1 màn trình chiếu, 3 người chơi**. Khởi động, Vượt chướng ngại vật, Tăng tốc và câu Về đích dùng Ngôi sao hy vọng tự tính điểm khi MC chấm; các câu khác vẫn nhập điểm thủ công.
 
 ## Cấu hình hiện tại — 14/10/2026
 
 Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Còn chờ **20 câu Tăng tốc**, **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 3 sao/đội. Sao nhân đôi mức điểm: câu 20 đúng/sai ±40, câu 30 ±60; câu không sao vẫn chấm điểm thủ công.
 
 Bộ nguồn đầy đủ trước đây được giữ tại `multiplayer/archive-bank.js` và các module nguồn; các mục nguồn bên dưới ghi lịch sử, không phải danh mục đang mở chơi. Kiểm thử hồi quy dùng bộ lưu trữ; kiểm thử `current-format*` dùng cấu hình sản xuất. Khôi phục bản sao cũ giữ điểm và tiến độ Khởi động/câu phụ, bỏ tiến độ ba vòng đã thay cấu hình.
+
+## Chấm điểm và giành quyền đoán CNV — 15/10/2026
+
+Gợi ý đúng +10, sai/không trả lời 0. Ô trung tâm tự mở khi có đội được MC chấm đúng; sửa/bỏ chấm về không có đội đúng sẽ che lại. Các ô ngoài vẫn mở/che bằng nút MC.
+
+Theo [bảng điểm của Hazei](https://docs.google.com/document/d/1Ol5m_6xGHH-ACBXETOBE8TPQTFwJAxfg8j7cb_b6rcg/edit?tab=t.0), đoán đúng sau 1–8 gợi ý lần lượt được **60,55,50,45,40,35,30,20**; sau gợi ý trung tâm được **10**. Tính theo số gợi ý MC đã mở câu hỏi, không phải số ô ảnh đã mở; điểm được chốt lúc máy chủ nhận chuông.
+
+Ba đội có nút **ĐOÁN CHƯỚNG NGẠI VẬT**, dùng từ gợi ý đầu tiên trong vòng CNV, kể cả giữa các câu. Máy chủ lấy đội bấm đầu tiên, hiện nổi bật trên năm màn và tạm dừng đồng hồ gợi ý. Đội trả lời miệng; MC dùng **Đúng CNV / Sai CNV / Không trả lời CNV / Bỏ chấm CNV** riêng với chấm gợi ý. Sai hoặc không trả lời loại đội khỏi bộ đó, không trừ điểm; server khóa cả đáp án gợi ý và chuông đoán. Bộ khác có quyền chơi độc lập. Đúng kết thúc bộ. Sau khi chấm sai, MC **Tiếp tục gợi ý / đồng hồ** để chạy nốt thời gian, hoặc **Khóa trả lời** rồi chuyển câu. Sửa kết quả lượt gần nhất áp chênh lệch và cập nhật việc loại đội; không cộng điểm lặp.
+
+Sau khi khóa câu trung tâm, MC bấm **Mở 15 giây đoán cuối**. Chuông tạm dừng cửa sổ này để trả lời miệng; tiếp tục chạy thời gian còn lại nếu sai. Hết hạn khóa chuông. Backup giữ điểm, đội bị loại và bộ đã kết thúc; không phát lại chuông/chấm cũ. Lượt đang xử lý và đồng hồ không khôi phục; MC điều hành tiếp từ màn chờ.
 
 ## Triển khai Render
 
@@ -43,7 +53,7 @@ Lệnh video được máy chủ kiểm tra quyền MC và câu hiện tại; đ
 - Đáp án gửi về chỉ MC và chính đội đó thấy nội dung. Màn chiếu hiện trạng thái đã gửi. Sau khi khóa, **Công bố đáp án các đội** hiển thị đồng thời, tránh đội sau đọc đáp án đội trước.
 - Trong **Chấm và sửa điểm**, sau khi hết giờ hoặc bấm **Khóa trả lời**, MC chọn **Đúng / Sai / Không trả lời** cho đội có quyền trả lời. Khởi động riêng: đúng +10, sai/không trả lời 0. Khởi động chung: đúng +10, sai/không trả lời −5, chỉ chấm đội giành chuông đầu tiên. MC xác nhận không trả lời miệng bằng nút **Không trả lời**; hết giờ không tự suy đoán kết quả. Không ai bấm chuông thì không trừ đội nào.
 - Máy chủ chống chấm lặp. Đổi kết quả hoặc **Bỏ chấm** điều chỉnh lại phần điểm của câu hiện tại (ví dụ +10 đổi sang −5 làm tổng điểm giảm 15). Mở câu tiếp theo giữ tổng điểm và xóa trạng thái chấm câu cũ. Có thể sửa tổng điểm bằng ô số và **Lưu**.
-- Ngoài Khởi động, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
+- Ngoài Khởi động, Vượt chướng ngại vật, Tăng tốc và câu Về đích dùng sao, nút chấm chỉ ghi nhận; MC nhập điểm thủ công. Không tự mở ô ảnh. Chấm và tổng điểm đồng bộ lên cả 5 thiết bị.
 - **Mở ô ảnh** là quyết định của MC sau khi xác định câu đúng; không sửa điểm. **Chờ câu tiếp** giữ các mảnh ảnh đã mở và ẩn câu cũ.
 - Khởi động theo tài liệu của chủ tài khoản: 60 vị trí gồm 45 câu riêng (15/đội, chỉ câu 15 Đội Cầu truyền hình còn trống) + 15 câu chung. Các vòng còn lại: 8 bộ CNV (64 gợi ý ngoài + 8 trung tâm + 8 lượt đoán), 60 Tăng tốc, 60 Về đích (20 câu/đội, tất cả 20 điểm và 15 giây), 3 câu phụ. Các câu đã điền có đáp án; hình câu 5 Khởi động chung lấy nguyên từ tài liệu. Các media khác giữ nguyên. Câu chung cho 3 giây giành chuông. Khi có đội giành quyền, đồng hồ và tiếng đếm ngược dừng; không tự hết giờ trả lời miệng. MC bấm Khóa trả lời rồi chấm. Video do màn chiếu bấm phát; chưa đồng bộ vị trí phát media.
 - Đáp án và toàn bộ catalog chỉ gửi tới vai trò MC qua WebSocket; người chơi chỉ nhận câu đang mở. Bộ đề nằm trong repo công khai nên dùng cho sân chơi giao lưu, không phải đề bí mật chống tra cứu.

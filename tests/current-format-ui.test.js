@@ -29,6 +29,16 @@ test('Current five-screen UI shows pending slots and still opens unchanged warmu
   assert.equal(d.querySelectorAll('.picture-cover:not([hidden])').length,8);
  }
 
+ host.querySelector('#start').click();await wait(()=>players.every(d=>!d.querySelector('#obstacle-buzz').disabled));
+ players[1].querySelector('#obstacle-buzz').click();await wait(()=>host.querySelector('#obstacle-status').textContent.includes('giành quyền'));
+ for(const d of [display,...players]){assert.match(d.querySelector('#obstacle-status').textContent,/60 điểm/);assert.equal(d.querySelectorAll('.score-card')[1].classList.contains('buzz-winner'),true);assert.equal(d.querySelector('#clock-text').textContent,'ĐOÁN CNV');}
+ assert.equal(players[0].querySelector('#answer-text').disabled,true);
+ host.querySelector('[data-obstacle-judge="wrong"]').click();await wait(()=>players[1].querySelector('#obstacle-buzz').textContent.includes('bị loại'));assert.equal(players[1].querySelector('#obstacle-buzz').disabled,true);
+ host.querySelector('#obstacle-resume').click();await wait(()=>!players[0].querySelector('#answer-text').disabled);assert.equal(players[1].querySelector('#answer-text').disabled,true);
+ players[0].querySelector('#answer-text').value='Bolshevik';players[0].querySelector('#answer-text').dispatchEvent(new doms[2].window.KeyboardEvent('keydown',{key:'Enter',cancelable:true}));await wait(()=>!players[0].querySelector('#answer-text'));
+ host.querySelector('#stop').click();await wait(()=>!host.querySelector('[data-judge="correct"][data-player="0"]').disabled);host.querySelector('[data-judge="correct"][data-player="0"]').click();await wait(()=>display.querySelector('#scoreboard strong').textContent==='10');
+ players[2].querySelector('#obstacle-buzz').click();await wait(()=>host.querySelector('#obstacle-status').textContent.includes('giành quyền'));host.querySelector('[data-obstacle-judge="correct"]').click();await wait(()=>display.querySelectorAll('#scoreboard strong')[2].textContent==='60');assert.ok(players.every(d=>d.querySelector('#obstacle-buzz').disabled));
+ host.querySelector('#obstacle-set').value='2';host.querySelector('#select-obstacle-set').click();await wait(()=>display.querySelector('#round-name').textContent.includes('Bộ 2'));host.querySelector('#preset-question').value='compact-obstacle-2-1';host.querySelector('#publish-question').click();await wait(()=>!players[1].querySelector('#obstacle-buzz').disabled);
  host.querySelector('#round').value='Khởi động';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='warm-27';host.querySelector('#publish-question').click();await wait(()=>[display,...players].every(d=>d.querySelector('#question-title').textContent.includes('Lang Liêu')));
  }finally{for(const socket of sockets){socket.onclose=null;socket.onmessage=null;socket.terminate();}for(const dom of doms)dom.window.close();for(const socket of wss.clients)socket.terminate();server.closeAllConnections();await new Promise(r=>server.close(r));}
 });

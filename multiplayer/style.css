@@ -304,3 +304,8 @@ body[data-role="host"] #question-matching, #preset-preview .matching-columns { f
 /* Fill the square edge to edge; prevent selection and native image drag ghosts. */
 .obstacle-picture .tiles{user-select:none;-webkit-user-select:none}
 .obstacle-picture .tiles>img{object-fit:cover;object-position:center;background:#052849;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+
+#obstacle-status{color:#ffe09a;font-weight:700;font-size:clamp(11px,1.7vh,18px);line-height:1.35;margin-bottom:.4em}
+#obstacle-buzz{background:linear-gradient(#c88c22,#805109);border-color:#ffdc87;white-space:normal;min-height:45px}
+.eliminated-label{display:block;color:#ff9da6;font-size:.65em;font-style:normal}
+@media(min-width:761px){body[data-role^="p"].obstacle-round #player-panel{grid-template-rows:minmax(0,1fr) auto auto}body[data-role^="p"] #obstacle-buzz{font-size:calc(2 * var(--u));padding:calc(1.4 * var(--u)) 1vw}}

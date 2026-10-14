@@ -68,3 +68,10 @@ test('Hope star sound fires once on activation, never on initial join, sync or r
  audio.observe(snapshot());audio.observe(active);audio.observe(active);assert.deepEqual(events,['hope']);
  audio.reset();audio.observe(active);assert.equal(events.length,1);
 });
+test('Independent obstacle buzzer and verdict sound once even on waiting screen',()=>{
+ const audio=setup(),events=[];audio.play=kind=>events.push(kind);
+ const s=snapshot({round:'Vượt chướng ngại vật',question:null,obstacleSet:'1',obstacle:{pending:null,last:null}});audio.observe(s);
+ const pending={...s,obstacle:{pending:{id:10,player:0},last:null}};audio.observe(pending);audio.observe(pending);
+ const wrong={...s,obstacle:{pending:null,last:{id:10,result:'wrong'}}};audio.observe(wrong);audio.observe(wrong);assert.deepEqual(events,['buzz','wrong']);audio.reset();audio.observe(wrong);assert.equal(events.length,2);
+ audio.observe({...wrong,obstacle:{pending:null,last:{id:10,result:'correct'}}});assert.deepEqual(events,['buzz','wrong','correct']);
+});

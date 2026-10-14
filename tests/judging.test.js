@@ -31,10 +31,10 @@ test('Judging enforces host, question ID, closed phase, version, and valid paylo
  judge(r,0,'correct');const before=r.teams[0].score;act(r,'host',{type:'preset',id:'warm-2'});act(r,'host',{type:'close'});
  assert.deepEqual(r.judgements,{});assert.throws(()=>judge(r,0,'correct',{questionId:1}));assert.equal(r.teams[0].score,before);
 });
-test('Other rounds record judgement without automatic points or opening obstacle tiles',()=>{
+test('Obstacle clues award 10; finish and tie retain manual scoring',()=>{
  for(const id of ['obstacle-1','finish-1','tie-1']){
   const r=prepare(id);if(r.question.type==='buzz')act(r,'p0',{type:'buzz',questionId:r.questionId},101);act(r,'host',{type:'close'});
-  for(const result of ['correct','wrong','no-answer']){judge(r,0,result);assert.equal(r.judgements[0].result,result);assert.equal(r.teams[0].score,0);}
+  for(const result of ['correct','wrong','no-answer']){judge(r,0,result);assert.equal(r.judgements[0].result,result);assert.equal(r.teams[0].score,id==='obstacle-1'&&result==='correct'?10:0);}
   assert.deepEqual(r.opened,[]);
  }
 });

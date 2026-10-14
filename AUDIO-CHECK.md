@@ -14,3 +14,14 @@ Sáu video Về đích được chuẩn hóa hai lượt bằng FFmpeg loudnorm,
 Hiệu ứng Web Audio: master gain 0,30 → 0,45, tương đương +3,52 dB; giữ giai điệu, dạng sóng và mute. Video Tăng tốc speed-motion.mp4 không có luồng âm thanh. Client thêm phiên bản URL video Về đích để tải tệp mới thay vì dùng cache cũ.
 
 70 kiểm thử đạt. Chưa nghe kiểm tra qua loa của buổi thi; âm lượng thực tế còn phụ thuộc máy và hệ thống loa.
+
+
+## Bộ Về đích mới — 15/10/2026
+
+Ba video mới được chuyển từ HEVC 8K sang H.264/yuv420p tối đa 1280×720, 30 fps, AAC 48 kHz. Loudnorm hai lượt giữ mục tiêu −16 LUFS, −2 dBTP, LRA 11. Kiểm tra giải mã toàn bộ ba tệp không báo lỗi; chưa nghe bằng loa thực tế.
+
+| Video | Trước LUFS | Sau LUFS | Peak dBTP |
+|---|---:|---:|---:|
+| finish-compact-1-3.mp4 | -9.56 | -16.00 | -5.81 |
+| finish-compact-2-3.mp4 | -11.55 | -16.00 | -4.11 |
+| finish-compact-3-1.mp4 | -9.83 | -16.02 | -4.54 |

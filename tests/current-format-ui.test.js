@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {JSDOM} from 'jsdom';import {readFileSync} from 'node:fs';import {WebSocket} from 'ws';import {once} from 'node:events';import {createGameServer} from '../server.js';import {hashPassword} from '../multiplayer/access.js';
 const wait=async fn=>{for(let i=0;i<250;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Video UI timeout');};
-test('Current five-screen UI shows pending slots and still opens unchanged warmup',async()=>{
+test('Current five-screen UI opens the new finish source and unchanged warmup',async()=>{
  const {server,wss,rooms}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;
  const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json(),doms=[],sockets=[];let plays=0,pauses=0,blocked=true;
  try{
@@ -16,7 +16,11 @@ test('Current five-screen UI shows pending slots and still opens unchanged warmu
  for(const round of ['Về đích']){
  host.querySelector('#round').value=round;host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));
  if(round==='Về đích'){host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.match(host.querySelector('#finish-team').textContent,/4\/4 câu/);}
- const options=[...host.querySelector('#preset-question').options];assert.equal(options.length,round==='Tăng tốc'?20:round==='Về đích'?4:10);assert.ok(options.every(o=>o.disabled));assert.equal(host.querySelector('#publish-question').disabled,true);assert.match(host.querySelector('#preset-preview').textContent,/chờ bộ đề mới/);
+ const options=[...host.querySelector('#preset-question').options];assert.equal(options.length,round==='Tăng tốc'?20:round==='Về đích'?4:10);assert.ok(options.every(o=>!o.disabled));assert.equal(host.querySelector('#publish-question').disabled,false);
+ host.querySelector('#publish-question').click();await wait(()=>players.every(d=>d.querySelector('video')));assert.match(host.querySelector('#host-solution').textContent,/Ngoại giao vắc-xin/);
+ blocked=false;host.querySelector('#play-video').click();await wait(()=>plays===4);assert.equal(rooms.get(room.id).phase,'ready');
+ for(const d of [display,...players]){assert.equal(d.querySelector('video').muted,false);assert.equal(d.querySelector('video').getAttribute('src').split('?')[0],'/assets/finish-compact-3-1.mp4');}
+ host.querySelector('#stop-video').click();await wait(()=>pauses===4);
  }
  assert.equal(host.querySelector('#obstacle-set').options.length,2);
  host.querySelector('#round').value='Vượt chướng ngại vật';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));

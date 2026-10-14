@@ -4,7 +4,7 @@ Bản này chạy bằng `npm start`, thay cho server tĩnh `npm run dev`. Giao 
 
 ## Cấu hình hiện tại — 14/10/2026
 
-Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, mặc định 25 giây, có thời gian riêng theo câu. Còn chờ **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 1 sao/đội. Về đích tính điểm theo luật ngày 15/10 bên dưới.
+Khởi động giữ nguyên 60 câu. Đã nhập **2 chướng ngại vật** từ tab nguồn ngày 14/10: Cách mạng tháng 10 và Bản án chế độ thực dân Pháp (mỗi bộ 8 gợi ý ngoài và 1 trung tâm). Đã có **30 câu Tăng tốc** theo tab mới ngày 15/10, mặc định 25 giây, có thời gian riêng theo câu. Đã nhập **4 câu Về đích mỗi đội** theo mức 20, 20, 30, 30 điểm. Ảnh CNV phủ kín khung vuông bằng object-fit:cover, cắt rìa nhưng giữ tỷ lệ; chặn kéo/chọn ảnh để không hiện bóng ảnh đầy đủ. Đây là chặn thao tác giao diện, không phải cơ chế bảo mật ảnh đã tải về trình duyệt. Các vị trí chờ đề bị khóa, không lấy câu cũ để chơi. Giữ 3 câu phụ, thời gian Tăng tốc mặc định 25 giây, Về đích 15 giây và 1 sao/đội. Về đích tính điểm theo luật ngày 15/10 bên dưới.
 
 Bộ nguồn đầy đủ trước đây được giữ tại `multiplayer/archive-bank.js` và các module nguồn; các mục nguồn bên dưới ghi lịch sử, không phải danh mục đang mở chơi. Kiểm thử hồi quy dùng bộ lưu trữ; kiểm thử `current-format*` dùng cấu hình sản xuất. Khôi phục bản sao cũ giữ điểm và tiến độ Khởi động/câu phụ, bỏ tiến độ ba vòng đã thay cấu hình.
 
@@ -80,7 +80,7 @@ MC khóa trả lời rồi chấm đội chính. Chấm Sai/Không trả lời t
 
 Hết 5 giây không ai bấm thì kết thúc. Phải chấm xong câu mới công bố đáp án. Sửa/bỏ chấm áp chênh lệch điểm; sửa kết quả đội chính hủy kết quả giành quyền phụ thuộc và hoàn riêng phần điểm ấy. Trong 5 giây, MC có thể Khóa trả lời rồi sửa kết quả. Bỏ chấm không hoàn sao; backup giữ số sao đã dùng và điểm, không khôi phục lượt chuông đang chạy. Backup cũ đã dùng 1–3 sao được coi là hết sao theo hạn mức mới.
 
-Sao vàng và âm thanh vẫn xuất hiện trên màn trình chiếu khi mở câu có sao; không phát lại khi nối lại. Phần Về đích hiện vẫn có 12 vị trí chờ đề, chưa mở câu cũ thay thế.
+Sao vàng và âm thanh vẫn xuất hiện trên màn trình chiếu khi mở câu có sao; không phát lại khi nối lại. Phần Về đích có đủ 12 câu nguồn ngày 15/10; bộ cũ vẫn lưu trữ.
 
 ## Âm thanh và đội giành quyền
 
@@ -199,3 +199,12 @@ Sao lưu từ lần nhập nguồn trước được chuyển bộ và số gợ
 Câu có ảnh/video dùng chung khung co giãn, width/height100%, object-fit:contain ở màn chiếu và3đội. Trên máy tính, màn đội có media dùng bố cục16/84 giống màn chiếu,75% vùng chơi cho câu hỏi,ô trả lời phía dưới; khi công bố thay ô trả lời bằng kết quả. ẢnhCNV vẫncover kínvuông/chặn kéo. Màn nhỏ dùng khung16:9. Cỡ vật lý vẫn tùy kích thước thiết bị.
 
 Tăng tốc: câu3=23s;8,15,17,20,23=30s;13=20s;25=29s;30=17s;còn lại25s. Máy chủ dùng cùng thời gian cho đồng hồ và hạn nhận đáp án.
+
+
+## Nhập đề Về đích 12 câu — 15/10/2026
+
+Nguồn: [tab Về đích](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.d565as2bnh7u). Mỗi đội 4 câu theo thứ tự, mức 20/20/30/30 điểm, 15 giây. Đáp án giữ nguyên theo nguồn. Tài liệu ghi trùng “Câu 2” ở đội Chủ nghĩa tư bản; câu phóng viên thứ ba được gán Câu 3 theo vị trí và nhãn video. Ba câu tiếng Anh chỉ hiện lời mời, bỏ kịch bản tiếng Anh theo yêu cầu trước.
+
+Ba ảnh gồm hệ phương trình câu 4 Cầu truyền hình, địa điểm câu 1 Chủ nghĩa tư bản, chương trình câu 2 Chủ nghĩa xã hội. Câu 4 Chủ nghĩa xã hội giữ hai phương trình dạng chữ. Ba video phóng viên: đội 1 câu 3, đội 2 câu 3, đội 3 câu 1; chuyển H.264/yuv420p/AAC, giữ tiếng và chuẩn hóa về khoảng −16 LUFS. MC phát/dừng trên màn chiếu và ba đội; Về đích vẫn bấm Bắt đầu riêng. Không có link video cho ba câu tiếng Anh trong nguồn hiện tại.
+
+Bộ mới nằm ở multiplayer/compact-finish-bank.js. Danh mục có đủ 125 mục, không còn vị trí chờ đề; giữ IDs compact-v1 và luật giành quyền/sao ngày 15/10.

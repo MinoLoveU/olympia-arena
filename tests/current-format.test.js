@@ -32,3 +32,14 @@ test('Two source obstacle sets open all 18 clues with private answers and indepe
  assert.equal(r.opened.length,9);}
  const b=snapshot(r,'host');b.image='/assets/obstacle-awaiting.svg';act(r,'host',{type:'restore',backup:b});assert.equal(r.image,obstacleSets[1].image);
 });
+
+test('Updated obstacle source includes all supplied character counts without leaking answers',()=>{
+ const counts=[[9,13,13,17,15,13,8,15,13],[4,9,2,12,6,13,16,8,7]];
+ for(const [i,set] of obstacleSets.entries()){
+  assert.equal(set.answerLength,[15,21][i]);
+  [...set.clues,set.center].forEach(([text],j)=>assert.ok(text.endsWith(`(${counts[i][j]} kí tự)`)));
+  const r=createRoom();act(r,'host',{type:'obstacleSet',id:set.id});
+  for(const role of ['display','p0','p1','p2']){assert.equal(snapshot(r,role).obstacleAnswerLength,set.answerLength);assert.equal(snapshot(r,role).obstacle.solution,undefined);}
+ }
+ assert.equal(obstacleSets[1].clues[2][1],'12.');assert.equal(obstacleSets[1].clues[0][1],'1925.');assert.equal(obstacleSets[0].center[1],'Quốc tế cộng sản.');
+});

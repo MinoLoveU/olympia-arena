@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import {JSD
 const wait=async fn=>{for(let i=0;i<250;i++){if(fn())return;await new Promise(r=>setTimeout(r,20));}throw Error('Video UI timeout');};
 import {builtInBank,bankInfo,obstacleSets} from '../multiplayer/bank.js';
 test('Cheer menus and projection-only playback across five clients',async()=>{
- const {server,wss,rooms}=createGameServer({accessHash:hashPassword('test-only-password'),questionBank:{bankInfo,obstacleSets,builtInBank:builtInBank.map(q=>q.id==='cheer-1-1'?{...q,media:'/assets/finish-compact-1-3.mp4'}:q)}});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;
+ const {server,wss,rooms}=createGameServer({accessHash:hashPassword('test-only-password'),questionBank:{bankInfo,obstacleSets,builtInBank:builtInBank.map(q=>q.cheer?{...q,media:q.id==='cheer-1-1'?'/assets/cheer-1-1.mp4':''}:q)}});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${server.address().port}`;
  const room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json(),doms=[],sockets=[];let plays=0,pauses=0,blocked=true;
  try{
  for(const role of ['host','display','p0','p1','p2']){

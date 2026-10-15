@@ -18,8 +18,9 @@ test('Current five-screen UI opens the new finish source and unchanged warmup',a
  if(round==='Về đích'){host.querySelector('#finish-team').value='2';host.querySelector('#finish-team').dispatchEvent(new doms[0].window.Event('change'));assert.match(host.querySelector('#finish-team').textContent,/4\/4 câu/);}
  const options=[...host.querySelector('#preset-question').options];assert.equal(options.length,round==='Tăng tốc'?20:round==='Về đích'?4:10);assert.ok(options.every(o=>!o.disabled));assert.equal(host.querySelector('#publish-question').disabled,false);
  host.querySelector('#publish-question').click();await wait(()=>players.every(d=>d.querySelector('video')));assert.match(host.querySelector('#host-solution').textContent,/Ngoại giao vắc-xin/);
+ for(const d of players){assert.equal(d.querySelector('#answer-text'),null);assert.equal(d.querySelector('#send-answer'),null);assert.ok(d.querySelector('#finish-buzz'));}
  blocked=false;host.querySelector('#play-video').click();await wait(()=>plays===4);assert.equal(rooms.get(room.id).phase,'ready');
- for(const d of [display,...players]){assert.equal(d.querySelector('video').muted,false);assert.equal(d.querySelector('video').getAttribute('src').split('?')[0],'/assets/finish-compact-3-1.mp4');}
+ for(const d of [display,...players]){assert.equal(d.querySelector('video').muted,d!==display);assert.equal(d.querySelector('video').getAttribute('src').split('?')[0],'/assets/finish-compact-3-1.mp4');}
  host.querySelector('#stop-video').click();await wait(()=>pauses===4);
  }
  assert.equal(host.querySelector('#obstacle-set').options.length,2);

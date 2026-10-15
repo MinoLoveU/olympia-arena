@@ -24,3 +24,13 @@ test('All three new finish videos retain sound and browser-compatible video',()=
   const r=createRoom();act(r,'host',{type:'preset',id:q.id});act(r,'host',{type:'video',questionId:r.questionId,action:'play'});assert.equal(r.phase,'ready');assert.equal(r.deadline,null);
  }
 });
+
+test('Every finish question is oral: reject typed answers while MC can judge',()=>{
+ for(const q of finishQuestions){
+  const r=createRoom(),player=q.players[0];act(r,'host',{type:'preset',id:q.id});act(r,'host',{type:'start'});
+  assert.throws(()=>act(r,`p${player}`,{type:'answer',questionId:r.questionId,text:q.solution}),/trả lời miệng/);
+  assert.deepEqual(r.answers,{});
+  for(const role of ['display','p0','p1','p2'])assert.throws(()=>act(r,role,{type:'video',questionId:r.questionId,action:'play'}));
+  act(r,'host',{type:'close'});act(r,'host',{type:'judge',questionId:r.questionId,player,result:'correct',version:0});assert.equal(r.teams[player].score,q.points);
+ }
+});

@@ -183,6 +183,7 @@ export function act(room,role,msg,now=Date.now()){
    if(room.buzzes.some(b=>b.player===player))fail('Đã ghi nhận chuông của bạn.');
    if(!room.buzzes.length){if(room.round==='Khởi động')room.deadline=null;else if(room.question.buzzAnswerSeconds)room.deadline=now+room.question.buzzAnswerSeconds*1000;}room.buzzes.push({player,rank:room.buzzes.length+1,receivedAt:now});room.log=`Chuông thứ ${room.buzzes.length}: ${room.teams[player].name}.`;
   }else if(msg.type==='answer'){
+   if(room.round==='Về đích')fail('Về đích trả lời miệng; MC chấm trực tiếp.');
    if(room.answers[player])fail('Đã nhận đáp án đầu tiên; không thể thay đổi.');
    if(room.question.type==='buzz'&&room.buzzes[0]?.player!==player)fail('Chỉ đội giành chuông đầu tiên được trả lời.');
    const text=room.round==='Tăng tốc'?(typeof msg.text==='string'?msg.text.trim():''):clean(msg.text,1000);if(!text)fail('Đáp án không được để trống.');

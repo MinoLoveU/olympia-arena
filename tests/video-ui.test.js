@@ -6,7 +6,7 @@ test('MC synchronizes display and player videos; blocked autoplay uses an icon w
  try{
  for(const role of ['host','display','p0','p1','p2']){
   const dom=new JSDOM(readFileSync(new URL('../multiplayer/index.html',import.meta.url),'utf8'),{url:base+'/#'+new URLSearchParams({room:room.id,token:room.tokens[role]}),runScripts:'outside-only',pretendToBeVisual:true});doms.push(dom);const style=dom.window.document.createElement('style');style.textContent=readFileSync(new URL('../multiplayer/style.css',import.meta.url),'utf8');dom.window.document.head.append(style);
-  dom.window.HTMLMediaElement.prototype.play=function(){plays++;return blocked?Promise.reject(Error('autoplay')):Promise.resolve();};dom.window.HTMLMediaElement.prototype.pause=function(){pauses++;};
+  dom.window.HTMLMediaElement.prototype.play=function(){plays++;return blocked&&!this.muted?Promise.reject(Error('autoplay')):Promise.resolve();};dom.window.HTMLMediaElement.prototype.pause=function(){pauses++;};
   dom.window.WebSocket=class extends WebSocket{constructor(...args){super(...args);sockets.push(this);}};
   dom.window.eval(readFileSync(new URL('../multiplayer/sounds.js',import.meta.url),'utf8'));dom.window.eval(readFileSync(new URL('../multiplayer/client.js',import.meta.url),'utf8'));
  }
@@ -19,14 +19,16 @@ test('MC synchronizes display and player videos; blocked autoplay uses an icon w
  host.querySelector('#preset-question').value='finish-3';host.querySelector('#publish-question').click();await wait(()=>display.querySelector('video'));
  checkMedia();assert.equal(plays,0);assert.equal(host.querySelector('#play-video').hidden,false);
  assert.equal(host.querySelector('video'),null);for(const d of players)assert.ok(d.querySelector('video'));
- host.querySelector('#play-video').click();await wait(()=>[display,...players].every(d=>!d.querySelector('#video-permission').hidden));for(const d of [display,...players]){assert.equal(d.querySelector('#video-permission').textContent,'▶');assert.equal(d.querySelector('#video-permission').getAttribute('aria-label'),'Phát video');}assert.equal(rooms.get(room.id).deadline,null);
- blocked=false;for(const d of [display,...players])d.querySelector('#video-permission').click();await wait(()=>[display,...players].every(d=>d.querySelector('#video-permission').hidden));assert.equal(plays,8);
- sockets[1].send(JSON.stringify({type:'sync'}));await new Promise(r=>setTimeout(r,80));assert.equal(plays,8);
- host.querySelector('#play-video').click();await wait(()=>plays===12);host.querySelector('#stop-video').click();await wait(()=>pauses===4);assert.equal(display.querySelector('video').currentTime,0);
+ host.querySelector('#play-video').click();await wait(()=>!display.querySelector('#video-permission').hidden);
+ for(const d of [display,...players]){const v=d.querySelector('video');assert.equal(v.controls,false);assert.equal(v.tabIndex,-1);assert.equal(d.defaultView.getComputedStyle(v).pointerEvents,'none');assert.ok(v.hasAttribute('disablepictureinpicture'));}
+ for(const d of players){assert.equal(d.querySelector('#video-permission').hidden,true);d.querySelector('#video-permission').click();}assert.equal(plays,4);
+ blocked=false;display.querySelector('#video-permission').click();await wait(()=>display.querySelector('#video-permission').hidden);assert.equal(plays,5);
+ sockets[1].send(JSON.stringify({type:'sync'}));await new Promise(r=>setTimeout(r,80));assert.equal(plays,5);
+ host.querySelector('#play-video').click();await wait(()=>plays===9);host.querySelector('#stop-video').click();await wait(()=>pauses===4);assert.equal(display.querySelector('video').currentTime,0);
  host.querySelector('#preset-question').value='finish-11';host.querySelector('#publish-question').click();await wait(()=>[display,...players].every(d=>d.querySelector('#question-media img')));assert.equal(host.querySelector('#play-video').hidden,true);checkMedia();
  host.querySelector('#round').value='Tăng tốc';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='speed-3';host.querySelector('#publish-question').click();await wait(()=>display.querySelector('video')?.getAttribute('src')==='/assets/speed-source-3.mp4');
  checkMedia();assert.equal(display.querySelector('video').muted,true);assert.equal(display.querySelector('video').hasAttribute('muted'),true);for(const d of players)assert.equal(d.querySelector('video').muted,true);
- host.querySelector('#play-video').click();await wait(()=>plays===16);assert.equal(display.querySelector('video').muted,true);assert.equal(host.querySelector('video'),null);for(const d of players)assert.ok(d.querySelector('video'));
+ host.querySelector('#play-video').click();await wait(()=>plays===13);assert.equal(display.querySelector('video').muted,true);assert.equal(host.querySelector('video'),null);for(const d of players)assert.ok(d.querySelector('video'));
  assert.equal(rooms.get(room.id).phase,'open');assert.ok(rooms.get(room.id).deadline);host.querySelector('#stop').click();await wait(()=>rooms.get(room.id).phase==='closed');
  host.querySelector('#preset-question').value='speed-14';host.querySelector('#publish-question').click();await wait(()=>doms.every(d=>!d.window.document.querySelector('#question-matching').hidden));
  for(const d of [host,display,...players]){
@@ -37,7 +39,7 @@ test('MC synchronizes display and player videos; blocked autoplay uses an icon w
  host.querySelector('#preset-question').value='speed-11';host.querySelector('#publish-question').click();await wait(()=>players[0].querySelector('#question-title').textContent.includes('7 tác phẩm'));assert.equal(display.querySelector('#question-matching').hidden,true);for(const d of players)assert.ok(d.querySelector('#question-media img'));checkMedia();
  const game=rooms.get(room.id);game.judgements[0]={result:'correct',points:40,version:1};game.judgements[1]={result:'wrong',points:0,version:1};game.revision++;for(const socket of sockets)socket.send(JSON.stringify({type:'sync'}));await wait(()=>display.querySelector('.judgement-badge.correct'));assert.equal(display.querySelector('.judgement-badge.correct').textContent,'✓ Đúng. +40 điểm');assert.equal(display.querySelector('.judgement-badge.wrong').textContent,'✕ Sai. 0 điểm');
  host.querySelector('#round').value='Vượt chướng ngại vật';host.querySelector('#round').dispatchEvent(new doms[0].window.Event('change'));host.querySelector('#preset-question').value='obstacle-2';host.querySelector('#publish-question').click();await wait(()=>[display,...players].every(d=>d.querySelector('video')?.getAttribute('src')==='/assets/obstacle-song-1-v2.mp4'));
- for(const d of [display,...players])assert.equal(d.querySelector('video').muted,false);assert.equal(host.querySelector('#play-video').hidden,false);
- host.querySelector('#play-video').click();await wait(()=>plays===20);assert.equal(rooms.get(room.id).deadline,null);host.querySelector('#stop-video').click();await wait(()=>pauses===8);
+ for(const d of [display,...players])assert.equal(d.querySelector('video').muted,d!==display);assert.equal(host.querySelector('#play-video').hidden,false);
+ host.querySelector('#play-video').click();await wait(()=>plays===17);assert.equal(rooms.get(room.id).deadline,null);host.querySelector('#stop-video').click();await wait(()=>pauses===8);
  }finally{for(const socket of sockets){socket.onclose=null;socket.onmessage=null;socket.terminate();}for(const dom of doms)dom.window.close();for(const socket of wss.clients)socket.terminate();server.closeAllConnections();await new Promise(r=>server.close(r));}
 });

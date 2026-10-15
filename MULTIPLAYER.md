@@ -217,3 +217,9 @@ Thứ tự danh sách MC: **Cổ vũ · trước Khởi động → Khởi độ
 Mỗi phần Cổ vũ có ba nút theo tên đội. MC chọn đội để đưa tên lên màn chiếu, rồi dùng Phát/Dừng video khi đã có media. Đã có đủ sáu video theo nguồn ngày 15/10; mỗi đội có video riêng trước Khởi động và trước Về đích. Âm lượng mặc định cân gần −16 LUFS, giữ tiếng; riêng hai video Chủ nghĩa tư bản tăng thêm 1,5 dB theo yêu cầu (khoảng −14,5 LUFS). Xem AUDIO-CHECK.md. Có thể chọn lại bất kỳ đội nào; không chạy đồng hồ, không nhận đáp án và không tính điểm.
 
 Video chỉ được gửi tới màn trình chiếu và bàn điều khiển (MC không phát tại chỗ). Ba màn đội chơi không nhận URL/lệnh video, chỉ hiện Chờ phần thi tiếp theo. Màn chiếu ẩn bảng điểm/đáp án và dùng khung rộng giữ tỷ lệ video. Chuyển sang vòng thi trả lại bố cục bình thường. Media nằm trong cheerVideos ở multiplayer/bank.js, mỗi mục có ID cheer-{1|2}-{1|2|3}.
+
+## Trả lời miệng và quyền video — 15/10/2026
+
+Toàn bộ Về đích trả lời miệng, kể cả lượt chính; không còn ô nhập/chọn/gửi đáp án, server từ chối gửi chữ. Giữ nút giành quyền, 15 giây lượt chính và luật chấm/sao hiện hành. Preview MC ghi Trả lời miệng.
+
+Video mọi vòng không có thanh điều khiển, không nhận chuột/bàn phím, không Picture-in-Picture/remote playback. Màn đội tự phát không tiếng theo lệnh MC, không có nút phát dự phòng; âm thanh ở màn chiếu. Nếu browser chặn autoplay có tiếng trên màn chiếu, nút cấp quyền chỉ tiếp tục lệnh phát hiện hành của MC, không phát sau lệnh dừng. Kiểm thử jsdom/WebSocket; chưa thử trình duyệt vật lý.

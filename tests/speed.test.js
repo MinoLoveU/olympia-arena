@@ -36,7 +36,8 @@ test('Round-wide clocks enforce 25-second default for custom speed questions and
  for(const [round,seconds] of [['Tăng tốc',25],['Về đích',15]]){
   const r=createRoom();act(r,'host',{type:'question',round,duration:20,question:{text:'Kiểm tra thời gian',type:'text',players:[0],points:20}});assert.equal(r.duration,seconds);
   act(r,'host',{type:'start'},1000);assert.equal(r.deadline,1000+seconds*1000);
-  act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1);
+  if(round==='Tăng tốc')act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1);
+  else assert.throws(()=>act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1),/trả lời miệng/);
   const late=createRoom();act(late,'host',{type:'preset',id:round==='Tăng tốc'?'speed-1':'finish-1'});act(late,'host',{type:'start'},1000);assert.throws(()=>act(late,'p0',{type:'answer',questionId:late.questionId,text:'Đúng hạn'},1000+seconds*1000));
  }
 });

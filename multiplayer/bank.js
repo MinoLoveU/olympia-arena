@@ -5,7 +5,7 @@ export {obstacleSets};
 import {warmupQuestions} from './warmup-bank.js';
 const obstacle='Vượt chướng ngại vật',speed='Tăng tốc',finish='Về đích';
 const slot=(id,label,round,extra={})=>({id,label,round,text:'',solution:'',type:'text',duration:15,choices:[],pending:true,...extra});
-export const cheerVideos=[1,2].flatMap(section=>['Đội Cầu truyền hình','Đội Chủ nghĩa tư bản','Đội Chủ nghĩa xã hội'].map((name,team)=>({id:`cheer-${section}-${team+1}`,label:name,round:section===1?'Cổ vũ · trước Khởi động':'Cổ vũ · trước Về đích',text:name,solution:'',type:'text',duration:15,choices:[],players:[],cheer:true,cheerSection:section,cheerTeam:team,media:`/assets/cheer-${section}-${team+1}.mp4`,mediaType:'video'})));
+export const cheerVideos=[1,2].flatMap(section=>['Đội Cầu truyền hình','Đội Chủ nghĩa tư bản','Đội Chủ nghĩa xã hội'].map((name,team)=>({id:`cheer-${section}-${team+1}`,label:name,round:section===1?'Cổ vũ · trước Khởi động':'Cổ vũ · trước Về đích',text:name,solution:'',type:'text',duration:15,choices:[],players:[],cheer:true,cheerSection:section,cheerTeam:team,media:`/assets/cheer-${section}-${team+1}${team===1?'-v2':''}.mp4`,mediaType:'video'})));
 export const builtInBank=[
  ...cheerVideos.filter(q=>q.cheerSection===1),
  ...warmupQuestions,

@@ -25,7 +25,7 @@ test('Uploaded cheer video command and URL are delivered only to controller and 
 test('All six supplied cheer videos have playable picture and audio and correct section/team routing',async()=>{
  const {execFileSync}=await import('node:child_process');
  for(const q of cheerVideos){
-  assert.equal(q.media,`/assets/cheer-${q.cheerSection}-${q.cheerTeam+1}.mp4`);
+  assert.equal(q.media,`/assets/cheer-${q.cheerSection}-${q.cheerTeam+1}${q.cheerTeam===1?'-v2':''}.mp4`);
   const data=JSON.parse(execFileSync('ffprobe',['-v','error','-show_entries','stream=codec_name,pix_fmt:format=duration','-of','json',new URL('..'+q.media,import.meta.url).pathname],{encoding:'utf8'}));
   assert.deepEqual(data.streams.map(s=>s.codec_name),['h264','aac']);assert.equal(data.streams[0].pix_fmt,'yuv420p');assert.ok(Number(data.format.duration)>15);
   const r=createRoom();act(r,'host',{type:'preset',id:q.id});act(r,'host',{type:'video',questionId:r.questionId,action:'play'});

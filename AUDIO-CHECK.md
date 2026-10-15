@@ -47,3 +47,14 @@ Mapping nguồn (section-team → Drive ID):
 - 2-3: 1uIrSOOcraE0ha9qMcy-39Xtvch8ovEh-
 - 1-2: 1yToPCRgGvjVRMwOiAT7CLN86H0catvSO
 - 2-2: 1askYmxjCla6v4yjl5ws4qA_C_zvCcc7p
+
+## Tăng nhẹ hai video Chủ nghĩa tư bản — 15/10/2026
+
+Theo yêu cầu, tăng thêm 1,5 dB so với bản đã cân. Tệp mới có hậu tố `-v2` để tránh cache cũ; giữ nguyên luồng hình (hash video giống bản trước). AAC 192 kb/s, 48 kHz.
+
+| Video | LUFS sau tăng | True peak dBTP |
+|---|---:|---:|
+| cheer-1-2-v2.mp4 | -14.51 | -1.11 |
+| cheer-2-2-v2.mp4 | -14.53 | -2.91 |
+
+Bốn video đội khác giữ nguyên. Bốn kiểm thử Cổ vũ đạt; chưa nghe thử bằng loa thực tế.

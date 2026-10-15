@@ -124,7 +124,7 @@ Cả 60 câu đều nhập đáp án, không đặt giới hạn ký tự và kh
 
 Khi MC công bố, màn chiếu ẩn khung câu hỏi và dùng toàn vùng bên phải bảng điểm cho ba câu trả lời, xếp từ trên xuống theo thứ tự máy chủ nhận; đội chưa gửi nằm cuối. Ẩn đáp án hoặc chuyển câu sẽ hiện lại khung câu hỏi. Góc mỗi câu ghi số giây với ba chữ số thập phân, tính từ Bắt đầu đến lúc máy chủ nhận; có bao gồm độ trễ mạng. Nếu cùng mili giây, dùng thứ tự nhận để phân hạng. Hiển thị thời gian không đồng nghĩa đo riêng thời gian suy nghĩ với độ chính xác tuyệt đối.
 
-MC khóa trả lời rồi tích Đúng theo thứ tự muốn trao điểm: 40–30–20–10. Hiện có ba đội nên dùng ba mức đầu. Thứ tự điểm là thứ tự MC tích Đúng, độc lập với thứ tự gửi. Sai/Không trả lời được 0; đội chưa gửi không thể tích Đúng. Bấm lặp không cộng lại. Sửa hoặc Bỏ chấm sẽ tự xếp lại mức điểm các đội còn đúng và áp dụng chênh lệch vào tổng; tích Đúng lại sau khi bỏ/sửa đưa đội về cuối thứ tự chấm. Điều chỉnh điểm thủ công vẫn được giữ.
+MC khóa rồi chấm Đúng theo bất kỳ thứ tự nào. Điểm 40–30–20–10 tự xếp theo thời gian gửi của các đội được chấm đúng; ba đội dùng ba mức đầu. Nếu cùng mili giây, dùng thứ tự máy chủ nhận. Sai/vắng 0; chưa gửi không chấm đúng. Sửa/bỏ chấm tự tính lại chênh lệch, giữ chỉnh điểm thủ công; chấm đúng lại khôi phục thứ hạng theo thời gian gửi ban đầu.
 
 59 kiểm thử đạt, gồm năm giao diện/WebSocket, gửi văn bản Unicode dài hơn giới hạn cũ, giữ kín trước công bố, thời gian và thứ tự nhận, chấm theo thứ tự khác thứ tự gửi, sửa/bỏ chấm và sao lưu. Chưa kiểm tra bố cục bằng trình duyệt thực tế.
 
@@ -160,7 +160,7 @@ Sáu video Về đích đã chuẩn hóa về khoảng −16 LUFS (đo lại: �
 
 ## Bộ Tăng tốc theo tài liệu — 14/10/2026
 
-Đã thay 60 câu theo [tab Tăng tốc của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.a63d1diym0ik), giữ thứ tự 1–60 và IDs speed-1…speed-60. Đáp án lấy từ chữ đỏ và chỉ gửi riêng MC trước khi công bố. Cả 60 câu vẫn nhập đáp án tự do, thời gian theo từng câu; xếp đáp án theo thời gian nhận và tính điểm theo thứ tự MC tích Đúng như trước.
+Đã thay 60 câu theo [tab Tăng tốc của chủ tài khoản](https://docs.google.com/document/d/1G6_FyhlkHjh543TJqjwKIXD_q5fx5iWnE1geqKsCwos/edit?tab=t.a63d1diym0ik), giữ thứ tự 1–60 và IDs speed-1…speed-60. Đáp án lấy từ chữ đỏ và chỉ gửi riêng MC trước khi công bố. Cả 60 câu vẫn nhập đáp án tự do, thời gian theo từng câu; xếp đáp án theo thời gian nhận và tính điểm theo thời gian gửi của các đội đúng.
 
 Có 28 video và 17 ảnh nằm trong 6 câu có hình. Quốc kỳ ở câu 7 và bìa sách ở câu 11 được xếp thành bảng có nhãn chữ cái; giữ đủ hình nguồn. Các lựa chọn dạng danh sách ở câu 20/50 giữ nhãn A–H/A–D. Ảnh sơ đồ câu 22 hiển thị vùng sơ đồ, không bỏ thông tin. Hazei đã thay câu 35 bằng câu hỏi số điều kiện xây dựng khối đại đoàn kết toàn dân tộc, đáp án 4; câu 49 có đáp án B.
 

@@ -15,15 +15,15 @@ test('All 60 speed questions use free text; long Unicode answers remain intact a
  act(r,'host',{type:'close'});act(r,'host',{type:'revealAnswers',show:true});
  for(const role of ['host','display','p0','p1','p2']){const s=snapshot(r,role);assert.equal(s.answers[2].elapsedMs,1234);assert.equal(s.answers[2].text,long.trim());}
 });
-test('Speed points follow MC correct-click order rather than receipt order, never duplicate, and repair ranks on corrections',()=>{
- const r=setup();for(const p of [2,0,1])answer(r,p);act(r,'host',{type:'close'});
+test('Speed points follow answer time regardless of judging order, preserve manual scores and repair ranks',()=>{
+ const r=setup();for(const [p,t] of [[2,1200],[0,1300],[1,1400]])answer(r,p,'đáp án',t);act(r,'host',{type:'close'});
  judge(r,1,'wrong');judge(r,0,'correct');judge(r,2,'correct');judge(r,1,'correct');
- assert.deepEqual(r.teams.map(t=>t.score),[40,20,30]);judge(r,0,'correct');assert.deepEqual(r.teams.map(t=>t.score),[40,20,30]);
- const stale=r.judgements[2].version;act(r,'host',{type:'score',player:2,score:100});judge(r,0,'wrong');
- assert.deepEqual(r.teams.map(t=>t.score),[0,30,110]);assert.throws(()=>act(r,'host',{type:'judge',questionId:r.questionId,player:2,result:'wrong',version:stale}));
- judge(r,0,'correct');assert.deepEqual(r.teams.map(t=>t.score),[20,30,110]);judge(r,2,'clear');assert.deepEqual(r.teams.map(t=>t.score),[30,40,70]);
- judge(r,1,'no-answer');assert.deepEqual(r.teams.map(t=>t.score),[40,0,70]);
- const restored=createRoom();act(restored,'host',{type:'restore',backup:snapshot(r,'host')});assert.deepEqual(restored.teams.map(t=>t.score),[40,0,70]);assert.deepEqual(restored.judgements,{});
+ assert.deepEqual(r.teams.map(t=>t.score),[30,20,40]);judge(r,0,'correct');assert.deepEqual(r.teams.map(t=>t.score),[30,20,40]);
+ const stale=r.judgements[1].version;act(r,'host',{type:'score',player:2,score:100});judge(r,0,'wrong');
+ assert.deepEqual(r.teams.map(t=>t.score),[0,30,100]);assert.throws(()=>act(r,'host',{type:'judge',questionId:r.questionId,player:1,result:'wrong',version:stale}));
+ judge(r,0,'correct');assert.deepEqual(r.teams.map(t=>t.score),[30,20,100]);judge(r,2,'clear');assert.deepEqual(r.teams.map(t=>t.score),[40,30,60]);
+ judge(r,1,'no-answer');assert.deepEqual(r.teams.map(t=>t.score),[40,0,60]);
+ const restored=createRoom();act(restored,'host',{type:'restore',backup:snapshot(r,'host')});assert.deepEqual(restored.teams.map(t=>t.score),[40,0,60]);assert.deepEqual(restored.judgements,{});
  act(r,'host',{type:'preset',id:'speed-3'});assert.deepEqual(r.judgements,{});assert.deepEqual(r.answers,{});
 });
 test('Speed judging rejects missing answer, open phase and non-host; deadline remains authoritative',()=>{
@@ -52,5 +52,12 @@ test('Every speed preset uses its requested duration and rejects answers at the 
   act(r,'host',{type:'start'},1000);assert.equal(r.deadline,1000+seconds*1000);
   act(r,'p0',{type:'answer',questionId:r.questionId,text:'Trước hạn'},r.deadline-1);
   assert.throws(()=>act(r,'p1',{type:'answer',questionId:r.questionId,text:'Hết hạn'},r.deadline));
+ }
+});
+
+test('Equal milliseconds use server receipt rank for every judging permutation',()=>{
+ for(const order of [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]]){
+  const r=setup();for(const p of [2,0,1])answer(r,p,'đúng',1500);act(r,'host',{type:'close'});
+  for(const p of order)judge(r,p,'correct');assert.deepEqual(r.teams.map(t=>t.score),[30,20,40]);
  }
 });

@@ -111,8 +111,8 @@ export function act(room,role,msg,now=Date.now()){
    if(previous?.result===normalized)return snapshot(room,role,now);
    if(room.round==='Tăng tốc'){
     if(result==='correct'&&!room.answers[player])fail('Đội chưa gửi đáp án.');
-    const next={...room.judgements,[player]:{result:normalized,points:0,version:(previous?.version||0)+1,correctOrder:result==='correct'?room.revision+1:null}};
-    const ordered=Object.keys(next).filter(i=>next[i].result==='correct').sort((a,b)=>next[a].correctOrder-next[b].correctOrder);
+    const next={...room.judgements,[player]:{result:normalized,points:0,version:(previous?.version||0)+1}};
+    const ordered=Object.keys(next).filter(i=>next[i].result==='correct').sort((a,b)=>room.answers[a].elapsedMs-room.answers[b].elapsedMs||room.answers[a].rank-room.answers[b].rank);
     const scores=room.teams.map(t=>t.score);
     for(const key of Object.keys(next)){
      const rank=ordered.indexOf(key),points=rank<0?0:([40,30,20,10][rank]||0),old=room.judgements[key];
@@ -121,7 +121,7 @@ export function act(room,role,msg,now=Date.now()){
      next[key]={...next[key],points,version:next[key].version+(Number(key)!==player&&points!==(old?.points||0)?1:0)};
     }
     room.judgements=next;room.teams.forEach((t,i)=>t.score=scores[i]);
-    room.log='Tăng tốc: điểm 40–30–20–10 theo thứ tự MC tích Đúng; sửa/bỏ chấm tự xếp lại điểm.';
+    room.log='Tăng tốc: điểm 40–30–20–10 theo thời gian gửi của các đội trả lời đúng; sửa/bỏ chấm tự xếp lại điểm.';
     room.updatedAt=now;room.revision++;return snapshot(room,role,now);
    }
    const starred=room.round==='Về đích'&&room.hopeStar?.questionId===room.questionId&&room.hopeStar.player===player;

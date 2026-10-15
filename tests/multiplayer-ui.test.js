@@ -160,7 +160,7 @@ test('Five clients: warm-up, obstacle scoring and finish stealing synchronize',a
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });
 
-test('Speed UI: unlimited text through WebSockets, ranked vertical reveal, millisecond times and MC click-order points on all five clients',async()=>{
+test('Speed UI: unlimited text through WebSockets, ranked vertical reveal, millisecond times and automatic answer-time points on all five clients',async()=>{
  const {server,wss}=createGameServer({accessHash:hashPassword('test-only-password')});server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${server.address().port}`,room=await(await fetch(base+'/api/rooms',{method:'POST',headers:{'X-Olympia-Password':'test-only-password'}})).json(),doms=[],sockets=[];
  try{
@@ -183,7 +183,7 @@ test('Speed UI: unlimited text through WebSockets, ranked vertical reveal, milli
   await wait(()=>display.body.classList.contains('speed-revealed'));
   assert.deepEqual([...display.querySelectorAll('#answer-cards .answer-card')].map(el=>el.dataset.player),['2','0','1']);
   for(const i of [0,1,2]){const card=display.querySelector(`.answer-card[data-player="${i}"]`);assert.equal(card.querySelector('p').textContent,texts[i].trim());assert.match(card.querySelector('.answer-time').textContent,/^\d+\.\d{3} s$/);assert.equal(card.querySelector('script'),null);}
-  for(const [i,score] of [[1,40],[2,30],[0,20]]){host.querySelector(`[data-judge="correct"][data-player="${i}"]`).click();await wait(()=>doms.every(d=>d.window.document.querySelectorAll('#scoreboard strong')[i].textContent===String(score)));}
+  for(const [i,score] of [[1,40],[2,40],[0,30]]){host.querySelector(`[data-judge="correct"][data-player="${i}"]`).click();await wait(()=>doms.every(d=>d.window.document.querySelectorAll('#scoreboard strong')[i].textContent===String(score)));}
   host.querySelector('[data-judge="wrong"][data-player="1"]').click();await wait(()=>doms.every(d=>[...d.window.document.querySelectorAll('#scoreboard strong')].map(el=>el.textContent).join(',')==='30,0,40'));
  }finally{for(const s of sockets){s.onclose=null;s.terminate();}for(const d of doms)d.window.close();wss.close();await new Promise(r=>server.close(r));}
 });

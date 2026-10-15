@@ -189,7 +189,7 @@ export const speedQuestions = [
     "text": "Hãy điền tên Mặt trận thống nhất thỏa mãn quy luật của hình sau:",
     "solution": "Mặt trận Việt Minh",
     "type": "text",
-    "duration": 25,
+    "duration": 50,
     "choices": [],
     "media": "/assets/speed-compact-16-diagram.svg",
     "mediaType": "image"
